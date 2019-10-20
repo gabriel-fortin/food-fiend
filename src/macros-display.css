@@ -1,0 +1,22 @@
+.macros-bar {
+    display: flex;
+    height: 100%;
+    min-height: 5px;  /* to see this even when outer styling goes wrong */
+    min-width: 20px;  /* to see this even when outer styling goes wrong */
+}
+
+.macros-bar > * {
+    display: inline-block;
+}
+
+.macros-bar .fat {
+    background-color: wheat;
+}
+
+.macros-bar .protein {
+    background-color: slateblue;
+}
+
+.macros-bar .carbs {
+    background-color: red;
+}
