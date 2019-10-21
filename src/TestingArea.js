@@ -1,8 +1,33 @@
 import React from 'react';
-import {MacrosBar} from './MacrosDisplay';
+import {MacrosBar, MacrosInfo} from './MacrosDisplay';
 
 export default function TestingArea() {
-    return showOfMacrosBar();
+    // return showOfMacrosBar();
+    return showOfMacrosInfo();
+}
+
+function showOfMacrosInfo() {
+    let data = {
+        fat: 34,
+        protein: 12,
+        carbs: 3,
+    };
+
+    let style1 = {
+        border: "solid 2px grey",
+        padding: "5px",
+        marginLeft: "240px",
+        marginTop: "50px",
+        width: "200px",
+    };
+
+    return (
+        <>
+            <div style={style1}>
+                <MacrosInfo macros={data} />
+            </div>
+        </>
+    );
 }
 
 function showOfMacrosBar() {

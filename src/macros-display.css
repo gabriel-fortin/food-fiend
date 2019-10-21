@@ -4,19 +4,42 @@
     min-height: 5px;  /* to see this even when outer styling goes wrong */
     min-width: 20px;  /* to see this even when outer styling goes wrong */
 }
-
 .macros-bar > * {
     display: inline-block;
 }
-
 .macros-bar .fat {
     background-color: wheat;
 }
-
 .macros-bar .protein {
     background-color: slateblue;
 }
-
 .macros-bar .carbs {
     background-color: red;
+}
+
+
+.macros-info {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr 1fr; */
+    grid-template-areas:
+        "title-1 title-2 title-3"
+        "value-1 value-2 value-3"
+        "bar bar bar";
+}
+.macros-info > * {
+    text-align: center;
+}
+.macros-info > .title {
+    font-size: 0.8em;
+    font-variant: sub;
+    margin-top: -0.3em;
+}
+.macros-info > .bar {
+    grid-area: bar;
+    height: 10px;
+    margin-top: 2px;
+    margin-bottom: 1px;
+    --horizontal-margin: 10px;
+        margin-left: var(--horizontal-margin);
+        margin-right: var(--horizontal-margin);
 }
