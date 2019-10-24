@@ -1,0 +1,43 @@
+.table-display {
+    --vertical-spacing: 0.1em;
+    --left-side-space-correction: 0.6em;
+    --divider-color: lightgrey;
+
+    margin-left: var(--left-side-space-correction);
+    display: grid;
+    grid-template-columns: 2em minmax(10em, 30em) minmax(10em, 20em) auto;
+    align-items: center;
+    justify-items: center;
+}
+.table-display > .header:first-child {
+    justify-self: start;  /* align first header with left edge of grid */
+    margin-left: calc(0px - var(--left-side-space-correction));
+}
+.table-display > .name {
+    justify-self: start;
+    margin-left: 1em;
+}
+.table-display > .macros {
+    justify-self: stretch;
+}
+.table-display > .divider {
+    width: calc(100% + var(--left-side-space-correction));
+    justify-self: right;
+    height: 1px;
+    margin: var(--vertical-spacing) 0;
+    background-color: var(--divider-color);
+    grid-column: 1 / -1;
+}
+
+/* styles for debug */
+/*
+.table-display {
+    background-color: red;
+}
+.table-display > * {
+    background-color: beige;
+    justify-self: stretch;
+    align-self: stretch;
+    width: 100%;
+}
+*/

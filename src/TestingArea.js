@@ -1,9 +1,47 @@
 import React from 'react';
 import {MacrosBar, MacrosInfo} from './MacrosDisplay';
+import {TableDisplay} from './TableDisplay';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
-    return showOfMacrosInfo();
+    // return showOfMacrosInfo();
+    return showOfTableDisplay();
+}
+
+function showOfTableDisplay() {
+    let data1 = {
+        name: "prod A",
+        quantity: 30,
+        macros: {
+            fat: 33,
+            protein: 23,
+            carbs: 10,
+        },
+    };
+    let data2 = {
+        name: "prod B",
+        quantity: 15,
+        macros: {
+            fat: 54,
+            protein: 14,
+            carbs: 44,
+        },
+    };
+
+    let data = [data1, data2];
+
+    let style = {
+        border: "solid 1px grey",
+        margin: "40px 100px",
+        padding: "2px 6px",
+        width: "700px",
+    };
+
+    return (
+        <div style={style}>
+            <TableDisplay data={data} style={style} />
+        </div>
+    );
 }
 
 function showOfMacrosInfo() {

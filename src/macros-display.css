@@ -37,8 +37,8 @@
 .macros-info > .bar {
     grid-area: bar;
     height: 10px;
-    margin-top: 2px;
     margin-bottom: 1px;
+    margin-top: 1px;
     --horizontal-margin: 10px;
         margin-left: var(--horizontal-margin);
         margin-right: var(--horizontal-margin);
