@@ -1,6 +1,6 @@
 import React from 'react';
-import {MacrosBar, MacrosInfo} from './MacrosDisplay';
-import {TableDisplay} from './TableDisplay';
+import {MacrosBar, MacrosInfo, Macros} from './MacrosDisplay';
+import {TableDisplay, ProductEntry} from './TableDisplay';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -9,24 +9,8 @@ export default function TestingArea() {
 }
 
 function showOfTableDisplay() {
-    let data1 = {
-        name: "prod A",
-        quantity: 30,
-        macros: {
-            fat: 33,
-            protein: 23,
-            carbs: 10,
-        },
-    };
-    let data2 = {
-        name: "prod B",
-        quantity: 15,
-        macros: {
-            fat: 54,
-            protein: 14,
-            carbs: 44,
-        },
-    };
+    let data1 = new ProductEntry("prod A", 30, new Macros(33, 23, 10));
+    let data2 = new ProductEntry("prod B", 15, new Macros(54, 14, 44));
 
     let data = [data1, data2];
 
@@ -39,11 +23,12 @@ function showOfTableDisplay() {
 
     return (
         <div style={style}>
-            <TableDisplay data={data} style={style} />
+            <TableDisplay data={data} />
         </div>
     );
 }
 
+// eslint-disable-next-line
 function showOfMacrosInfo() {
     let data = {
         fat: 34,
@@ -68,6 +53,7 @@ function showOfMacrosInfo() {
     );
 }
 
+// eslint-disable-next-line
 function showOfMacrosBar() {
     let style1 = {
         border: "solid 2px grey",
