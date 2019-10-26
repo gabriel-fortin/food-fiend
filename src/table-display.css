@@ -1,11 +1,11 @@
 .table-display {
     --vertical-spacing: 0.1em;
-    --left-side-space-correction: 0.6em;
+    --left-side-space-correction: 0.0em;
     --divider-color: lightgrey;
 
     margin-left: var(--left-side-space-correction);
     display: grid;
-    grid-template-columns: 2em minmax(10em, 30em) minmax(10em, 20em) auto;
+    grid-template-columns: 3em minmax(10em, 30em) minmax(10em, 20em) auto;
     align-items: center;
     justify-items: center;
 }
