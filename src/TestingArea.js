@@ -1,6 +1,6 @@
 import React from 'react';
 import {MacrosBar, MacrosInfo, Macros} from './MacrosDisplay';
-import {TableDisplay, ProductEntry} from './TableDisplay';
+import {TableDisplay, TableDisplayEntry} from './TableDisplay';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -9,8 +9,8 @@ export default function TestingArea() {
 }
 
 function showOfTableDisplay() {
-    let data1 = new ProductEntry("prod A", 30, new Macros(33, 23, 10));
-    let data2 = new ProductEntry("prod B", 15, new Macros(54, 14, 44));
+    let data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(33, 23, 10));
+    let data2 = new TableDisplayEntry(1002, "prod B", 15, new Macros(54, 14, 44));
 
     let data = [data1, data2];
 

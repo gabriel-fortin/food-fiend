@@ -1,8 +1,6 @@
 import React from 'react';
 import './macros-display.css';
 
-export {MacrosBar, MacrosInfo, Macros}
-
 class Macros {
     constructor(fat, protein, carbs) {
         this.fat = fat;
@@ -28,7 +26,7 @@ function MacrosInfo(props) {
     }
 
     return (
-        <div class="macros-info">
+        <div className="macros-info">
             {title("Fat")}
             {title("Protein")}
             {title("Carbs")}
@@ -60,7 +58,7 @@ function value(text) {
 
 function MacrosBar(props) {
     return (
-        <div class="macros-bar">
+        <div className="macros-bar">
             {macro("fat", props.macros.fat)}
             {macro("protein", props.macros.protein)}
             {macro("carbs", props.macros.carbs)}
@@ -76,3 +74,6 @@ function macro(className, value) {
         <div className={className} style={style} />
     );
 }
+
+
+export {MacrosBar, MacrosInfo, Macros}
