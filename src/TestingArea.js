@@ -1,6 +1,6 @@
 import React from 'react';
-import {MacrosBar, MacrosInfo, Macros} from './MacrosDisplay';
-import {TableDisplay, TableDisplayEntry} from './TableDisplay';
+import {MacrosBar, MacrosInfo, Macros} from './MacrosDisplay/MacrosDisplay';
+import {TableDisplay, TableDisplayEntry} from './TableDisplay/TableDisplay';
 
 export default function TestingArea() {
     // return showOfMacrosBar();

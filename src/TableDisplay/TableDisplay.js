@@ -1,6 +1,6 @@
 import React from 'react';
 import './table-display.css';
-import { MacrosInfo } from './MacrosDisplay';
+import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 
 class TableDisplayEntry {
     constructor(id, name, quantity, macros, isSelected) {
