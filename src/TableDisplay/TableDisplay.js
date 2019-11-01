@@ -45,7 +45,7 @@ const errStyle = {
     fontVariant: "small-caps",
 };
 
-const warnThatMissing = () => {console.warn("no callback for selection toggle")};
+const warnThatMissing = (_id) => {console.warn("no callback for selection toggle")};
 
 function TableDisplay({data, onSelectionToggle = warnThatMissing}) {
     /* TODO: extract input type validation to separate module/file */

@@ -21,9 +21,11 @@ function showOfTableDisplay() {
         width: "700px",
     };
 
+    const tableEntrySelectionToggled = (id) => alert(`user toggled entry with id: ${id}`);
+
     return (
         <div style={style}>
-            <TableDisplay data={data} />
+            <TableDisplay data={data} onSelectionToggle={tableEntrySelectionToggled} />
         </div>
     );
 }
