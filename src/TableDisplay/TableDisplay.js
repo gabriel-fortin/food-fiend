@@ -1,6 +1,7 @@
 import React from 'react';
 import './table-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
+import tickImage from './tick.svg';
 
 class TableDisplayEntry {
     constructor(id, name, quantity, macros, isSelected) {
@@ -107,13 +108,14 @@ function tableRow(reactKey, data, onSelectionToggle) {
         );
     }
 
+    const selectionBoxClass = "selection " + (data.isSelected ? "selected" : "");
+
     return (
         <React.Fragment key={reactKey}>
             <div className="divider"/>
 
-            <div className="selection">
-                <input type="button" onClick={onSelectionToggle}>
-                </input>
+            <div className={selectionBoxClass} onClick={onSelectionToggle}>
+                <img src={tickImage} />
             </div>
             <div className="name">
                 <span>{data.name}</span>

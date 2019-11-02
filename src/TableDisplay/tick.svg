@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 1000 1000">
+    <!-- <polyline stroke="green" stroke-width="100" fill="transparent"
+        points="50 600, 300 900, 900 200"/> -->
+    <!-- <path stroke="blue" stroke-width="50" d="M50,600 L300,900 L900,200" /> -->
+    <path stroke="green" stroke-width="130" stroke-linecap="round" fill="none"
+        d="M 250 500  c 120 80, 150 200, 200 300  m 0 0  c 140 -400, 250 -600, 400 -700" />
+</svg>

@@ -2,6 +2,8 @@
     --vertical-spacing: 0.1em;
     --left-side-space-correction: 0.0em;
     --divider-color: lightgrey;
+    --tick-box-size: 15px;
+    --tick-size: 30px;
 
     margin-left: var(--left-side-space-correction);
     display: grid;
@@ -12,6 +14,21 @@
 .table-display > .header:first-child {
     justify-self: start;  /* align first header with left edge of grid */
     margin-left: calc(0px - var(--left-side-space-correction));
+}
+.table-display > .selection {
+    width: var(--tick-box-size);
+    height: var(--tick-box-size);
+    border: solid grey 1px;
+    border-radius: 3px;
+}
+.table-display > .selection img {
+    width: var(--tick-size);
+    height: var(--tick-size);
+    margin: calc(0px - (var(--tick-size) - var(--tick-box-size)) / 2);
+    display: none;  /* don't display until selected */
+}
+.table-display > .selection.selected img {
+    display: unset;  /* undo 'display: none' */
 }
 .table-display > .name {
     justify-self: start;
