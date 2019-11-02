@@ -11,6 +11,14 @@ class TableDisplayEntry {
         this.macros = macros;
         this.quantity = quantity;
     }
+
+    /**
+     * Returns a copy of this object with 'isSelected' set to given value
+     * @param {boolean} isSelected 
+     */
+    withIsSelected(isSelected) {
+        return new TableDisplayEntry(this.id, this.name, this.quantity, this.macros, isSelected);
+    }
 }
 
 // class TableDisplayData {

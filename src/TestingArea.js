@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {MacrosBar, MacrosInfo, Macros} from './MacrosDisplay/MacrosDisplay';
 import {TableDisplay, TableDisplayEntry} from './TableDisplay/TableDisplay';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
     // return showOfMacrosInfo();
-    return showOfTableDisplay();
+    return ShowOfTableDisplay();
 }
 
-function showOfTableDisplay() {
-    let data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(33, 23, 10));
-    let data2 = new TableDisplayEntry(1002, "prod B", 15, new Macros(54, 14, 44));
+function ShowOfTableDisplay() {
+    const data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(33, 23, 10), false);
+    const data2 = new TableDisplayEntry(1002, "prod B", 15, new Macros(54, 14, 44), false);
 
-    let data = [data1, data2];
+    const initialState = [data1, data2];
+
+    const [currentData, setData] = useState(initialState);
 
     let style = {
         border: "solid 1px grey",
@@ -21,11 +23,18 @@ function showOfTableDisplay() {
         width: "700px",
     };
 
-    const tableEntrySelectionToggled = (id) => alert(`user toggled entry with id: ${id}`);
+    const tableEntrySelectionToggled = (id) => {
+        const newData = currentData.map(x => {
+            if (x.id !== id) return x;
+            return x.withIsSelected(!x.isSelected);
+        })
+
+        setData(newData);
+    };
 
     return (
         <div style={style}>
-            <TableDisplay data={data} onSelectionToggle={tableEntrySelectionToggled} />
+            <TableDisplay data={currentData} onSelectionToggle={tableEntrySelectionToggled} />
         </div>
     );
 }
