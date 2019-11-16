@@ -123,7 +123,7 @@ function tableRow(reactKey, data, onSelectionToggle) {
             <div className="divider"/>
 
             <div className={selectionBoxClass} onClick={onSelectionToggle}>
-                <img src={tickImage} />
+                <img src={tickImage} alt={"selected " + data.name} />
             </div>
             <div className="name">
                 <span>{data.name}</span>

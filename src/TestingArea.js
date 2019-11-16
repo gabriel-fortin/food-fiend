@@ -1,13 +1,96 @@
 import React, { useState } from 'react';
-import {MacrosBar, MacrosInfo, Macros} from './MacrosDisplay/MacrosDisplay';
-import {TableDisplay, TableDisplayEntry} from './TableDisplay/TableDisplay';
+import { MacrosBar, MacrosInfo, Macros } from './MacrosDisplay/MacrosDisplay';
+import { TableDisplay, TableDisplayEntry } from './TableDisplay/TableDisplay';
+import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
     // return showOfMacrosInfo();
-    return ShowOfTableDisplay();
+    // return ShowOfTableDisplay();
+    return FigureOutReduxAndCreatingMeals();
 }
 
+// eslint-disable-next-line
+function FigureOutReduxAndCreatingMeals() {
+    // some data
+    const data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(23, 23, 40), false);
+    const data2 = new TableDisplayEntry(1002, "prod B", 15, new Macros(14, 24, 44), false);
+    const initialState = [data1, data2];
+
+    // prepare store
+    const reducer = (state, action) => {
+        console.log(">>root reducer");
+        console.log("          - action: " + action.type);
+        console.log("          - state: " + JSON.stringify(state));
+
+        if (state === undefined) {
+            console.log("          case: initialising");
+            if (state !== undefined && state !== {}) {
+                console.warn("root REDUCER: state was already defined");
+            }
+            return {
+                onScreenFood: initialState,
+            };
+        }
+
+        if (action.type === 'ENTRY_TOGGLED') {
+            console.log("          case: entry toggled at id: " + action.entryId);
+            return {...state,
+                onScreenFood: state.onScreenFood.map(x => {
+                    if (x.id !== action.entryId) return x;
+                    return x.withIsSelected(!x.isSelected);
+                    // return {...x,
+                    //     isSelected: !x.isSelected,
+                    // };
+                }),
+            };
+        }
+
+        console.warn("root REDUCER: action was not recognised; action: " + action.type);
+        return state;
+    };
+    const store = createStore(reducer);
+
+    // ensure initial state
+    // store.dispatch({type: 'INIT'});
+
+    // action creator
+    const toggleSelection = (entryId) => ({
+        type: "ENTRY_TOGGLED",
+        entryId: entryId,
+    });
+
+    // prettify output
+    const style = {
+        border: "solid 1px grey",
+        margin: "40px 100px",
+        padding: "2px 6px",
+        width: "700px",
+    };
+
+    // const dispatchSelectionToggling = (id) => store.dispatch(toggleSelection(id));
+
+    const mapStateToProps = (state) => ({
+        data: state.onScreenFood,
+    });
+    const mapDispatchToProps = {
+        onSelectionToggle: toggleSelection,
+    };
+
+    const ConnectedTableDisplay =
+        connect(mapStateToProps, mapDispatchToProps)(TableDisplay);
+
+    return (
+        <Provider store={store}>
+            <div style={style}>
+                <ConnectedTableDisplay />
+            </div>
+        </Provider>
+    );
+}
+
+// eslint-disable-next-line
 function ShowOfTableDisplay() {
     const data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(33, 23, 10), false);
     const data2 = new TableDisplayEntry(1002, "prod B", 15, new Macros(54, 14, 44), false);
