@@ -10,9 +10,11 @@ BASIC food (as saved in food library):
  - portions = 1 (for uniformity with other kinds of food)
 
  - ingredients = [] (for uniformity with other kinds of food)
- - used by (to update food/meals depending on this as ingredient) (?)
+ - used by (to update food/meals depending on this as ingredient) (for optimisation?)
+     + id
+     + version
 
- - version (for future optimisation, allows to keep immutability of foods)
+ - version (for future optimisation, allows to keep immutability of entries)
  - extra (any other info)
 
 
@@ -24,13 +26,15 @@ COMPOSITE food (as saved in food library):
  - unit = "piece(s)" (for quantity display only)
 
  - portion size (in grams)
- - portions (how many portions from the ingredients used)
+ - number of portions (how many portions out of the ingredients used)
 
  - ingredients
-     + id, name, FPC, unit, portion size, portions, ingredients, used by, extra
-     + version
+     + version, id, name, FPC, unit, portion size, portions, ingredients, used by, extra
+     + is selected
      + note/extra
- - used by (to update food/meals depending on this as ingredient) (?)
+ - used by (to update food/meals depending on this as ingredient) (for optimisation?)
+     + id
+     + version
 
  - version (for future optimisation; allows to keep immutability of foods; allows updates if original changes)
  - extra (any other info)
