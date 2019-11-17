@@ -20,40 +20,24 @@ function FigureOutReduxAndCreatingMeals() {
 
     // prepare store
     const reducer = (state, action) => {
-        console.log(">>root reducer");
-        console.log("          - action: " + action.type);
-        console.log("          - state: " + JSON.stringify(state));
-
         if (state === undefined) {
-            console.log("          case: initialising");
-            if (state !== undefined && state !== {}) {
-                console.warn("root REDUCER: state was already defined");
-            }
             return {
                 onScreenFood: initialState,
             };
         }
 
         if (action.type === 'ENTRY_TOGGLED') {
-            console.log("          case: entry toggled at id: " + action.entryId);
             return {...state,
                 onScreenFood: state.onScreenFood.map(x => {
                     if (x.id !== action.entryId) return x;
                     return x.withIsSelected(!x.isSelected);
-                    // return {...x,
-                    //     isSelected: !x.isSelected,
-                    // };
                 }),
             };
         }
 
-        console.warn("root REDUCER: action was not recognised; action: " + action.type);
         return state;
     };
     const store = createStore(reducer);
-
-    // ensure initial state
-    // store.dispatch({type: 'INIT'});
 
     // action creator
     const toggleSelection = (entryId) => ({
@@ -69,15 +53,12 @@ function FigureOutReduxAndCreatingMeals() {
         width: "700px",
     };
 
-    // const dispatchSelectionToggling = (id) => store.dispatch(toggleSelection(id));
-
     const mapStateToProps = (state) => ({
         data: state.onScreenFood,
     });
     const mapDispatchToProps = {
         onSelectionToggle: toggleSelection,
     };
-
     const ConnectedTableDisplay =
         connect(mapStateToProps, mapDispatchToProps)(TableDisplay);
 
