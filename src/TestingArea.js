@@ -3,6 +3,8 @@ import { MacrosBar, MacrosInfo, Macros } from './MacrosDisplay/MacrosDisplay';
 import { TableDisplay, TableDisplayEntry } from './TableDisplay/TableDisplay';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
+import Reducer from './ReduxyStuff/Reducers.js'
+import { toggleSelection } from './ReduxyStuff/ActionCreators.js'
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -16,34 +18,10 @@ function FigureOutReduxAndCreatingMeals() {
     // some data
     const data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(23, 23, 40), false);
     const data2 = new TableDisplayEntry(1002, "prod B", 15, new Macros(14, 24, 44), false);
-    const initialState = [data1, data2];
+    const initialState = {onScreenFood: [data1, data2]};
 
     // prepare store
-    const reducer = (state, action) => {
-        if (state === undefined) {
-            return {
-                onScreenFood: initialState,
-            };
-        }
-
-        if (action.type === 'ENTRY_TOGGLED') {
-            return {...state,
-                onScreenFood: state.onScreenFood.map(x => {
-                    if (x.id !== action.entryId) return x;
-                    return x.withIsSelected(!x.isSelected);
-                }),
-            };
-        }
-
-        return state;
-    };
-    const store = createStore(reducer);
-
-    // action creator
-    const toggleSelection = (entryId) => ({
-        type: "ENTRY_TOGGLED",
-        entryId: entryId,
-    });
+    const store = createStore(Reducer, initialState);
 
     // prettify output
     const style = {
