@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MacrosBar, MacrosInfo, Macros } from './MacrosDisplay/MacrosDisplay';
-import { TableDisplay, TableDisplayEntry } from './TableDisplay/TableDisplay';
+import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDisplay/IngredientsDisplay';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'
@@ -26,7 +26,7 @@ function DisplayDataFromStore() {
     const store = createStore(Reducer, initialState);
 
     const mapStateToProps = (state) => ({
-        data: state.current.foodData.map(x => new TableDisplayEntry(
+        data: state.current.foodData.map(x => new IngredientsDisplayEntry(
             x.id,
             x.name,
             0,
@@ -34,8 +34,8 @@ function DisplayDataFromStore() {
             false,
         )),
     });
-    const ConnectedTableDisplay =
-        connect(mapStateToProps)(TableDisplay);
+    const ConnectedIngredientsDisplay =
+        connect(mapStateToProps)(IngredientsDisplay);
 
     const style = {
         border: "solid 1px grey",
@@ -46,12 +46,13 @@ function DisplayDataFromStore() {
     return (
         <Provider store={store}>
             <div style={style}>
-                <ConnectedTableDisplay />
+                <ConnectedIngredientsDisplay />
             </div>
         </Provider>
     );
 }
 
+/*
 // eslint-disable-next-line
 function FigureOutReduxAndCreatingMeals() {
     // some data
@@ -87,7 +88,9 @@ function FigureOutReduxAndCreatingMeals() {
         </Provider>
     );
 }
+*/
 
+/* 
 // eslint-disable-next-line
 function ShowOfTableDisplay() {
     const data1 = new TableDisplayEntry(1001, "prod A", 30, new Macros(33, 23, 10), false);
@@ -119,6 +122,7 @@ function ShowOfTableDisplay() {
         </div>
     );
 }
+*/
 
 // eslint-disable-next-line
 function showOfMacrosInfo() {

@@ -1,9 +1,9 @@
 import React from 'react';
-import './table-display.css';
+import './ingredients-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import tickImage from './tick.svg';
 
-class TableDisplayEntry {
+class IngredientsDisplayEntry {
     constructor(id, name, quantity, macros, isSelected) {
         this.id = id;
         this.isSelected = isSelected;
@@ -17,7 +17,7 @@ class TableDisplayEntry {
      * @param {boolean} isSelected 
      */
     withIsSelected(isSelected) {
-        return new TableDisplayEntry(this.id, this.name, this.quantity, this.macros, isSelected);
+        return new IngredientsDisplayEntry(this.id, this.name, this.quantity, this.macros, isSelected);
     }
 }
 
@@ -25,7 +25,7 @@ class TableDisplayEntry {
 //     constructor(???) /* TODO define props to update entries and receive selection clicks */
 // }
 
-class TableDisplayRowData {
+class RowData {
     constructor(name, quantity, macros, isSelected) {
         this.isSelected = isSelected;
         this.name = name;
@@ -34,10 +34,10 @@ class TableDisplayRowData {
     }
 
     static fromEntry(entry) {
-        if (! (entry instanceof TableDisplayEntry)) {
+        if (! (entry instanceof IngredientsDisplayEntry)) {
             throw Error("in 'failedEntry': failed transform, incorrect argument");
         }
-        return new TableDisplayRowData(
+        return new RowData(
             entry.name,
             entry.quantity,
             entry.macros,
@@ -56,7 +56,7 @@ const errStyle = {
 
 const warnThatMissing = (_id) => {console.warn("no callback for selection toggle")};
 
-function TableDisplay({data, onSelectionToggle = warnThatMissing}) {
+function IngredientsDisplay({data, onSelectionToggle = warnThatMissing}) {
     /* TODO: extract input type validation to separate module/file */
     // if (! (Array.isArray(props.data))) {    /* TODO: change checked type to match code */
     //     return (
@@ -68,17 +68,17 @@ function TableDisplay({data, onSelectionToggle = warnThatMissing}) {
 
     return (
         <div className="table-display">
-            {tableTitleRow()}
-            {data.map(x => tableRow(
+            {headerRow()}
+            {data.map(x => dataRow(
                 x.id.toString(),
-                TableDisplayRowData.fromEntry(x),
+                RowData.fromEntry(x),
                 () => onSelectionToggle(x.id)
             ))}
         </div>
     );
 }
 
-function tableTitleRow() {
+function headerRow() {
     const headers = ["Included", "Product Name", "Macros", "Quantity"];
     const renderedHeaders = headers.map(header =>
         <div className="header" key={"header_" + header}>
@@ -92,17 +92,17 @@ function tableTitleRow() {
     );
 }
 
-function tableRow(reactKey, data, onSelectionToggle) {
+function dataRow(reactKey, data, onSelectionToggle) {
     /* TODO: extract input type validation to separate module/file */
     const wideErrStyle = {
         ...errStyle,
         gridColumn: "1 / -1",
     };
-    if (! (data instanceof TableDisplayRowData)) {
+    if (! (data instanceof RowData)) {
         return (
             <div style={wideErrStyle}>
                 in TableDisplay:
-                expected elements of "data" to be of type "{TableDisplayRowData.name}";
+                expected elements of "data" to be of type "{RowData.name}";
                 was {data.constructor.name}
                 {console.log(data)}
             </div>
@@ -139,4 +139,4 @@ function tableRow(reactKey, data, onSelectionToggle) {
 }
 
 
-export {TableDisplay, TableDisplayEntry};
+export {IngredientsDisplay, IngredientsDisplayEntry};
