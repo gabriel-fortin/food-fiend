@@ -1,7 +1,6 @@
 import React from 'react';
 import './ingredients-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import tickImage from './tick.svg';
 
 class IngredientsDisplayEntry {
     constructor(id, name, quantity, macros, isSelected) {
@@ -79,7 +78,7 @@ function IngredientsDisplay({data, onSelectionToggle = warnThatMissing}) {
 }
 
 function headerRow() {
-    const headers = ["Included", "Product Name", "Macros", "Quantity"];
+    const headers = ["Product Name", "Macros", "Quantity"];
     const renderedHeaders = headers.map(header =>
         <div className="header" key={"header_" + header}>
             {header}
@@ -116,15 +115,10 @@ function dataRow(reactKey, data, onSelectionToggle) {
         );
     }
 
-    const selectionBoxClass = "selection " + (data.isSelected ? "selected" : "");
-
     return (
         <React.Fragment key={reactKey}>
             <div className="divider"/>
 
-            <div className={selectionBoxClass} onClick={onSelectionToggle}>
-                <img src={tickImage} alt={"selected " + data.name} />
-            </div>
             <div className="name">
                 <span>{data.name}</span>
             </div>

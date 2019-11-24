@@ -1,38 +1,17 @@
 .table-display {
     --vertical-spacing: 0.1em;
     --left-side-space-correction: 0.0em;
-    --divider-color: lightgrey;
-    --tick-box-size: 15px;
-    --tick-size: 30px;
+    --divider-color: rgba(0, 0, 0, 0.2);
 
     margin-left: var(--left-side-space-correction);
     display: grid;
-    grid-template-columns: 3em minmax(10em, 30em) minmax(10em, 20em) auto;
+    grid-template-columns: minmax(10em, 30em) minmax(10em, 20em) auto;
     align-items: center;
     justify-items: center;
 }
-.table-display > .header:first-child {
-    justify-self: start;  /* align first header with left edge of grid */
-    margin-left: calc(0px - var(--left-side-space-correction));
-}
-.table-display > .selection {
-    width: var(--tick-box-size);
-    height: var(--tick-box-size);
-    border: solid grey 1px;
-    border-radius: 3px;
-}
-.table-display > .selection img {
-    width: var(--tick-size);
-    height: var(--tick-size);
-    margin: calc(0px - (var(--tick-size) - var(--tick-box-size)) / 2);
-    display: none;  /* don't display until selected */
-}
-.table-display > .selection.selected img {
-    display: unset;  /* undo 'display: none' */
-}
 .table-display > .name {
     justify-self: start;
-    margin-left: 1em;
+    margin-left: 0.5em;
 }
 .table-display > .macros {
     justify-self: stretch;

@@ -41,7 +41,7 @@ function DisplayDataFromStore() {
         border: "solid 1px grey",
         margin: "40px 100px",
         padding: "2px 6px",
-        width: "700px",
+        width: "800px",
     };
     return (
         <Provider store={store}>
