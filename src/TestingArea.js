@@ -6,13 +6,56 @@ import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'
 import { toggleSelection } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
+import FoodSelector from './FoodSelector/FoodSelector'
 
 export default function TestingArea() {
     // return showOfMacrosBar();
     // return showOfMacrosInfo();
     // return ShowOfTableDisplay();
     // return FigureOutReduxAndCreatingMeals();
-    return DisplayDataFromStore();
+    // return DisplayDataFromStore();
+    return FoodSelection();
+}
+
+// eslint-disable-next-line
+function FoodSelection() {
+    const initialState = {
+        current: {
+            foodData: initialData,
+        },
+        history: null,
+    };
+    const store = createStore(Reducer, initialState);
+
+    const mapStateToProps = (state) => ({
+        data: state.current.foodData.map(x => ({
+            id: x.id,
+            name: x.name,
+        })),
+    });
+    const mapDispatchToProps = {
+        onFoodSelected: id => {
+            console.log(`>> food selected: ${id} - ${store.getState().current.foodData.filter(x => x.id === id)}`);
+            return {
+                type: "user typed a letter",
+            };
+        },
+    };
+    const ConnectedFoodSelector = connect(mapStateToProps, mapDispatchToProps)(FoodSelector);
+
+    const style = {
+        border: "solid 1px grey",
+        margin: "40px 100px",
+        padding: "2px 6px",
+        width: "400px",
+    };
+    return (
+        <Provider store={store}>
+            <div style={style}>
+                <ConnectedFoodSelector />
+            </div>
+        </Provider>
+    );
 }
 
 // eslint-disable-next-line
