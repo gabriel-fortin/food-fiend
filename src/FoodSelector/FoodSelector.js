@@ -20,12 +20,16 @@ function FoodSelector({data, onFoodSelected}) {
     };
     const onEscape = () => {
         setPopupVisibility(false);
-    }
+    };
 
     return (
         <div id="food-selector">
-            <TheInputField onTextChange={onTextChange} onEscape={onEscape} />
-            {popupVisible && <PopupList dataToDisplay={filteredSuggestions} />}
+            <TheInputField
+                onTextChange={onTextChange}
+                onEscape={onEscape} />
+            {popupVisible && <PopupList
+                                dataToDisplay={filteredSuggestions}
+                                onSelection={onFoodSelected} />}
         </div>
     );
 }
@@ -39,20 +43,14 @@ function TheInputField({onTextChange, onEscape}) {
     );
 }
 
-function PopupList({dataToDisplay}) {
+function PopupList({dataToDisplay, onSelection}) {
     return (
         <div id="popup">
             {dataToDisplay.map(x => (
                 <div
                     key={x.id}
                     value={x.id}
-                    onChange={e => console.log("option onChange")}
-                    onMouseEnter={e => console.log("option onMouseEnter" + e.target.style)}
-                    onMouseLeave={e => console.log("option onMouseLeave")}
-                    onBlur={e => console.log("option onBlur")}
-                    onClick={e => console.log("option onClick")}
-                    onSelect={e => console.log("option onSelect")}
-                    onSubmit={e => console.log("option onSubmit")}
+                    onClick={e => onSelection(x.id)}
                 >
                         {x.name}
                 </div>

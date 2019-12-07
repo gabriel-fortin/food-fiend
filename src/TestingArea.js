@@ -35,7 +35,8 @@ function FoodSelection() {
     });
     const mapDispatchToProps = {
         onFoodSelected: id => {
-            console.log(`>> food selected: ${id} - ${store.getState().current.foodData.filter(x => x.id === id)}`);
+            const matchingFood = store.getState().current.foodData.filter(x => x.id === id);
+            console.log(`>> food selected: ${id} - ${JSON.stringify(matchingFood)}`);
             return {
                 type: "user typed a letter",
             };
