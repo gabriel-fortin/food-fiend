@@ -1,4 +1,5 @@
 import rawData from './almostRawInitialData';
+import FoodType from './FoodType';
 
 const initialStructuredData = rawData
     .map(reshapeIntoExpectedForm)
@@ -29,6 +30,7 @@ function reshapeIntoExpectedForm(item) {
         },
         extra: item.extra,
 
+        type: FoodType.Simple,
         unit: "g",  // for quantity display only
         portionSize: 1,  // grams per portion
         portions: 1,
