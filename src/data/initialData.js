@@ -1,11 +1,11 @@
 import rawData from './almostRawInitialData';
 
 const initialStructuredData = rawData
-    .map(reshapeIntoExpectedStructure)
+    .map(reshapeIntoExpectedForm)
     .map(ensureIdIsANonZeroInteger)
-    .map(integeriseTraceAmountsInMacros);
+    .map(parseMacrosValues);
 
-function reshapeIntoExpectedStructure(item) {
+function reshapeIntoExpectedForm(item) {
     // some simple hash implementation from StackOverflow
     const hashCode = argString => {
         let hash = 0;
@@ -46,18 +46,20 @@ function ensureIdIsANonZeroInteger(item) {
     throw new Error(`Invalid value (expected integer) on item "${item.name}"; the value is "${item.id}"`);
 }
 
-function integeriseTraceAmountsInMacros(item) {
-    const treatTraceAmountAsZero = (value, field) => {
+function parseMacrosValues(item) {
+    const parse = (value, field) => {
+        // we treat trace amounts as zero
         if (value === "Tr") return 0;
+
         value = Number.parseInt(value);
         if (Number.isInteger(value)) return value;
         if (value === 0.0) return 0;
         throw new Error(`Invalid value (expected int or "Tr") on item "${item.name}", field '${field}'; the value is "${value}"`);
     };
 
-    item.macros.fat = treatTraceAmountAsZero(item.macros.fat, "fat");
-    item.macros.protein = treatTraceAmountAsZero(item.macros.protein, "protein");
-    item.macros.carbs = treatTraceAmountAsZero(item.macros.carbs, "carbs");
+    item.macros.fat = parse(item.macros.fat, "fat");
+    item.macros.protein = parse(item.macros.protein, "protein");
+    item.macros.carbs = parse(item.macros.carbs, "carbs");
 
     return item;
 }
