@@ -4,7 +4,7 @@ import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDispla
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'
-import { toggleSelection } from './ReduxyStuff/ActionCreators.js'
+import { toggleSelection, importData } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
 
@@ -21,11 +21,13 @@ export default function TestingArea() {
 function FoodSelection() {
     const initialState = {
         current: {
-            foodData: initialData,
+            foodData: [],
         },
         history: null,
     };
     const store = createStore(Reducer, initialState);
+
+    store.dispatch(importData(initialData));
 
     const mapStateToProps = (state) => ({
         data: state.current.foodData.map(x => ({
