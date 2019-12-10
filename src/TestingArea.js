@@ -4,7 +4,7 @@ import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDispla
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'
-import { toggleSelection, importData } from './ReduxyStuff/ActionCreators.js'
+import { importData } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
 

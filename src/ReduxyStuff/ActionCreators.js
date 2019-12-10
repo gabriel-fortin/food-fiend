@@ -1,11 +1,4 @@
-export { toggleSelection, importData }
-
-function toggleSelection(entryId) {
-    return {
-        type: "ENTRY_TOGGLED",
-        entryId,
-    };
-}
+export { importData }
 
 function importData(data) {
     return {

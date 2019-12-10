@@ -5,16 +5,6 @@ function RootReducer(state, action) {
         console.error(">> RootReducer: missing initial state");
     }
 
-    if (action.type === 'ENTRY_TOGGLED') {
-        return {
-            ...state,
-            onScreenFood: state.onScreenFood.map(x => {
-                if (x.id !== action.entryId) return x;
-                return x.withIsSelected(!x.isSelected);
-            }),
-        };
-    }
-
     if (action.type === "IMPORT_DATA") {
         // reducer and its initial value
         const guardValue = {
