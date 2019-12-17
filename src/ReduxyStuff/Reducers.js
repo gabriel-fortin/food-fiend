@@ -7,11 +7,12 @@ function RootReducer(state, action) {
 
     if (action.type === "IMPORT_DATA") {
         // reducer and its initial value
-        const guardValue = {
-            lastEl: {id: -1},
+        const startValue = {
+            lastEl: {id: 42},
             res: [],
         };
-        const checkForDuplicates = (acc, item) => {
+        const discoverNeighbouringDuplicates = (acc, item) => {
+            // assuming that collection is sorted: first by id, then by version
             if (acc.lastEl.id === item.id &&
                 acc.lastEl.version === item.version) {
                 throw Error(`repeated item in imported data; id: ${item.id}; name: ${item.name}`);
@@ -26,8 +27,13 @@ function RootReducer(state, action) {
         // TODO: use lens/accessor to get current data
         const mergedData = state.current.foodData.concat(action.data);
         const sanitisedData = mergedData
-                .sort((x, y) => x.id < y.id)
-                .reduce(checkForDuplicates, guardValue)
+                // sort by id, then by version (if ids equal)
+                .sort((x, y) => {
+                    const idCompare = x.id - y.id;
+                    if (idCompare !== 0) return idCompare;
+                    return x.version - y.version;
+                })
+                .reduce(discoverNeighbouringDuplicates, startValue)
                 .res;
         return {
             ...state,
