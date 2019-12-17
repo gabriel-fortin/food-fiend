@@ -1,7 +1,7 @@
-import rawData from './almostRawInitialData';
+import partialRawData from './rawData';
 import FoodType from './FoodType';
 
-const initialStructuredData = rawData
+const initialStructuredData = partialRawData
     .map(reshapeIntoExpectedForm)
     .map(ensureIdIsANonZeroInteger)
     .map(parseMacrosValues);

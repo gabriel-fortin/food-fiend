@@ -1,4 +1,4 @@
-const almostRawInitialData = [
+const partialAlmostRawInitialData = [
     { "protein": "0.00", "fat": "0.0", "carbs": "5.9", "energy": "22", "name": "Tonic water", "description": "Literature sources", "extra":{ "foodCode":"17-736", "group": "PCA", "previous": "17-184 ", "mainDataReference": "Cutrufelli and Matthews (1986) Composition of foods: beverages, raw, processed and prepared. Agriculture Handbook No. 8-14, UK Department of Agriculture, Washington DC; and industry data, 2013", "footnote": ""}},
     { "protein": "0.10", "fat": "100.0", "carbs": "0.0", "energy": "900", "name": "Ghee made from vegetable oil", "description": "5 samples, 3 products", "extra":{ "foodCode":"12-502", "group": "BTM", "previous": "17-009 ", "mainDataReference": "DH, Nutrient analysis of a range of processed foods with particular reference to trans fatty acids, 2011", "footnote": ""}},
     { "protein": "0.10", "fat": "38.9", "carbs": "0.5", "energy": "353", "name": "Fat spread, low fat (26-39%), not polyunsaturated, with olive oil", "description": "8 samples, 4 products, including Bertolli Light Spread and own brands", "extra":{ "foodCode":"12-498", "group": "OA", "previous": "", "mainDataReference": "DH, Nutrient analysis of a range of processed foods with particular reference to trans fatty acids, 2011", "footnote": ""}},
@@ -283,4 +283,4 @@ const almostRawInitialData = [
     { "protein": "6.7", "fat": "9.8", "carbs": "25.8", "energy": "211", "name": "Yorkshire pudding, made with whole milk", "description": "Recipe", "extra":{ "foodCode":"11-1146", "group": "AT", "previous": "11-607 ", "mainDataReference": "Recalculated 2014", "footnote": ""}}
     ];
 
-export default almostRawInitialData;
+export default partialAlmostRawInitialData;
