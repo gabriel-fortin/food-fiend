@@ -1,7 +1,7 @@
-import partialRawData from './rawData';
+import fullRawData from './full-data';
 import FoodType from './FoodType';
 
-const initialStructuredData = partialRawData
+const initialStructuredData = fullRawData
     .map(reshapeIntoExpectedForm)
     .map(ensureIdIsANonZeroInteger)
     .map(parseMacrosValues);
@@ -36,6 +36,7 @@ function reshapeIntoExpectedForm(item) {
         portions: 1,
         ingredients: [],
         usedBy: [],  // list of <id, version> of depending meals
+        uncertainty: false,  // allow uncertainty of macros (and maybe other things)
 
         // to be used, maybe, in the future
         // portionStep: 5,  // in grams
@@ -49,19 +50,37 @@ function ensureIdIsANonZeroInteger(item) {
 }
 
 function parseMacrosValues(item) {
+    const uncertaintyValues = {  // used occasionally, when some data missing or unparseable
+        fat: 0,
+        protein: 0,
+        carbs: 0,
+        messages: [],
+    };
+
     const parse = (value, field) => {
         // we treat trace amounts as zero
         if (value === "Tr") return 0;
 
+        // most of the time we should get a number
         value = Number.parseInt(value);
         if (Number.isInteger(value)) return value;
-        if (value === 0.0) return 0;
-        throw new Error(`Invalid value (expected int or "Tr") on item "${item.name}", field '${field}'; the value is "${value}"`);
+
+        // finally, we give up on parsing
+        // assume 100g of the substance can be additionally present per 100g of product
+        uncertaintyValues[field] = 100;
+        uncertaintyValues.messages.push(`Unknown ${field} value for "${item.name}; assuming 100g"`);
+        return 0;
     };
 
     item.macros.fat = parse(item.macros.fat, "fat");
     item.macros.protein = parse(item.macros.protein, "protein");
     item.macros.carbs = parse(item.macros.carbs, "carbs");
+
+    if (uncertaintyValues.fat !== 0 ||
+        uncertaintyValues.protein !== 0 ||
+        uncertaintyValues.carbs !== 0) {
+            item.uncertainty = uncertaintyValues;
+        }
 
     return item;
 }
