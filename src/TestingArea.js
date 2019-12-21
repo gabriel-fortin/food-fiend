@@ -7,6 +7,7 @@ import Reducer from './ReduxyStuff/Reducers.js'
 import { importData } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
+import { createEmptyStore } from './Store/Store';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -15,18 +16,12 @@ export default function TestingArea() {
     // return FigureOutReduxAndCreatingMeals();
     // return DisplayDataFromStore();
     return FoodSelection();
+    // return DisplayMeal();
 }
 
 // eslint-disable-next-line
 function FoodSelection() {
-    const initialState = {
-        current: {
-            foodData: [],
-        },
-        history: null,
-    };
-    const store = createStore(Reducer, initialState);
-
+    const store = createEmptyStore();
     store.dispatch(importData(initialData));
 
     const mapStateToProps = (state) => ({
