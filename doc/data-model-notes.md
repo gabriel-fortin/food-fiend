@@ -9,7 +9,7 @@ BASIC food (as saved in food library):
  - portion size = 1g (for uniformity with other kinds of food)
  - portions = 1 (for uniformity with other kinds of food)
 
- - ingredients = [] (for uniformity with other kinds of food)
+ - components = [] (for uniformity with other kinds of food)
  - used by (to update food/meals depending on this as ingredient) (for optimisation?)
      + id
      + version
@@ -28,9 +28,8 @@ COMPOSITE food (as saved in food library):
  - portion size (in grams)
  - number of portions (how many portions out of the ingredients used)
 
- - ingredients
-     + version, id, name, FPC, unit, portion size, portions, ingredients, used by, extra
-     + is selected
+ - components (the constituents of a meal)
+     + version, id, quantity (measured in the ingredient's portions)
      + note/extra
  - used by (to update food/meals depending on this as ingredient) (for optimisation?)
      + id
