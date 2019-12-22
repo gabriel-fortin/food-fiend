@@ -8,6 +8,7 @@ import { importData } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore } from './Store/Store';
+import FoodType from './data/FoodType';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -15,8 +16,71 @@ export default function TestingArea() {
     // return ShowOfTableDisplay();
     // return FigureOutReduxAndCreatingMeals();
     // return DisplayDataFromStore();
-    return FoodSelection();
-    // return DisplayMeal();
+    // return FoodSelection();
+    return DisplayMeal();
+}
+
+// eslint-disable-next-line
+function DisplayMeal() {
+    // meal to test on
+    const mealIngredients = [
+        initialData[9],
+        initialData[774],
+        initialData[85],
+    ];
+    const mealId = 12345;
+    const mealVersion = 1;
+    const temporaryMeal = {
+        version: mealVersion,
+
+        id: mealId,
+        name: "Test Meal",
+        macros: {  // 30g of each product
+            fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30),
+            protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30),
+            carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30),
+        },
+        extra: {},
+
+        type: FoodType.Compound,
+        unit: "g",  // for quantity display only
+        portionSize: mealIngredients.length * 30,  // grams per portion
+        portions: 1,
+        components: mealIngredients.map(x => ({
+            id: x.id,
+            version: x.version,
+            quantity: 30,  // measured in the food's portions
+            notes: null,  // some additional text to display
+        })),
+        usedBy: [],  // list of <id, version> of depending meals
+        //uncertainty: false,  // we ignore this now (normally, we should compute it)
+    };
+    // IMPORTANT
+    // normally we should update the 'usedBy' field of each used ingredient
+
+    const store = createEmptyStore();
+    store.dispatch(importData(initialData));
+    store.dispatch(importData(temporaryMeal));
+
+
+
+    // TODO...
+
+
+    const style = {
+        border: "solid 1px grey",
+        margin: "40px 100px",
+        padding: "2px 6px",
+        width: "400px",
+    };
+    return (
+        <Provider store={store}>
+            <div style={style}>
+                {/* <ConnectedMealWidget /> */}
+                HEllo
+            </div>
+        </Provider>
+    );
 }
 
 // eslint-disable-next-line
