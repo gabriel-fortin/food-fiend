@@ -27,9 +27,9 @@ export default function TestingArea() {
 function DisplayAllMeals() {
     // meal to test on
     const temporaryMeal1 = createMeal(12345, 1,
-        [initialData[9], initialData[774], initialData[85]]);
+        [initialData[9], initialData[774], initialData[85]], "Lunch");
     const temporaryMeal2 = createMeal(6789, 1,
-        [initialData[39], initialData[227], initialData[597]]);
+        [initialData[39], initialData[227], initialData[597]], "Obiad");
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
@@ -98,11 +98,11 @@ function TestingFrame({children}) {
 }
 
 // use this just for dev
-const createMeal = (mealId, mealVersion, mealIngredients) => ({
+const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") => ({
     version: mealVersion,
 
     id: mealId,
-    name: "Test Meal",
+    name: title,
     macros: {  // 30g of each product
         fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
         protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
