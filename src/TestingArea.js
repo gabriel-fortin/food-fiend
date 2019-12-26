@@ -18,7 +18,36 @@ export default function TestingArea() {
     // return FigureOutReduxAndCreatingMeals();
     // return DisplayDataFromStore();
     // return FoodSelection();
-    return DisplayMeal();
+    // return DisplayMeal();
+    return DisplayAllMeals();
+}
+
+// eslint-disable-next-line
+function DisplayAllMeals() {
+    // meal to test on
+    const mealIngredients = [
+        initialData[9],
+        initialData[774],
+        initialData[85],
+    ];
+    const mealId = 12345;
+    const mealVersion = 1;
+    const temporaryMeal = createMeal(mealId, mealVersion, mealIngredients);
+    // IMPORTANT
+    // normally we should update the 'usedBy' field of each used ingredient
+    
+    // prepare store
+    const store = createEmptyStore();
+    store.dispatch(importData(initialData));
+    store.dispatch(importData(temporaryMeal));
+
+    return (
+        <Provider store={store}>
+            <TestingFrame>
+                There will be a list of meals
+            </TestingFrame>
+        </Provider>
+    );
 }
 
 // eslint-disable-next-line
@@ -53,6 +82,20 @@ function DisplayMeal() {
                 <ConnectedMealWidget mealId={mealId} mealVersion={mealVersion} />
             </div>
         </Provider>
+    );
+}
+
+function TestingFrame({children}) {
+    const style = {
+        border: "solid 1px grey",
+        margin: "70px 100px",
+        padding: "2px 6px",
+        width: "700px",
+    };
+    return (
+        <div style={style}>
+            {children}
+        </div>
     );
 }
 
