@@ -9,7 +9,7 @@ import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, findFood } from './Store/Store';
 import FoodType from './data/FoodType';
-import MealWidget from './MealWidget/MealWidget';
+import ConnectedMealWidget from './MealWidget/ConnectedMealWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -63,31 +63,6 @@ function DisplayMeal() {
     store.dispatch(importData(initialData));
     store.dispatch(importData(temporaryMeal));
 
-    // TODO: extract the data transformation to some adequate place
-    const mapStateToProps = (state) => {
-        const meal = findFood(state, mealId, mealVersion);
-        const ingredients = meal.components
-            .map(foodRef => {
-                const data = findFood(state, foodRef.id, foodRef.version);
-                return {
-                    id: foodRef.id,
-                    name: data.name,
-                    quantity: foodRef.quantity,
-                    macros: data.macros,
-                };
-            });
-        return {
-            name: meal.name,
-            totalMacros: meal.macros,
-            ingredients,
-        };
-    };
-
-
-    // TODO: mapDispatchToProps
-
-    const ConnectedMealWidget = connect(mapStateToProps)(MealWidget);
-
     const style = {
         border: "solid 1px grey",
         margin: "70px 100px",
@@ -97,7 +72,7 @@ function DisplayMeal() {
     return (
         <Provider store={store}>
             <div style={style}>
-                <ConnectedMealWidget />
+                <ConnectedMealWidget mealId={mealId} mealVersion={mealVersion} />
             </div>
         </Provider>
     );

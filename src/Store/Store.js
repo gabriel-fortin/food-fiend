@@ -15,7 +15,7 @@ function createEmptyStore() {
 const LATEST = Symbol("latest version");
 function findFood(state, foodId, foodVersion = LATEST) {
     if (foodVersion === LATEST) {
-        // TODO
+        // TODO: findFood when foodVersion=LATEST
         throw new Error("'findFood' at version LATEST is not implemented yet");
     }
 
