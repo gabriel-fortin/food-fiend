@@ -29,7 +29,7 @@ const mapDispatchToProps = {};
 /**
  * Connects MealWidget to the redux store
  */
-function ConnectedMealWidget({ mealId, mealVersion }) {
+function ConnectedMealWidget({mealId, mealVersion}) {
     const Widget = connect(
         mapStateToProps(mealId, mealVersion),
         mapDispatchToProps

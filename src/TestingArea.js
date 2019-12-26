@@ -9,7 +9,7 @@ import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, findFood } from './Store/Store';
 import FoodType from './data/FoodType';
-import ConnectedMealWidget from './MealWidget/ConnectedMealWidget';
+import ConnectedMealWidget from './MealWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -35,7 +35,7 @@ function DisplayAllMeals() {
     const temporaryMeal = createMeal(mealId, mealVersion, mealIngredients);
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
-    
+
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
