@@ -31,38 +31,16 @@ function DisplayMeal() {
     ];
     const mealId = 12345;
     const mealVersion = 1;
-    const temporaryMeal = {
-        version: mealVersion,
-
-        id: mealId,
-        name: "Test Meal",
-        macros: {  // 30g of each product
-            fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
-            protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
-            carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30/100, 0),
-        },
-        extra: {},
-
-        type: FoodType.Compound,
-        unit: "g",  // for quantity display only
-        portionSize: mealIngredients.length * 30,  // grams per portion
-        portions: 1,
-        components: mealIngredients.map(ingredient => ({
-            id: ingredient.id,
-            version: ingredient.version,
-            quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
-            notes: null,  // some additional text to display
-        })),
-        usedBy: [],  // list of <id, version> of depending meals
-        //uncertainty: false,  // we ignore this now (normally, we should compute it)
-    };
+    const temporaryMeal = createMeal(mealId, mealVersion, mealIngredients);
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
+    // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
     store.dispatch(importData(temporaryMeal));
 
+    // render
     const style = {
         border: "solid 1px grey",
         margin: "70px 100px",
@@ -77,6 +55,33 @@ function DisplayMeal() {
         </Provider>
     );
 }
+
+// use this just for dev
+const createMeal = (mealId, mealVersion, mealIngredients) => ({
+    version: mealVersion,
+
+    id: mealId,
+    name: "Test Meal",
+    macros: {  // 30g of each product
+        fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
+        protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
+        carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30/100, 0),
+    },
+    extra: {},
+
+    type: FoodType.Compound,
+    unit: "g",  // for quantity display only
+    portionSize: mealIngredients.length * 30,  // grams per portion
+    portions: 1,
+    components: mealIngredients.map(ingredient => ({
+        id: ingredient.id,
+        version: ingredient.version,
+        quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
+        notes: null,  // some additional text to display
+    })),
+    usedBy: [],  // list of <id, version> of depending meals
+    //uncertainty: false,  // we ignore this now (normally, we should compute it)
+});
 
 // eslint-disable-next-line
 function FoodSelection() {
