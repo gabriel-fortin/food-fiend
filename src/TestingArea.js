@@ -7,8 +7,9 @@ import Reducer from './ReduxyStuff/Reducers.js'
 import { importData } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
-import { createEmptyStore } from './Store/Store';
+import { createEmptyStore, findFood } from './Store/Store';
 import FoodType from './data/FoodType';
+import MealWidget from './MealWidget/MealWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -36,9 +37,9 @@ function DisplayMeal() {
         id: mealId,
         name: "Test Meal",
         macros: {  // 30g of each product
-            fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30),
-            protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30),
-            carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30),
+            fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
+            protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
+            carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30/100, 0),
         },
         extra: {},
 
@@ -46,10 +47,10 @@ function DisplayMeal() {
         unit: "g",  // for quantity display only
         portionSize: mealIngredients.length * 30,  // grams per portion
         portions: 1,
-        components: mealIngredients.map(x => ({
-            id: x.id,
-            version: x.version,
-            quantity: 30,  // measured in the food's portions
+        components: mealIngredients.map(ingredient => ({
+            id: ingredient.id,
+            version: ingredient.version,
+            quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
             notes: null,  // some additional text to display
         })),
         usedBy: [],  // list of <id, version> of depending meals
@@ -62,22 +63,41 @@ function DisplayMeal() {
     store.dispatch(importData(initialData));
     store.dispatch(importData(temporaryMeal));
 
+    // TODO: extract the data transformation to some adequate place
+    const mapStateToProps = (state) => {
+        const meal = findFood(state, mealId, mealVersion);
+        const ingredients = meal.components
+            .map(foodRef => {
+                const data = findFood(state, foodRef.id, foodRef.version);
+                return {
+                    id: foodRef.id,
+                    name: data.name,
+                    quantity: foodRef.quantity,
+                    macros: data.macros,
+                };
+            });
+        return {
+            name: meal.name,
+            totalMacros: meal.macros,
+            ingredients,
+        };
+    };
 
 
-    // TODO...
+    // TODO: mapDispatchToProps
 
+    const ConnectedMealWidget = connect(mapStateToProps)(MealWidget);
 
     const style = {
         border: "solid 1px grey",
-        margin: "40px 100px",
+        margin: "70px 100px",
         padding: "2px 6px",
-        width: "400px",
+        width: "700px",
     };
     return (
         <Provider store={store}>
             <div style={style}>
-                {/* <ConnectedMealWidget /> */}
-                HEllo
+                <ConnectedMealWidget />
             </div>
         </Provider>
     );
@@ -131,7 +151,7 @@ function DisplayDataFromStore() {
     const store = createStore(Reducer, initialState);
 
     const mapStateToProps = (state) => ({
-        data: state.current.foodData.map(x => new IngredientsDisplayEntry(
+        data: state.current.foodData.slice(0,20).map(x => new IngredientsDisplayEntry(
             x.id,
             x.name,
             0,

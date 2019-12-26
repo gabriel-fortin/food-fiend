@@ -1,0 +1,27 @@
+.meal {
+    --mealMacrosSize: 300px;
+    --headerBackgroundColor: white;
+}
+
+.meal-header {
+    margin-bottom: 0.5em;
+    margin-top: -2em;
+    background-color: var(--headerBackgroundColor);
+
+    /* TODO: extract - make a styling component?; this looks like a standard box */
+    border: solid 1px rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.meal-title {
+    padding-left: 0.5em;
+}
+
+.meal-macros {
+    width: var(--mealMacrosSize);
+}
