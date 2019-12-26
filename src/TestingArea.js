@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { /* useState */ } from 'react';
 import { MacrosBar, MacrosInfo, Macros } from './MacrosDisplay/MacrosDisplay';
 import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDisplay/IngredientsDisplay';
 import { createStore } from 'redux';
@@ -10,6 +10,7 @@ import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, getAllMeals } from './Store/Store';
 import FoodType from './data/FoodType';
 import ConnectedMealWidget from './MealWidget';
+import { MealListWidget } from './MealListWidget/MealListWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -41,9 +42,7 @@ function DisplayAllMeals() {
     return (
         <Provider store={store}>
             <TestingFrame>
-                {getAllMeals(store.getState()).map(meal => 
-                    <ConnectedMealWidget key={meal.id} mealId={meal.id} mealVersion={meal.version}/>
-                )}
+                <MealListWidget meals={getAllMeals(store.getState())} />
             </TestingFrame>
         </Provider>
     );
