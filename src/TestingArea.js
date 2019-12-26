@@ -7,7 +7,7 @@ import Reducer from './ReduxyStuff/Reducers.js'
 import { importData } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
-import { createEmptyStore, findFood } from './Store/Store';
+import { createEmptyStore, getAllMeals } from './Store/Store';
 import FoodType from './data/FoodType';
 import ConnectedMealWidget from './MealWidget';
 
@@ -25,26 +25,25 @@ export default function TestingArea() {
 // eslint-disable-next-line
 function DisplayAllMeals() {
     // meal to test on
-    const mealIngredients = [
-        initialData[9],
-        initialData[774],
-        initialData[85],
-    ];
-    const mealId = 12345;
-    const mealVersion = 1;
-    const temporaryMeal = createMeal(mealId, mealVersion, mealIngredients);
+    const temporaryMeal1 = createMeal(12345, 1,
+        [initialData[9], initialData[774], initialData[85]]);
+    const temporaryMeal2 = createMeal(6789, 1,
+        [initialData[39], initialData[227], initialData[597]]);
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    store.dispatch(importData(temporaryMeal));
+    store.dispatch(importData(temporaryMeal1));
+    store.dispatch(importData(temporaryMeal2));
 
     return (
         <Provider store={store}>
             <TestingFrame>
-                There will be a list of meals
+                {getAllMeals(store.getState()).map(meal => 
+                    <ConnectedMealWidget key={meal.id} mealId={meal.id} mealVersion={meal.version}/>
+                )}
             </TestingFrame>
         </Provider>
     );

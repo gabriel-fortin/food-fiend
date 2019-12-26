@@ -1,5 +1,6 @@
 import { createStore } from 'redux';
 import Reducer from '../ReduxyStuff/Reducers.js'
+import FoodType from '../data/FoodType.js';
 
 function createEmptyStore() {
     const initialStateShape = {
@@ -31,5 +32,10 @@ function findFood(state, foodId, foodVersion = LATEST) {
     return theChosenOne[0];
 }
 
+function getAllMeals(state) {
+    return state.current.foodData
+        .filter(food => food.type === FoodType.Compound);
+}
 
-export { createEmptyStore, findFood };
+
+export { createEmptyStore, findFood, getAllMeals };
