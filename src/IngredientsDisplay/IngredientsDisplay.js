@@ -121,10 +121,16 @@ function DataRow({data, onQuantityChange, onSelectionToggle}) {
         setEditMode(false);
     };
 
-    const editor =
+    const quantityEditor =
         <span className="quantity-editor">
             <input pattern="\d+(\.\d+)?"
                 autoFocus
+                onFocus={e => {
+                    // when editing starts, put the current value in and select it
+                    // so the user can enter a new value more easily
+                    e.target.value = data.quantity;
+                    e.target.select();
+                }}
                 onBlur={e => userAbandonsEditing()}
                 onKeyUp={e => {
                     if (e.key === 'Escape') userAbandonsEditing();
@@ -146,8 +152,8 @@ function DataRow({data, onQuantityChange, onSelectionToggle}) {
             <div className="quantity" onClick={userClicksQuantityValue}>
                 {
                     editMode
-                        && (<span>{editor}</span>)  // eslint-disable-line no-mixed-operators
-                        || (<span>{data.quantity}</span>)  // eslint-disable-line no-mixed-operators
+                        && quantityEditor  // eslint-disable-line no-mixed-operators
+                        || data.quantity  // eslint-disable-line no-mixed-operators
                 }
                 <span>g</span>
             </div>
