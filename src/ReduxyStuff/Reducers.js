@@ -6,6 +6,10 @@ function RootReducer(state, action) {
     }
 
     if (action.type === "IMPORT_DATA") {
+        // TODO: do not accept data blindly but:
+        //       - compute what is a derived value (e.g. macros) and
+        //       - assign the id ourselves
+
         // reducer and its initial value
         const startValue = {
             lastEl: {id: 42},
@@ -40,6 +44,39 @@ function RootReducer(state, action) {
             current: {
                 ...state.current,
                 foodData: sanitisedData,
+            }
+        };
+    }
+
+    if (action.type === "CHANGE_FOOD_QUANTITY") {
+        console.log(`quantity change; meal: ${action.mealId}; `
+                + `index: ${action.foodPosInMeal}; quantity: ${action.newQuantity}`);
+
+        // TODO: do not update version if it was not used by anything
+        //       (requires the 'usedBy' field changes to be implemented)
+
+        // TODO: update meal's macros after updating quantity
+        //       probably this should be a separate function
+        //       (which can also be used for IMPORT_DATA)
+
+        return {
+            ...state,
+            current: {
+                ...state.current,
+                foodData: state.current.foodData.map(food => {
+                    if (food.id !== action.mealId) return food;
+                    return {
+                        ...food,
+                        version: food.version + 1,
+                        components: food.components.map((componentFood, i) => {
+                            if (i !== action.foodPosInMeal) return componentFood;
+                            return {
+                                ...componentFood,
+                                quantity: action.newQuantity,
+                            };
+                        }),
+                    };
+                }),
             }
         };
     }
