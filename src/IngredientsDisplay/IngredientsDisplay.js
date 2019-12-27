@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ingredients-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 
@@ -68,11 +68,11 @@ function IngredientsDisplay({data, onSelectionToggle = warnThatMissing}) {
     return (
         <div className="table-display">
             {headerRow()}
-            {data.map(x => dataRow(
-                x.id.toString(),
-                RowData.fromEntry(x),
-                () => onSelectionToggle(x.id)
-            ))}
+            {data.map(x => <DataRow key={x.id.toString()}
+                data={RowData.fromEntry(x)}
+                onQuantityChange={(_) => console.error("TODO: IngredientsDisplay: handle quantity change")}
+                onSelectionToggle={() => onSelectionToggle(x.id)}
+            />)}
         </div>
     );
 }
@@ -91,7 +91,9 @@ function headerRow() {
     );
 }
 
-function dataRow(reactKey, data, onSelectionToggle) {
+function DataRow({data, onQuantityChange, onSelectionToggle}) {
+    const [editMode, setEditMode] = useState(false);
+
     /* TODO: extract input type validation to separate module/file */
     const wideErrStyle = {
         ...errStyle,
@@ -107,16 +109,32 @@ function dataRow(reactKey, data, onSelectionToggle) {
             </div>
         );
     }
-    if (reactKey === undefined) {
-        return (
-            <div style={wideErrStyle}>
-                in TableDisplay: expected "TableDisplayEntry" elements to have "id"
-            </div>
-        );
-    }
+
+    const userClicksQuantityValue = () => {
+        setEditMode(true);
+    };
+    const userAcceptsQuantityChange = (newQuantity) => {
+        onQuantityChange(newQuantity);
+        setEditMode(false);
+    };
+    const userAbandonsEditing = () => {
+        setEditMode(false);
+    };
+
+    const editor =
+        <span className="quantity-editor">
+            <input pattern="\d+(\.\d+)?"
+                autoFocus
+                onBlur={e => userAbandonsEditing()}
+                onKeyUp={e => {
+                    if (e.key === 'Escape') userAbandonsEditing();
+                    if (e.key === 'Enter') userAcceptsQuantityChange(e.target.value);
+                }}
+                />
+        </span>;
 
     return (
-        <React.Fragment key={reactKey}>
+        <>
             <div className="divider"/>
 
             <div className="name">
@@ -125,10 +143,15 @@ function dataRow(reactKey, data, onSelectionToggle) {
             <div className="macros">
                 <MacrosInfo macros={data.macros} />
             </div>
-            <div className="quantity">
-                {data.quantity}g
+            <div className="quantity" onClick={userClicksQuantityValue}>
+                {
+                    editMode
+                        && (<span>{editor}</span>)  // eslint-disable-line no-mixed-operators
+                        || (<span>{data.quantity}</span>)  // eslint-disable-line no-mixed-operators
+                }
+                <span>g</span>
             </div>
-        </React.Fragment>
+        </>
     );
 }
 

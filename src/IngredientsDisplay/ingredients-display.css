@@ -24,6 +24,9 @@
     background-color: var(--divider-color);
     grid-column: 1 / -1;
 }
+.table-display .quantity-editor > input {
+    max-width: 3em;
+}
 
 /* styles for debug */
 /*
