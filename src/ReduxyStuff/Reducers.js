@@ -62,7 +62,7 @@ function RootReducer(state, action) {
 
     if (action.type === "CHANGE_FOOD_QUANTITY") {
         console.log(`quantity change; meal: ${action.mealId}; `
-                + `index: ${action.foodPosInMeal}; quantity: ${action.newQuantity}`);
+                + `index: ${action.ingredientPosInMeal}; quantity: ${action.newQuantity}`);
 
         return {
             ...state,
@@ -71,7 +71,7 @@ function RootReducer(state, action) {
                 foodData: state.current.foodData.map(food => {
                     if (food.id !== action.mealId) return food;
                     return applyFunctionsTo(food, [
-                        updateIngredientQuantity(action.foodPosInMeal, action.newQuantity),
+                        updateIngredientQuantity(action.ingredientPosInMeal, action.newQuantity),
                         calculateMacros(state),
                     ]);
                 }),

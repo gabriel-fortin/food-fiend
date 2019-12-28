@@ -1,4 +1,4 @@
-export { importData, changeFoodQuantity }
+export { importData, changeIngredientQuantity }
 
 function importData(data) {
     return {
@@ -7,11 +7,11 @@ function importData(data) {
     };
 }
 
-function changeFoodQuantity(mealId, foodPosInMeal, newQuantity) {
+function changeIngredientQuantity(mealId, ingredientPosInMeal, newQuantity) {
     return {
         type: "CHANGE_FOOD_QUANTITY",
         mealId,
-        foodPosInMeal,
+        ingredientPosInMeal,
         newQuantity,
     };
 }

@@ -4,7 +4,7 @@ import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDispla
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'
-import { importData, changeFoodQuantity } from './ReduxyStuff/ActionCreators.js'
+import { importData, changeIngredientQuantity } from './ReduxyStuff/ActionCreators.js'
 import initialData from './data/initialData';
 import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, getAllMeals } from './Store/Store';
@@ -39,7 +39,7 @@ function DisplayAllMeals() {
     store.dispatch(importData(temporaryMeal1));
     store.dispatch(importData(temporaryMeal2));
 
-    store.dispatch(changeFoodQuantity(12345, 0, 400));
+    store.dispatch(changeIngredientQuantity(12345, 0, 400));
 
     return (
         <Provider store={store}>
