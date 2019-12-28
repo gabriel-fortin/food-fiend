@@ -53,9 +53,13 @@ const errStyle = {
     fontVariant: "small-caps",
 };
 
-const warnThatMissing = (_id) => {console.warn("no callback for selection toggle")};
+const warnThatMissing = (what) => () =>
+    console.warn(`${IngredientsDisplay.name}: missing callback for '${what}'`);
 
-function IngredientsDisplay({data, onSelectionToggle = warnThatMissing}) {
+function IngredientsDisplay({
+        data,
+        onQuantityChange = warnThatMissing('quantity change'),
+        onSelectionToggle = warnThatMissing('selection toggle')}) {
     /* TODO: extract input type validation to separate module/file */
     // if (! (Array.isArray(props.data))) {    /* TODO: change checked type to match code */
     //     return (
@@ -68,9 +72,9 @@ function IngredientsDisplay({data, onSelectionToggle = warnThatMissing}) {
     return (
         <div className="table-display">
             {headerRow()}
-            {data.map(x => <DataRow key={x.id.toString()}
+            {data.map((x, i) => <DataRow key={x.id.toString()}
                 data={RowData.fromEntry(x)}
-                onQuantityChange={(_) => console.error("TODO: IngredientsDisplay: handle quantity change")}
+                onQuantityChange={newQuantity => onQuantityChange(i, newQuantity)}
                 onSelectionToggle={() => onSelectionToggle(x.id)}
             />)}
         </div>
