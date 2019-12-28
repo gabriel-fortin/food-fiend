@@ -1,4 +1,16 @@
+import FoodType from "../data/FoodType";
+import { findFood } from "../Store/Store";
+
 export default RootReducer;
+
+/**
+ * Helper function to syntactically reverse the order of chained functions
+ * @param {*} initialObject object to be transformed by the functions
+ * @param {*} functions functions tha will transform the object
+ */
+function applyFunctionsTo(initialObject, functions) {
+    return functions.reduce((obj, fun) => fun(obj), initialObject);
+}
 
 function RootReducer(state, action) {
     if (state === undefined) {
@@ -30,7 +42,7 @@ function RootReducer(state, action) {
 
         // TODO: use lens/accessor to get current data
         const mergedData = state.current.foodData.concat(action.data);
-        const sanitisedData = mergedData
+        const mergedAndSanitisedData = mergedData
                 // sort by id, then by version (if ids equal)
                 .sort((x, y) => {
                     const idCompare = x.id - y.id;
@@ -43,7 +55,7 @@ function RootReducer(state, action) {
             ...state,
             current: {
                 ...state.current,
-                foodData: sanitisedData,
+                foodData: mergedAndSanitisedData,
             }
         };
     }
@@ -52,30 +64,16 @@ function RootReducer(state, action) {
         console.log(`quantity change; meal: ${action.mealId}; `
                 + `index: ${action.foodPosInMeal}; quantity: ${action.newQuantity}`);
 
-        // TODO: do not update version if it was not used by anything
-        //       (requires the 'usedBy' field changes to be implemented)
-
-        // TODO: update meal's macros after updating quantity
-        //       probably this should be a separate function
-        //       (which can also be used for IMPORT_DATA)
-
         return {
             ...state,
             current: {
                 ...state.current,
                 foodData: state.current.foodData.map(food => {
                     if (food.id !== action.mealId) return food;
-                    return {
-                        ...food,
-                        version: food.version + 1,
-                        components: food.components.map((componentFood, i) => {
-                            if (i !== action.foodPosInMeal) return componentFood;
-                            return {
-                                ...componentFood,
-                                quantity: action.newQuantity,
-                            };
-                        }),
-                    };
+                    return applyFunctionsTo(food, [
+                        updateIngredientQuantity(action.foodPosInMeal, action.newQuantity),
+                        calculateMacros(state),
+                    ]);
                 }),
             }
         };
@@ -83,4 +81,48 @@ function RootReducer(state, action) {
 
     return state;
 };
+
+const updateIngredientQuantity = (ingredientPos, newQuantity) => (meal) => {
+    // TODO(perf): do not update version if it was not used by anything
+    //       (requires the 'usedBy' field changes to be implemented)
+
+    // TODO(perf): if new quantity is the same, return the same object
+
+    return {
+        ...meal,
+        version: meal.version + 1,  // TODO: this probably should be done by another function
+        components: meal.components.map((componentFood, i) => {
+            if (i !== ingredientPos) return componentFood;
+            return {
+                ...componentFood,
+                quantity: newQuantity,
+            };
+        }),
+    };
+}
+
+const calculateMacros = (state) => (meal) => {
+    if (meal.type !== FoodType.Compound) {
+        throw new Error(`${calculateMacros.name} should only be used for meals`);
+    }
+
+    // TODO(perf): if new macros are the same, return the input object
+
+    const mealIngredients = meal.components.map(foodRef => ({
+        data: findFood(state, foodRef.id, foodRef.version),
+        quantity: foodRef.quantity,
+    }));
+
+    const sumMacro = (macroName) => (partialSum, food) =>
+        partialSum + food.data.macros[macroName] * food.quantity / 100;
+
+    return {
+        ...meal,
+        macros: {
+            fat: mealIngredients.reduce(sumMacro('fat'), 0),
+            protein: mealIngredients.reduce(sumMacro('protein'), 0),
+            carbs: mealIngredients.reduce(sumMacro('carbs'), 0),
+        }
+    };
+}
 
