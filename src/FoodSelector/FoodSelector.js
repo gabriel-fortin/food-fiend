@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './food-selector.css';
 
 function FoodSelector({data, onFoodSelected}) {
@@ -51,7 +51,7 @@ function PopupList({dataToDisplay, onSelection}) {
                     key={x.id}
                     value={x.id}
                     onClick={e => onSelection(x.id)}
-                >
+                    >
                         {x.name}
                 </div>
             ))}
