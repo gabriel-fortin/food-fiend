@@ -1,17 +1,17 @@
 import React from 'react';
 import './meal-widget.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import { IngredientsDisplay, IngredientsDisplayEntry } from '../IngredientsDisplay/IngredientsDisplay';
+import { IngredientsDisplay } from '../IngredientsDisplay/IngredientsDisplay';
 
-function MealWidget({name, totalMacros, ingredients}) {
-    const mappedIngredients = ingredients
-        .map(x => new IngredientsDisplayEntry(
-            x.id,
-            x.name,
-            x.quantity,
-            x.macros,
-            false
-        ));
+function MealWidget({name, totalMacros, populatedIngredients}) {
+    const mappedIngredients = populatedIngredients
+        .map(x => ({
+            id: x.id,
+            version: x.version,
+            name: x.name,
+            macros: x.macros,
+            quantity: x.quantity,
+        }));
     return (
         <div className="meal">
             <div className="meal-header">
@@ -22,7 +22,7 @@ function MealWidget({name, totalMacros, ingredients}) {
                     <MacrosInfo macros={totalMacros} />
                 </div>
             </div>
-            <IngredientsDisplay data={mappedIngredients} />
+            <IngredientsDisplay populatedIngredients={mappedIngredients} />
         </div>
     );
 }

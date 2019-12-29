@@ -1,28 +1,7 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './ingredients-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-
-class IngredientsDisplayEntry {
-    constructor(id, name, quantity, macros, isSelected) {
-        this.id = id;
-        this.isSelected = isSelected;
-        this.name = name;
-        this.macros = macros;
-        this.quantity = quantity;
-    }
-
-    /**
-     * Returns a copy of this object with 'isSelected' set to given value
-     * @param {boolean} isSelected 
-     */
-    withIsSelected(isSelected) {
-        return new IngredientsDisplayEntry(this.id, this.name, this.quantity, this.macros, isSelected);
-    }
-}
-
-// class TableDisplayData {
-//     constructor(???) /* TODO define props to update entries and receive selection clicks */
-// }
 
 class RowData {
     constructor(name, quantity, macros, isSelected) {
@@ -33,9 +12,6 @@ class RowData {
     }
 
     static fromEntry(entry) {
-        if (! (entry instanceof IngredientsDisplayEntry)) {
-            throw Error("in 'failedEntry': failed transform, incorrect argument");
-        }
         return new RowData(
             entry.name,
             entry.quantity,
@@ -57,22 +33,14 @@ const warnThatMissing = (what) => () =>
     console.warn(`${IngredientsDisplay.name}: missing callback for '${what}'`);
 
 function IngredientsDisplay({
-        data,
+        populatedIngredients,
         onQuantityChange = warnThatMissing('quantity change'),
-        onSelectionToggle = warnThatMissing('selection toggle')}) {
-    /* TODO: extract input type validation to separate module/file */
-    // if (! (Array.isArray(props.data))) {    /* TODO: change checked type to match code */
-    //     return (
-    //         <div style={errStyle}>
-    //             in TableDisplay: expected field "data" of type "Array"
-    //         </div>
-    //     );
-    // }
-
+        onSelectionToggle = warnThatMissing('selection toggle')
+    }) {
     return (
         <div className="table-display">
             {headerRow()}
-            {data.map((x, i) => <DataRow key={x.id.toString()}
+            {populatedIngredients.map((x, i) => <DataRow key={x.id.toString()}
                 data={RowData.fromEntry(x)}
                 onQuantityChange={newQuantity => onQuantityChange(i, newQuantity)}
                 onSelectionToggle={() => onSelectionToggle(x.id)}
@@ -80,6 +48,20 @@ function IngredientsDisplay({
         </div>
     );
 }
+
+IngredientsDisplay.PropTypeDef = {
+    populatedIngredients: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        version: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        macros: MacrosInfo.PropTypeDef.macros,
+        quantity: PropTypes.number.isRequired,
+        isSelected: PropTypes.bool,
+    })).isRequired,
+    onQuantityChange: PropTypes.func,
+    onSelectionToggle: PropTypes.func,
+};
+IngredientsDisplay.propTypes = IngredientsDisplay.PropTypeDef;
 
 function headerRow() {
     const headers = ["Product Name", "Macros", "Quantity"];
@@ -166,4 +148,4 @@ function DataRow({data, onQuantityChange, onSelectionToggle}) {
 }
 
 
-export {IngredientsDisplay, IngredientsDisplayEntry};
+export { IngredientsDisplay };

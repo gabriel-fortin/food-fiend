@@ -1,6 +1,6 @@
 import React, { /* useState */ } from 'react';
 import { MacrosBar, MacrosInfo } from './MacrosDisplay/MacrosDisplay';
-import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDisplay/IngredientsDisplay';
+import { IngredientsDisplay } from './IngredientsDisplay/IngredientsDisplay';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'
@@ -174,13 +174,13 @@ function DisplayDataFromStore() {
     const store = createStore(Reducer, initialState);
 
     const mapStateToProps = (state) => ({
-        data: state.current.foodData.slice(0,20).map(x => new IngredientsDisplayEntry(
-            x.id,
-            x.name,
-            0,
-            x.macros,
-            false,
-        )),
+        populatedIngredients: state.current.foodData.slice(0,20).map(x => ({
+            id: x.id,
+            version: x.version,
+            name: x.name,
+            quantity: 0,
+            macros: x.macros,
+        })),
     });
     const ConnectedIngredientsDisplay =
         connect(mapStateToProps)(IngredientsDisplay);

@@ -5,11 +5,12 @@ import MealWidget from './MealWidget';
 
 const mapStateToProps = (mealId, mealVersion) => (state) => {
     const meal = findFood(state, mealId, mealVersion);
-    const ingredients = meal.components
+    const populatedIngredients = meal.components
         .map(foodRef => {
             const data = findFood(state, foodRef.id, foodRef.version);
             return {
-                id: foodRef.id,
+                id: data.id,
+                version: data.version,
                 name: data.name,
                 quantity: foodRef.quantity,
                 macros: data.macros,
@@ -19,7 +20,7 @@ const mapStateToProps = (mealId, mealVersion) => (state) => {
     return {
         name: meal.name,
         totalMacros: meal.macros,
-        ingredients,
+        populatedIngredients,
     };
 };
 
