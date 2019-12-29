@@ -3,32 +3,7 @@ import PropTypes from 'prop-types';
 import './ingredients-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 
-class RowData {
-    constructor(name, quantity, macros, isSelected) {
-        this.isSelected = isSelected;
-        this.name = name;
-        this.macros = macros;
-        this.quantity = quantity;
-    }
-
-    static fromEntry(entry) {
-        return new RowData(
-            entry.name,
-            entry.quantity,
-            entry.macros,
-            entry.isSelected
-        )
-    }
-}
-
-/* TODO: extract input type validation to separate module/file */
-const errStyle = {
-    backgroundColor: "lightpink",
-    border: "2px solid red",
-    padding: "3px",
-    fontVariant: "small-caps",
-};
-
+// default value for some optional props
 const warnThatMissing = (what) => () =>
     console.warn(`${IngredientsDisplay.name}: missing callback for '${what}'`);
 
@@ -40,10 +15,14 @@ function IngredientsDisplay({
     return (
         <div className="table-display">
             {headerRow()}
-            {populatedIngredients.map((x, i) => <DataRow key={x.id.toString()}
-                data={RowData.fromEntry(x)}
+            {populatedIngredients.map((ingredientData, i) => <DataRow
+                // TODO: possible repeated key if butter twice on the list
+                key={ingredientData.id}
+                name={ingredientData.name}
+                macros={ingredientData.macros}
+                quantity={ingredientData.quantity}
                 onQuantityChange={newQuantity => onQuantityChange(i, newQuantity)}
-                onSelectionToggle={() => onSelectionToggle(x.id)}
+                onSelectionToggle={() => onSelectionToggle(ingredientData.id)}
             />)}
         </div>
     );
@@ -77,24 +56,8 @@ function headerRow() {
     );
 }
 
-function DataRow({data, onQuantityChange, onSelectionToggle}) {
+function DataRow({name, macros, quantity, onQuantityChange, onSelectionToggle}) {
     const [editMode, setEditMode] = useState(false);
-
-    /* TODO: extract input type validation to separate module/file */
-    const wideErrStyle = {
-        ...errStyle,
-        gridColumn: "1 / -1",
-    };
-    if (! (data instanceof RowData)) {
-        return (
-            <div style={wideErrStyle}>
-                in TableDisplay:
-                expected elements of "data" to be of type "{RowData.name}";
-                was {data.constructor.name}
-                {console.log(data)}
-            </div>
-        );
-    }
 
     const userClicksQuantityValue = () => {
         setEditMode(true);
@@ -114,7 +77,7 @@ function DataRow({data, onQuantityChange, onSelectionToggle}) {
                 onFocus={e => {
                     // when editing starts, put the current value in and select it
                     // so the user can enter a new value more easily
-                    e.target.value = data.quantity;
+                    e.target.value = quantity;
                     e.target.select();
                 }}
                 onBlur={e => userAbandonsEditing()}
@@ -130,16 +93,16 @@ function DataRow({data, onQuantityChange, onSelectionToggle}) {
             <div className="divider"/>
 
             <div className="name">
-                <span>{data.name}</span>
+                <span>{name}</span>
             </div>
             <div className="macros">
-                <MacrosInfo macros={data.macros} />
+                <MacrosInfo macros={macros} />
             </div>
             <div className="quantity" onClick={userClicksQuantityValue}>
                 {
                     editMode
                         && quantityEditor  // eslint-disable-line no-mixed-operators
-                        || data.quantity  // eslint-disable-line no-mixed-operators
+                        || quantity  // eslint-disable-line no-mixed-operators
                 }
                 <span>g</span>
             </div>
