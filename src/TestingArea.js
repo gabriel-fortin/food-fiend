@@ -119,6 +119,7 @@ const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") =
     ingredientsRefs: mealIngredients.map((ingredient, i) => ({
         id: ingredient.id,
         version: ingredient.version,
+        position: i,  // position of food within meal; used as key in react lists
         quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
         notes: null,  // some additional text to display
     })),
