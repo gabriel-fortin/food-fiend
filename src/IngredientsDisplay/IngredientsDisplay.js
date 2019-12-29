@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './ingredients-display.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
+import { IngredientRef_PropTypeDef, IngredientData_PropTypeDef } from '../Store/PropTypeDefs';
 
 // default value for some optional props
 const warnThatMissing = (what) => () =>
@@ -16,7 +17,7 @@ function IngredientsDisplay({
         <div className="table-display">
             {headerRow()}
             {ingredients.map(({ref, data}) => <DataRow
-                // TODO: possible repeated key if butter twice on the list
+                // TODO: possible repeated key if e.g. butter if twice on the list
                 key={data.id}
                 name={data.name}
                 macros={data.macros}
@@ -29,13 +30,9 @@ function IngredientsDisplay({
 }
 
 IngredientsDisplay.PropTypeDef = {
-    populatedIngredients: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        version: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        macros: MacrosInfo.PropTypeDef.macros,
-        quantity: PropTypes.number.isRequired,
-        isSelected: PropTypes.bool,
+    ingredients: PropTypes.arrayOf(PropTypes.shape({
+        ref: PropTypes.shape(IngredientRef_PropTypeDef).isRequired,
+        data: PropTypes.shape(IngredientData_PropTypeDef).isRequired,
     })).isRequired,
     onQuantityChange: PropTypes.func,
     onSelectionToggle: PropTypes.func,
