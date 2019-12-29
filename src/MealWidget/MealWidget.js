@@ -1,16 +1,15 @@
 import React from 'react';
 import './meal-widget.css';
-import { MacrosInfo, Macros } from '../MacrosDisplay/MacrosDisplay';
+import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import { IngredientsDisplay, IngredientsDisplayEntry } from '../IngredientsDisplay/IngredientsDisplay';
 
 function MealWidget({name, totalMacros, ingredients}) {
-    const mealMacros = new Macros(totalMacros.fat, totalMacros.protein, totalMacros.carbs);
     const mappedIngredients = ingredients
         .map(x => new IngredientsDisplayEntry(
             x.id,
             x.name,
             x.quantity,
-            new Macros(x.macros.fat, x.macros.protein, x.macros.carbs),
+            x.macros,
             false
         ));
     return (
@@ -20,7 +19,7 @@ function MealWidget({name, totalMacros, ingredients}) {
                     {name}
                 </h2>
                 <div className="meal-macros">
-                    <MacrosInfo macros={mealMacros} />
+                    <MacrosInfo macros={totalMacros} />
                 </div>
             </div>
             <IngredientsDisplay data={mappedIngredients} />

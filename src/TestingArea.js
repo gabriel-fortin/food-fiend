@@ -1,5 +1,5 @@
 import React, { /* useState */ } from 'react';
-import { MacrosBar, MacrosInfo, Macros } from './MacrosDisplay/MacrosDisplay';
+import { MacrosBar, MacrosInfo } from './MacrosDisplay/MacrosDisplay';
 import { IngredientsDisplay, IngredientsDisplayEntry } from './IngredientsDisplay/IngredientsDisplay';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
@@ -178,7 +178,7 @@ function DisplayDataFromStore() {
             x.id,
             x.name,
             0,
-            new Macros(x.macros.fat, x.macros.protein, x.macros.carbs),
+            x.macros,
             false,
         )),
     });

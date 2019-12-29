@@ -1,44 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './macros-display.css';
 
-class Macros {
-    constructor(fat, protein, carbs) {
-        this.fat = fat;
-        this.protein = protein;
-        this.carbs = carbs;
-    }
-}
 
-function MacrosInfo(props) {
-    /* TODO: extract input type validation to separate module/file */
-    if (! (props.macros instanceof Macros)) {
-        const errStyle = {
-            backgroundColor: "lightpink",
-            border: "2px solid red",
-            padding: "3px",
-            fontVariant: "small-caps",
-        };
-        return (
-            <div style={errStyle}>
-                in MacrosInfo: expected field "macros" of type "Macros"
-            </div>
-        );
-    }
-
+function MacrosInfo({macros}) {
     return (
         <div className="macros-info">
             {title("Fat")}
             {title("Protein")}
             {title("Carbs")}
-            {value(props.macros.fat)}
-            {value(props.macros.protein)}
-            {value(props.macros.carbs)}
+            {value(macros.fat)}
+            {value(macros.protein)}
+            {value(macros.carbs)}
             <div className="bar">
-                <MacrosBar macros={props.macros} />
+                <MacrosBar macros={macros} />
             </div>
         </div>
     );
 }
+
+MacrosInfo.PropTypeDef = {
+    macros: PropTypes.shape({
+        fat: PropTypes.number.isRequired,
+        protein: PropTypes.number.isRequired,
+        carbs: PropTypes.number.isRequired,
+    }).isRequired,
+};
+MacrosInfo.propTypes = MacrosInfo.PropTypeDef;
 
 function title(text) {
     return (
@@ -56,12 +44,12 @@ function value(text) {
     );
 }
 
-function MacrosBar(props) {
+function MacrosBar({macros}) {
     return (
         <div className="macros-bar">
-            {macro("fat", props.macros.fat)}
-            {macro("protein", props.macros.protein)}
-            {macro("carbs", props.macros.carbs)}
+            {macro("fat", macros.fat)}
+            {macro("protein", macros.protein)}
+            {macro("carbs", macros.carbs)}
         </div>
     );
 }
@@ -76,4 +64,4 @@ function macro(className, value) {
 }
 
 
-export {MacrosBar, MacrosInfo, Macros}
+export { MacrosBar, MacrosInfo }
