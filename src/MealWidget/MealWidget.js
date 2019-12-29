@@ -3,15 +3,7 @@ import './meal-widget.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import { IngredientsDisplay } from '../IngredientsDisplay/IngredientsDisplay';
 
-function MealWidget({name, totalMacros, populatedIngredients}) {
-    const mappedIngredients = populatedIngredients
-        .map(x => ({
-            id: x.id,
-            version: x.version,
-            name: x.name,
-            macros: x.macros,
-            quantity: x.quantity,
-        }));
+function MealWidget({name, totalMacros, ingredients}) {
     return (
         <div className="meal">
             <div className="meal-header">
@@ -22,7 +14,7 @@ function MealWidget({name, totalMacros, populatedIngredients}) {
                     <MacrosInfo macros={totalMacros} />
                 </div>
             </div>
-            <IngredientsDisplay populatedIngredients={mappedIngredients} />
+            <IngredientsDisplay ingredients={ingredients} />
         </div>
     );
 }

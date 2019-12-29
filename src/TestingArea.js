@@ -116,7 +116,7 @@ const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") =
     unit: "g",  // for quantity display only
     portionSize: mealIngredients.length * 30,  // grams per portion
     portions: 1,
-    components: mealIngredients.map(ingredient => ({
+    ingredientsRefs: mealIngredients.map((ingredient, i) => ({
         id: ingredient.id,
         version: ingredient.version,
         quantity: 30,  // measured in the food's portions (which is 1g for simple foods)

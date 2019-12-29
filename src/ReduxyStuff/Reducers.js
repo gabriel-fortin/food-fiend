@@ -82,7 +82,7 @@ function RootReducer(state, action) {
     return state;
 };
 
-const updateIngredientQuantity = (ingredientPos, newQuantity) => (meal) => {
+const updateIngredientQuantity = (posToUpdate, newQuantity) => (meal) => {
     // TODO(perf): do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
 
@@ -91,10 +91,10 @@ const updateIngredientQuantity = (ingredientPos, newQuantity) => (meal) => {
     return {
         ...meal,
         version: meal.version + 1,  // TODO: this probably should be done by another function
-        components: meal.components.map((componentFood, i) => {
-            if (i !== ingredientPos) return componentFood;
+        ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
+            if (foodRef.position !== posToUpdate) return foodRef;
             return {
-                ...componentFood,
+                ...foodRef,
                 quantity: newQuantity,
             };
         }),
@@ -108,13 +108,13 @@ const calculateMacros = (state) => (meal) => {
 
     // TODO(perf): if new macros are the same, return the input object
 
-    const mealIngredients = meal.components.map(foodRef => ({
+    const mealIngredients = meal.ingredientsRefs.map(foodRef => ({
         data: findFood(state, foodRef.id, foodRef.version),
-        quantity: foodRef.quantity,
+        ref: foodRef,
     }));
 
     const sumMacro = (macroName) => (partialSum, food) =>
-        partialSum + food.data.macros[macroName] * food.quantity / 100;
+        partialSum + food.data.macros[macroName] * food.ref.quantity / 100;
 
     return {
         ...meal,

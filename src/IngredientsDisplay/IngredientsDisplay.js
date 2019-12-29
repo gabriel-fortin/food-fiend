@@ -8,21 +8,21 @@ const warnThatMissing = (what) => () =>
     console.warn(`${IngredientsDisplay.name}: missing callback for '${what}'`);
 
 function IngredientsDisplay({
-        populatedIngredients,
+        ingredients,
         onQuantityChange = warnThatMissing('quantity change'),
         onSelectionToggle = warnThatMissing('selection toggle')
     }) {
     return (
         <div className="table-display">
             {headerRow()}
-            {populatedIngredients.map((ingredientData, i) => <DataRow
+            {ingredients.map(({ref, data}) => <DataRow
                 // TODO: possible repeated key if butter twice on the list
-                key={ingredientData.id}
-                name={ingredientData.name}
-                macros={ingredientData.macros}
-                quantity={ingredientData.quantity}
-                onQuantityChange={newQuantity => onQuantityChange(i, newQuantity)}
-                onSelectionToggle={() => onSelectionToggle(ingredientData.id)}
+                key={data.id}
+                name={data.name}
+                macros={data.macros}
+                quantity={ref.quantity}
+                onQuantityChange={newQuantity => onQuantityChange(ref.position, newQuantity)}
+                onSelectionToggle={() => onSelectionToggle(data.id)}
             />)}
         </div>
     );

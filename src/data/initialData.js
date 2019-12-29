@@ -34,7 +34,7 @@ function reshapeIntoExpectedForm(item) {
         unit: "g",  // for quantity display only
         portionSize: 1,  // grams per portion
         portions: 1,
-        components: [],  // list of <id, version> of ingredients
+        ingredientsRefs: [],  // list of <id, version> of ingredients
         usedBy: [],  // list of <id, version> of depending meals
                     // it's redundant data so it's there for potential performance gain
         uncertainty: false,  // allow uncertainty of macros (and maybe other things)
