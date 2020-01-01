@@ -16,15 +16,16 @@ function IngredientsDisplay({
     return (
         <div className="table-display">
             {headerRow()}
-            {ingredients.map(({ref, data}) => <DataRow
-                // TODO: possible repeated key if e.g. butter if twice on the list
-                key={data.id}
-                name={data.name}
-                macros={data.macros}
-                quantity={ref.quantity}
-                onQuantityChange={newQuantity => onQuantityChange(ref.position, newQuantity)}
-                onSelectionToggle={() => onSelectionToggle(data.id)}
-            />)}
+            {ingredients.map(({ref, data}) =>
+                <DataRow
+                    // TODO: possible repeated key if e.g. butter if twice on the list
+                    key={data.id}
+                    name={data.name}
+                    macros={data.macros}
+                    quantity={ref.quantity}
+                    onQuantityChange={newQuantity => onQuantityChange(ref.position, newQuantity)}
+                    onSelectionToggle={() => onSelectionToggle(data.id)}
+                />)}
         </div>
     );
 }
@@ -67,7 +68,36 @@ function DataRow({name, macros, quantity, onQuantityChange, onSelectionToggle}) 
         setEditMode(false);
     };
 
-    const quantityEditor =
+    return (
+        <>
+            <div className="divider"/>
+
+            <div className="name">
+                <span>{name}</span>
+            </div>
+            <div className="macros">
+                <MacrosInfo macros={macros} />
+            </div>
+            <div className="quantity" onClick={userClicksQuantityValue}>
+                {
+                    /* eslint-disable no-mixed-operators */
+                    editMode
+                        && <QuantityEditor
+                                quantity={quantity}
+                                userAbandonsEditing={userAbandonsEditing}
+                                userAcceptsQuantityChange={userAcceptsQuantityChange}
+                            />
+                        || quantity
+                    /* eslint-enable no-mixed-operators */
+                }
+                <span>g</span>
+            </div>
+        </>
+    );
+}
+
+function QuantityEditor({quantity, userAbandonsEditing, userAcceptsQuantityChange}) {
+    return (
         <span className="quantity-editor">
             <input pattern="\d+(\.\d+)?"
                 autoFocus
@@ -83,27 +113,7 @@ function DataRow({name, macros, quantity, onQuantityChange, onSelectionToggle}) 
                     if (e.key === 'Enter') userAcceptsQuantityChange(e.target.value);
                 }}
                 />
-        </span>;
-
-    return (
-        <>
-            <div className="divider"/>
-
-            <div className="name">
-                <span>{name}</span>
-            </div>
-            <div className="macros">
-                <MacrosInfo macros={macros} />
-            </div>
-            <div className="quantity" onClick={userClicksQuantityValue}>
-                {
-                    editMode
-                        && quantityEditor  // eslint-disable-line no-mixed-operators
-                        || quantity  // eslint-disable-line no-mixed-operators
-                }
-                <span>g</span>
-            </div>
-        </>
+        </span>
     );
 }
 
