@@ -7,10 +7,11 @@ function importData(data) {
     };
 }
 
-function changeIngredientQuantity(mealId, ingredientPosInMeal, newQuantity) {
+function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQuantity) {
     return {
         type: "CHANGE_FOOD_QUANTITY",
         mealId,
+        mealVersion,
         ingredientPosInMeal,
         newQuantity,
     };

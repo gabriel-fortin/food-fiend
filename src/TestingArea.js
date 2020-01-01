@@ -39,7 +39,7 @@ function DisplayAllMeals() {
     store.dispatch(importData(temporaryMeal1));
     store.dispatch(importData(temporaryMeal2));
 
-    store.dispatch(changeIngredientQuantity(12345, 0, 400));
+    store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
 
     return (
         <Provider store={store}>
