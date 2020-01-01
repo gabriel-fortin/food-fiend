@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './meal-widget.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import { IngredientsDisplay } from '../IngredientsDisplay/IngredientsDisplay';
+import IngredientsListWidget from '../IngredientsListWidget';
 
 function MealWidget({name, totalMacros, ingredients}) {
     return (
@@ -15,7 +15,7 @@ function MealWidget({name, totalMacros, ingredients}) {
                     <MacrosInfo macros={totalMacros} />
                 </div>
             </div>
-            <IngredientsDisplay ingredients={ingredients} />
+            <IngredientsListWidget ingredients={ingredients} />
         </div>
     );
 }
@@ -24,7 +24,7 @@ MealWidget.PropTypeDef = {
     name: PropTypes.string.isRequired,
     totalMacros: MacrosInfo.PropTypeDef.macros,
     ingredients: PropTypes.arrayOf(PropTypes.shape(
-        IngredientsDisplay.PropTypeDef.ingredients
+        IngredientsListWidget.PropTypeDef.ingredients
     )).isRequired,
 };
 MealWidget.propTypes = MealWidget.PropTypeDef;

@@ -1,6 +1,6 @@
 import React, { /* useState */ } from 'react';
 import { MacrosBar, MacrosInfo } from './MacrosDisplay/MacrosDisplay';
-import { IngredientsDisplay } from './IngredientsDisplay/IngredientsDisplay';
+import IngredientsDisplay from './IngredientsListWidget';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import Reducer from './ReduxyStuff/Reducers.js'

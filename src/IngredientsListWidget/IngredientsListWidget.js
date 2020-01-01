@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import './ingredients-display.css';
+import './ingredients-list-widget.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import { IngredientRef_PropTypeDef, IngredientData_PropTypeDef } from '../Store/PropTypeDefs';
 
 // default value for some optional props
 const warnThatMissing = (what) => () =>
-    console.warn(`${IngredientsDisplay.name}: missing callback for '${what}'`);
+    console.warn(`${IngredientsListWidget.name}: missing callback for '${what}'`);
 
-function IngredientsDisplay({
+function IngredientsListWidget({
         ingredients,
         onQuantityChange = warnThatMissing('quantity change'),
         onSelectionToggle = warnThatMissing('selection toggle')
@@ -30,7 +30,7 @@ function IngredientsDisplay({
     );
 }
 
-IngredientsDisplay.PropTypeDef = {
+IngredientsListWidget.PropTypeDef = {
     ingredients: PropTypes.arrayOf(PropTypes.shape({
         ref: PropTypes.shape(IngredientRef_PropTypeDef).isRequired,
         data: PropTypes.shape(IngredientData_PropTypeDef).isRequired,
@@ -38,7 +38,7 @@ IngredientsDisplay.PropTypeDef = {
     onQuantityChange: PropTypes.func,
     onSelectionToggle: PropTypes.func,
 };
-IngredientsDisplay.propTypes = IngredientsDisplay.PropTypeDef;
+IngredientsListWidget.propTypes = IngredientsListWidget.PropTypeDef;
 
 function headerRow() {
     const headers = ["Product Name", "Macros", "Quantity"];
@@ -118,4 +118,4 @@ function QuantityEditor({quantity, userAbandonsEditing, userAcceptsQuantityChang
 }
 
 
-export { IngredientsDisplay };
+export default IngredientsListWidget;
