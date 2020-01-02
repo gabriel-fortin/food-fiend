@@ -13,28 +13,47 @@ function createEmptyStore() {
     return createStore(Reducer, initialStateShape);
 }
 
+const selectLatestVersionFromArray = (foodA, foodB) => foodA.version > foodB.version ? foodA : foodB;
+
 const LATEST = Symbol("latest version");
 function findFood(state, foodId, foodVersion = LATEST) {
-    if (foodVersion === LATEST) {
-        // TODO: findFood when foodVersion=LATEST
-        throw new Error("'findFood' at version LATEST is not implemented yet");
-    }
-
     const allVersionsOfSelectedFood = state.current.foodData
             .filter(food => food.id === foodId);
-    
-    const theChosenOne = allVersionsOfSelectedFood.filter(food => food.version === foodVersion);
-    if (theChosenOne.length !== 1) {
-        console.error(`Expected exactly one food with id ${foodId}` +
-            ` and version ${foodVersion} but found ${theChosenOne.length}`);
+
+    if (allVersionsOfSelectedFood.length === 0) {
+        throw new Error(`Store: find food -- no entries for food with id '${foodId}'`);
     }
 
-    return theChosenOne[0];
+    const chosenVersionOfFood = (foodVersion === LATEST)
+            ? [allVersionsOfSelectedFood.reduce(selectLatestVersionFromArray)]
+            : allVersionsOfSelectedFood.filter(food => food.version === foodVersion);
+
+    if (chosenVersionOfFood.length !== 1) {
+        console.error(`Expected exactly one food with id ${foodId}` +
+            ` and version ${foodVersion} but found ${chosenVersionOfFood.length}`);
+        // if there are more than one then the first one will be shown
+    }
+
+    return chosenVersionOfFood[0];
 }
 
 function getAllMeals(state) {
-    return state.current.foodData
-        .filter(food => food.type === FoodType.Compound);
+    const mealsGroupedById = state.current.foodData
+        .filter(food => food.type === FoodType.Compound)
+        .reduce((groupedMeals, food) => {
+            const group = groupedMeals[food.id] || [];
+            group.push(food);
+            groupedMeals[food.id] = group;
+            return groupedMeals;
+        }, {});
+
+    const latestVersionOfEachMeal = [];
+    for (let [id, mealVersions] of Object.entries(mealsGroupedById)) {
+        const mealLatestVersion = mealVersions.reduce(selectLatestVersionFromArray);
+        latestVersionOfEachMeal.push(mealLatestVersion);
+    }
+
+    return latestVersionOfEachMeal;
 }
 
 
