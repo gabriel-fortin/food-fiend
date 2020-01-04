@@ -65,15 +65,7 @@ function RootReducer(state, action) {
             ...state,
             current: {
                 ...state.current,
-                foodData: state.current.foodData.map(food => {
-                    if (food.id !== action.mealId || food.version !== action.mealVersion) {
-                        return food;
-                    }
-                    return applyFunctionsTo(food, [
-                        updateIngredientQuantity(action.ingredientPosInMeal, action.newQuantity),
-                        calculateMacros(state),
-                    ]);
-                }),
+                foodData: updateIngredientQuanatity(action, state.current.foodData, state),
             }
         };
     }
@@ -81,6 +73,36 @@ function RootReducer(state, action) {
     return state;
 };
 
+const updateIngredientQuanatity = (action, allFoods, state) => {
+    const {mealId, mealVersion, ingredientPosInMeal, newQuantity} = action;
+
+    let mealToUpdate = null;
+    const updatedFoods = allFoods
+        .map(food => {
+            if (food.id !== mealId || food.version !== mealVersion) return food;
+
+            mealToUpdate = food;
+            return {
+                ...food,
+                // TODO: update `usedBy` field of `food`
+            };
+        });
+
+    if (mealToUpdate === null) {
+        console.error(`Reducer: changing food quantity: meal to update not found! `
+                + `meal id: ${mealId}, meal version: ${mealVersion}`);
+    }
+
+    const newVersionOfMeal = applyFunctionsTo(mealToUpdate, [
+        updateIngredientQuantity(ingredientPosInMeal, newQuantity),
+        calculateMacros(state),
+        updateVersion(),
+    ])
+    updatedFoods.push(newVersionOfMeal); // 'updatedFoods' is a local var so we can modify it
+    return updatedFoods;
+};
+
+// helper to be used with 'applyFunctionsTo'
 const updateIngredientQuantity = (posToUpdate, newQuantity) => (meal) => {
     // TODO(perf): do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
@@ -89,7 +111,6 @@ const updateIngredientQuantity = (posToUpdate, newQuantity) => (meal) => {
 
     return {
         ...meal,
-        version: meal.version + 1,  // TODO: this probably should be done by another function
         ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
             if (foodRef.position !== posToUpdate) return foodRef;
             return {
@@ -100,6 +121,7 @@ const updateIngredientQuantity = (posToUpdate, newQuantity) => (meal) => {
     };
 }
 
+// helper to be used with 'applyFunctionsTo'
 const calculateMacros = (state) => (meal) => {
     if (meal.type !== FoodType.Compound) {
         throw new Error(`${calculateMacros.name} should only be used for meals`);
@@ -124,4 +146,15 @@ const calculateMacros = (state) => (meal) => {
         }
     };
 }
+
+// helper to be used with 'applyFunctionsTo'
+const updateVersion = () => (food) => {
+    // FIXME: doing 'version++' is not appropriate when updating a non-latest version;
+    //        so, when updating, we need to find out what is the current latest existing version
+    const newVersion = food.version + 1;
+    return {
+        ...food,
+        version: newVersion,
+    };
+};
 
