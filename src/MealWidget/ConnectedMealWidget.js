@@ -1,8 +1,12 @@
 import React from 'react';
-import { findFood } from '../Store/Store';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { findFood } from '../Store/Store';
 import { changeIngredientQuantity } from '../ReduxyStuff/ActionCreators';
+
 import MealWidget from './MealWidget';
+
 
 const mapStateToProps = (mealId, mealVersion) => (state) => {
     const meal = findFood(state, mealId, mealVersion);
@@ -30,13 +34,19 @@ const mapDispatchToProps = (mealId, mealVersion) => ({
 /**
  * Connects MealWidget to the redux store
  */
-function ConnectedMealWidget({mealId, mealVersion}) {
-    const Widget = connect(
+const ConnectedMealWidget = ({mealId, mealVersion}) => {
+    const HereIAm = connect(
         mapStateToProps(mealId, mealVersion),
         mapDispatchToProps(mealId, mealVersion),
     )(MealWidget);
 
-    return <Widget />;
+    return <HereIAm />;
 }
+
+ConnectedMealWidget.PropTypeDef = {
+    mealId: PropTypes.number.isRequired,
+    mealVersion: PropTypes.number.isRequired,
+};
+ConnectedMealWidget.propTypes = ConnectedMealWidget.PropTypeDef;
 
 export default ConnectedMealWidget;
