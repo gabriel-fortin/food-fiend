@@ -13,6 +13,15 @@ function applyFunctionsTo(initialObject, functions) {
 }
 
 function RootReducer(state, action) {
+    return validateStateAfterReducing(routeAction(state, action));
+}
+
+function validateStateAfterReducing(state) {
+    // TODO: Reducers: validate correctness of state after reducing
+    return state;
+}
+
+function routeAction(state, action) {
     if (state === undefined) {
         console.error(">> RootReducer: missing initial state");
     }
@@ -65,7 +74,7 @@ function RootReducer(state, action) {
             ...state,
             current: {
                 ...state.current,
-                foodData: updateIngredientQuanatity(action, state.current.foodData, state),
+                foodData: updateIngredientQuantity(action, state.current.foodData, state),
             }
         };
     }
@@ -73,7 +82,7 @@ function RootReducer(state, action) {
     return state;
 };
 
-const updateIngredientQuanatity = (action, allFoods, state) => {
+const updateIngredientQuantity = (action, allFoods, state) => {
     const {mealId, mealVersion, ingredientPosInMeal, newQuantity} = action;
 
     let mealToUpdate = null;
@@ -94,20 +103,24 @@ const updateIngredientQuanatity = (action, allFoods, state) => {
     }
 
     const newVersionOfMeal = applyFunctionsTo(mealToUpdate, [
-        updateIngredientQuantity(ingredientPosInMeal, newQuantity),
-        calculateMacros(state),
-        updateVersion(),
+        doUpdateQuantity(ingredientPosInMeal, newQuantity),
+        doCalculateMacros(state),
+        doUpdateVersion(),
     ])
     updatedFoods.push(newVersionOfMeal); // 'updatedFoods' is a local var so we can modify it
     return updatedFoods;
 };
 
 // helper to be used with 'applyFunctionsTo'
-const updateIngredientQuantity = (posToUpdate, newQuantity) => (meal) => {
+const doUpdateQuantity = (posToUpdate, newQuantity) => (meal) => {
     // TODO(perf): do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
 
     // TODO(perf): if new quantity is the same, return the same object
+
+    const quantityAsNumber = Number.parseFloat(newQuantity);
+    if (!Number.isFinite(quantityAsNumber))
+        throw new Error(`The new quantity '${newQuantity}' is not a number`);
 
     return {
         ...meal,
@@ -115,16 +128,16 @@ const updateIngredientQuantity = (posToUpdate, newQuantity) => (meal) => {
             if (foodRef.position !== posToUpdate) return foodRef;
             return {
                 ...foodRef,
-                quantity: newQuantity,
+                quantity: quantityAsNumber,
             };
         }),
     };
 }
 
 // helper to be used with 'applyFunctionsTo'
-const calculateMacros = (state) => (meal) => {
+const doCalculateMacros = (state) => (meal) => {
     if (meal.type !== FoodType.Compound) {
-        throw new Error(`${calculateMacros.name} should only be used for meals`);
+        throw new Error(`${doCalculateMacros.name} should only be used for meals`);
     }
 
     // TODO(perf): if new macros are the same, return the input object
@@ -148,7 +161,7 @@ const calculateMacros = (state) => (meal) => {
 }
 
 // helper to be used with 'applyFunctionsTo'
-const updateVersion = () => (food) => {
+const doUpdateVersion = () => (food) => {
     // FIXME: doing 'version++' is not appropriate when updating a non-latest version;
     //        so, when updating, we need to find out what is the current latest existing version
     const newVersion = food.version + 1;
