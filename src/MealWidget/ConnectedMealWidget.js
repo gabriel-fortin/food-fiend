@@ -27,8 +27,11 @@ const mapStateToProps = (mealId, mealVersion) => (state) => {
 };
 
 const mapDispatchToProps = (mealId, mealVersion) => ({
-    changeIngredientQuantity: (ingredientPos, newQuantity) =>
-        changeIngredientQuantity(mealId, mealVersion, ingredientPos, newQuantity),
+    changeIngredientQuantity: (ingredientPos, newQuantity) => {
+        // Replace any comma with a dot
+        const quantityAsNumber = Number.parseFloat(newQuantity.replace(/,/, "."));
+        return changeIngredientQuantity(mealId, mealVersion, ingredientPos, quantityAsNumber);
+    },
 });
 
 /**
