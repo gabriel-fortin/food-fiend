@@ -4,7 +4,7 @@ import './meal-widget.css';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import IngredientsListWidget from '../IngredientsListWidget';
 
-function MealWidget({name, totalMacros, ingredients}) {
+function MealWidget({name, totalMacros, ingredients, changeIngredientQuantity}) {
     return (
         <div className="meal">
             <div className="meal-header">
@@ -15,7 +15,10 @@ function MealWidget({name, totalMacros, ingredients}) {
                     <MacrosInfo macros={totalMacros} />
                 </div>
             </div>
-            <IngredientsListWidget ingredients={ingredients} />
+            <IngredientsListWidget
+                ingredients={ingredients}
+                onQuantityChange={changeIngredientQuantity}
+            />
         </div>
     );
 }
@@ -26,6 +29,7 @@ MealWidget.PropTypeDef = {
     ingredients: PropTypes.arrayOf(PropTypes.shape(
         IngredientsListWidget.PropTypeDef.ingredients
     )).isRequired,
+    onQuantityChange: PropTypes.func,
 };
 MealWidget.propTypes = MealWidget.PropTypeDef;
 

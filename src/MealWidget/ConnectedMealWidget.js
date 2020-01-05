@@ -1,6 +1,7 @@
 import React from 'react';
 import { findFood } from '../Store/Store';
 import { connect } from 'react-redux';
+import { changeIngredientQuantity } from '../ReduxyStuff/ActionCreators';
 import MealWidget from './MealWidget';
 
 const mapStateToProps = (mealId, mealVersion) => (state) => {
@@ -21,8 +22,10 @@ const mapStateToProps = (mealId, mealVersion) => (state) => {
     };
 };
 
-// TODO: mapDispatchToProps
-const mapDispatchToProps = {};
+const mapDispatchToProps = (mealId, mealVersion) => ({
+    changeIngredientQuantity: (ingredientPos, newQuantity) =>
+        changeIngredientQuantity(mealId, mealVersion, ingredientPos, newQuantity),
+});
 
 /**
  * Connects MealWidget to the redux store
@@ -30,7 +33,7 @@ const mapDispatchToProps = {};
 function ConnectedMealWidget({mealId, mealVersion}) {
     const Widget = connect(
         mapStateToProps(mealId, mealVersion),
-        mapDispatchToProps
+        mapDispatchToProps(mealId, mealVersion),
     )(MealWidget);
 
     return <Widget />;
