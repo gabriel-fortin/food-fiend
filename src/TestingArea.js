@@ -10,7 +10,7 @@ import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, getAllMeals } from './Store/Store';
 import FoodType from './data/FoodType';
 import ConnectedMealWidget from './MealWidget';
-import { MealListWidget } from './MealListWidget/MealListWidget';
+import { MealListWidget } from './MealListWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -41,10 +41,15 @@ function DisplayAllMeals() {
 
     store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
 
+    const mapStateToProps = (state) => ({
+        meals: getAllMeals(store.getState()),
+    });
+    const ConnectedMealListWidget = connect(mapStateToProps)(MealListWidget);
+
     return (
         <Provider store={store}>
             <TestingFrame>
-                <MealListWidget meals={getAllMeals(store.getState())} />
+                <ConnectedMealListWidget />
             </TestingFrame>
         </Provider>
     );

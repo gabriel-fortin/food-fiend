@@ -18,4 +18,4 @@ MealListWidget.PropTypeDef = PropTypes.arrayOf(
     })
 ).isRequired;
 
-export { MealListWidget };
+export default MealListWidget;
