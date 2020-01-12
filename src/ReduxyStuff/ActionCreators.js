@@ -10,6 +10,7 @@ const IngredientQuantityChangeAction_PropTypeDef = {
     mealVersion: PropTypes.number.isRequired,
     ingredientPosInMeal: PropTypes.number.isRequired,
     newQuantity: PropTypes.number.isRequired,
+    autoUpdate: PropTypes.arrayOf(PropTypes.number),
 };
 
 
@@ -21,13 +22,14 @@ function importData(data) {
     };
 }
 
-function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQuantity) {
+function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQuantity, autoUpdate=[]) {
     const action = {
         type: "CHANGE_FOOD_QUANTITY",
         mealId,
         mealVersion,
         ingredientPosInMeal,
         newQuantity,
+        autoUpdate,
     };
 
     PropTypes.checkPropTypes(IngredientQuantityChangeAction_PropTypeDef, action,

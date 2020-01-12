@@ -1,10 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './meal-widget.css';
+
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import IngredientsListWidget from '../IngredientsListWidget';
+import { EnclosingContext_PropTypeDef, foodItemEnclosure } from '../EnclosingContext';
 
-function MealWidget({name, totalMacros, ingredients, changeIngredientQuantity}) {
+import './meal-widget.css';
+
+
+function MealWidget({name, totalMacros, ingredients, changeIngredientQuantity, uiEnclosure=[]}) {
+    /* TODO: remove 'enclosurePlusFoodAt' when IngredientsList gets connected and can do it itself */
+    const enclosurePlusFoodAt = (pos) => [
+        ...uiEnclosure,
+        foodItemEnclosure(ingredients.filter(x => x.position === pos)[0].id)
+    ];
     return (
         <div className="meal">
             <div className="meal-header">
@@ -17,7 +26,7 @@ function MealWidget({name, totalMacros, ingredients, changeIngredientQuantity}) 
             </div>
             <IngredientsListWidget
                 ingredients={ingredients}
-                onQuantityChange={changeIngredientQuantity}
+                onQuantityChange={(pos, q) => changeIngredientQuantity(pos, q, enclosurePlusFoodAt(pos))}
             />
         </div>
     );
@@ -30,6 +39,7 @@ MealWidget.PropTypeDef = {
         IngredientsListWidget.PropTypeDef.ingredients
     )).isRequired,
     onQuantityChange: PropTypes.func,
+    uiEnclosure: EnclosingContext_PropTypeDef,
 };
 MealWidget.propTypes = MealWidget.PropTypeDef;
 
