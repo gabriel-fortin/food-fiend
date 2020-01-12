@@ -10,7 +10,7 @@ import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, getAllMeals } from './Store/Store';
 import FoodType from './data/FoodType';
 import ConnectedMealWidget from './MealWidget';
-import { MealListWidget } from './MealListWidget';
+import ConnectedMealListWidget from './MealListWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -30,6 +30,8 @@ function DisplayAllMeals() {
         [initialData[9], initialData[774], initialData[85]], "Lunch");
     const temporaryMeal2 = createMeal(6789, 1,
         [initialData[39], initialData[227], initialData[597]], "Obiad");
+    const tempDay = createMeal(666, 1,
+        [temporaryMeal1, temporaryMeal2], "test day");
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
@@ -38,18 +40,16 @@ function DisplayAllMeals() {
     store.dispatch(importData(initialData));
     store.dispatch(importData(temporaryMeal1));
     store.dispatch(importData(temporaryMeal2));
+    store.dispatch(importData(tempDay));
 
     store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
 
-    const mapStateToProps = (state) => ({
-        meals: getAllMeals(store.getState()),
-    });
-    const ConnectedMealListWidget = connect(mapStateToProps)(MealListWidget);
 
     return (
         <Provider store={store}>
             <TestingFrame>
-                <ConnectedMealListWidget />
+                {/* TODO: after implementing usedBy somethingRandom might be not needed */}
+                <ConnectedMealListWidget dayId={666} somethingRandom={Date()} />
             </TestingFrame>
         </Provider>
     );
@@ -124,6 +124,7 @@ const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") =
     ingredientsRefs: mealIngredients.map((ingredient, i) => ({
         id: ingredient.id,
         version: ingredient.version,
+        /* TODO: rename 'position' to 'key' */
         position: i,  // position of food within meal; used as key in react lists
         quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
         notes: null,  // some additional text to display

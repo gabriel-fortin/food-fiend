@@ -48,6 +48,7 @@ function getAllMeals(state) {
         }, {});
 
     const latestVersionOfEachMeal = [];
+    // eslint-disable-next-line no-unused-vars
     for (let [id, mealVersions] of Object.entries(mealsGroupedById)) {
         const mealLatestVersion = mealVersions.reduce(selectLatestVersionFromArray);
         latestVersionOfEachMeal.push(mealLatestVersion);
@@ -57,4 +58,4 @@ function getAllMeals(state) {
 }
 
 
-export { createEmptyStore, findFood, getAllMeals };
+export { createEmptyStore, findFood, LATEST, getAllMeals };

@@ -1,4 +1,5 @@
+import ConnectedMealListWidget from './ConnectedMealListWidget';
 import MealListWidget from './MealListWidget';
 
-export default MealListWidget;
-export { MealListWidget };
+export default ConnectedMealListWidget;
+export { ConnectedMealListWidget, MealListWidget };
