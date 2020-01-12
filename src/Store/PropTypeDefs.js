@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import FoodType from '../data/FoodType';
+import { FoodType_PropTypeDef } from '../data/FoodType';
 
 const IngredientRef_PropTypeDef = {
     id: PropTypes.number.isRequired,
@@ -17,7 +17,7 @@ const IngredientData_PropTypeDef = {
     macros: MacrosInfo.PropTypeDef.macros,
     extra: PropTypes.any,
 
-    type: PropTypes.oneOf([FoodType.Simple, FoodType.Compound]),
+    type: FoodType_PropTypeDef,
     unit: PropTypes.string.isRequired,  // for quantity display only
     portionSize: PropTypes.number.isRequired,  // grams per portion
     portions: PropTypes.number.isRequired,
