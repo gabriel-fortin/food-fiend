@@ -10,7 +10,7 @@ import FoodSelector from './FoodSelector/FoodSelector'
 import { createEmptyStore, getAllMeals } from './Store/Store';
 import FoodType from './data/FoodType';
 import ConnectedMealWidget from './MealWidget';
-import ConnectedMealListWidget from './MealListWidget';
+import ConnectedMealListWidget, { MealListWidget } from './MealListWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -20,11 +20,12 @@ export default function TestingArea() {
     // return DisplayDataFromStore();
     // return FoodSelection();
     // return DisplayMeal();
-    return DisplayAllMeals();
+    // return DisplayAllMeals();
+    return DisplayDay();
 }
 
 // eslint-disable-next-line
-function DisplayAllMeals() {
+function DisplayDay() {
     // meal to test on
     const temporaryMeal1 = createMeal(12345, 1,
         [initialData[9], initialData[774], initialData[85]], "Lunch");
@@ -44,12 +45,43 @@ function DisplayAllMeals() {
 
     store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
 
-
     return (
         <Provider store={store}>
             <TestingFrame>
                 {/* TODO: after implementing usedBy somethingRandom might be not needed */}
                 <ConnectedMealListWidget dayId={666} somethingRandom={Date()} />
+            </TestingFrame>
+        </Provider>
+    );
+}
+
+// eslint-disable-next-line
+function DisplayAllMeals() {
+    // meal to test on
+    const temporaryMeal1 = createMeal(12345, 1,
+        [initialData[9], initialData[774], initialData[85]], "Lunch");
+    const temporaryMeal2 = createMeal(6789, 1,
+        [initialData[39], initialData[227], initialData[597]], "Obiad");
+    // IMPORTANT
+    // normally we should update the 'usedBy' field of each used ingredient
+
+    // prepare store
+    const store = createEmptyStore();
+    store.dispatch(importData(initialData));
+    store.dispatch(importData(temporaryMeal1));
+    store.dispatch(importData(temporaryMeal2));
+
+    store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
+
+    const mapStateToProps = (state) => ({
+        meals: getAllMeals(store.getState()),
+    });
+    const GoGoMealListWidget = connect(mapStateToProps)(MealListWidget);
+
+    return (
+        <Provider store={store}>
+            <TestingFrame>
+                <GoGoMealListWidget />
             </TestingFrame>
         </Provider>
     );
