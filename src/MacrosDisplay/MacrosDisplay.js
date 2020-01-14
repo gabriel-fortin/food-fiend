@@ -36,10 +36,14 @@ function title(text) {
     );
 }
 
-function value(text) {
+function value(x) {
+    let precisionParam =
+            x >= 10 ? 1 :
+            x >= 1 ? 10 :
+            100;
     return (
         <div className="value">
-            {text}
+            {Math.round(x * precisionParam) / precisionParam}
         </div>
     );
 }

@@ -63,8 +63,8 @@ function parseMacrosValues(item) {
         if (value === "Tr") return 0;
 
         // most of the time we should get a number
-        value = Number.parseInt(value);
-        if (Number.isInteger(value)) return value;
+        value = Number.parseFloat(value);
+        if (Number.isFinite(value)) return value;
 
         // finally, we give up on parsing
         // assume 100g of the substance can be additionally present per 100g of product
