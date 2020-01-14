@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 
 /*
  * This file is an API to the store.
@@ -11,6 +12,11 @@ const IngredientQuantityChangeAction_PropTypeDef = {
     ingredientPosInMeal: PropTypes.number.isRequired,
     newQuantity: PropTypes.number.isRequired,
     autoUpdate: PropTypes.arrayOf(PropTypes.number),
+};
+
+const AddSimpleFoodAction_PropTypeDef = {
+    name: PropTypes.string.isRequired,
+    macros: MacrosInfo.PropTypeDef,
 };
 
 
@@ -38,4 +44,23 @@ function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQ
     return action;
 }
 
-export { importData, changeIngredientQuantity };
+/**
+ * Add simple food to the store
+ */
+function addSimpleFood(name, unit, macros, macrosUncertainty=false, extra={}) {
+    const action = {
+        type: "ADD_SIMPLE_FOOD",
+        name,
+        unit,
+        macros,
+        macrosUncertainty,
+        extra,
+    };
+
+    PropTypes.checkPropTypes(AddSimpleFoodAction_PropTypeDef, action,
+        `parameter`, `${addSimpleFood.name}`);
+
+    return action;
+}
+
+export { importData, changeIngredientQuantity, addSimpleFood };
