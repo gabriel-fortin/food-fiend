@@ -10,6 +10,11 @@ const FoodType = {
      * Food that is composed of some ingredients
      */
     Compound: "CoMPouNd",
+
+    /**
+     * Unversioned (thus mutable) food that represents a day
+     */
+    Day: "DaY",
 };
 
 const FoodType_PropTypeDef =
