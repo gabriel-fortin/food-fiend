@@ -10,9 +10,9 @@ function emptyEnclosure() {
 }
 
 // helper
-function enclosureWith(data) {
+function enclosureWith(items) {
     const enc = {
-        data,
+        data: items,
     };
     enc.withFoodItem = addFoodItemToEnclosure(enc);
     enc.withPosition = addPositionToEnclosure(enc);
@@ -57,7 +57,11 @@ function addPositionToEnclosure(enclosure) {
 
 // helper
 function getEnclosureItems(enclosure) {
-    const itemsGetter = () => enclosure.data;
+    const itemsGetter = (count) => {
+        const requestedItems = enclosure.data.slice(0, count);
+        const itemsTail = enclosure.data.slice(count);
+        return [requestedItems, enclosureWith(itemsTail)];
+    };
     return itemsGetter;
 }
 
