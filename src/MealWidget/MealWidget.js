@@ -28,6 +28,7 @@ function MealWidget({name, totalMacros, ingredients, changeIngredientQuantity, u
     );
 }
 
+
 MealWidget.PropTypeDef = {
     name: PropTypes.string.isRequired,
     totalMacros: MacrosInfo.PropTypeDef.macros,
@@ -38,5 +39,6 @@ MealWidget.PropTypeDef = {
     uiEnclosure: EnclosingContext_PropTypeDef,
 };
 MealWidget.propTypes = MealWidget.PropTypeDef;
+
 
 export default MealWidget;

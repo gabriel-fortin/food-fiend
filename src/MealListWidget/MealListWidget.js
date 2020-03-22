@@ -17,12 +17,14 @@ function MealListWidget({mealsAndRefs, uiEnclosure=emptyEnclosure()}) {
     );
 }
 
+
 MealListWidget.PropTypeDef = PropTypes.arrayOf(
-    PropTypes.shape({
+    PropTypes.exact({
         mealId: PropTypes.number.isRequired,
         mealVersion: PropTypes.number.isRequired,
         uiEnclosure: EnclosingContext_PropTypeDef,
     })
 ).isRequired;
+
 
 export default MealListWidget;

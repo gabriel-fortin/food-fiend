@@ -113,10 +113,10 @@ const updateIngredientQuantity = (action, allFoods, state) => {
 
 // helper to be used with 'applyFunctionsTo'
 const doUpdateQuantity = (posToUpdate, newQuantity) => (meal) => {
-    // TODO(perf): do not update version if it was not used by anything
+    // PERF: do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
 
-    // TODO(perf): if new quantity is the same, return the same object
+    // PERF: if new quantity is the same, return the same object
 
     const quantityAsNumber = Number.parseFloat(newQuantity);
     if (!Number.isFinite(quantityAsNumber))

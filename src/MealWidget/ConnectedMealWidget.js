@@ -52,11 +52,13 @@ const ConnectedMealWidget = ({mealId, mealVersion, uiEnclosure=emptyEnclosure()}
     return <HereIAm />;
 }
 
+
 ConnectedMealWidget.PropTypeDef = {
     mealId: PropTypes.number.isRequired,
     mealVersion: PropTypes.number.isRequired,
     uiEnclosure: EnclosingContext_PropTypeDef,
 };
 ConnectedMealWidget.propTypes = ConnectedMealWidget.PropTypeDef;
+
 
 export default ConnectedMealWidget;

@@ -27,20 +27,19 @@ export default function TestingArea() {
 // eslint-disable-next-line
 function DisplayDay() {
     // meal to test on
-    const temporaryMeal1 = createMeal(12345, 1,
+    const lunch = createMeal(12345, 1,
         [initialData[9], initialData[774], initialData[85]], "Lunch");
-    const temporaryMeal2 = createMeal(6789, 1,
+    const obiad = createMeal(6789, 1,
         [initialData[39], initialData[227], initialData[597]], "Obiad");
-    const tempDay = createMeal(666, 1,
-        [temporaryMeal1, temporaryMeal2], "test day");
+    const tempDay = createDay(666, [lunch, obiad], "test day");
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    store.dispatch(importData(temporaryMeal1));
-    store.dispatch(importData(temporaryMeal2));
+    store.dispatch(importData(lunch));
+    store.dispatch(importData(obiad));
     store.dispatch(importData(tempDay));
 
     store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
@@ -49,10 +48,18 @@ function DisplayDay() {
         <Provider store={store}>
             <TestingFrame>
                 {/* TODO: after implementing usedBy somethingRandom might be not needed */}
-                <ConnectedMealListWidget dayId={666} somethingRandom={Date()} />
+                <ConnectedMealListWidget
+                    dayId={666} />
             </TestingFrame>
         </Provider>
     );
+}
+
+function createDay(id, meals, title) {
+    let day = createMeal(id, -14, meals, title);
+    day.type = FoodType.Day;  // items of this type are used at most once
+                // 'usedBy' will have one element at most
+    return day;
 }
 
 // eslint-disable-next-line

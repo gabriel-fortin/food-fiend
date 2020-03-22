@@ -7,6 +7,7 @@ import { EnclosingContext_PropTypeDef, emptyEnclosure} from '../EnclosingContext
 
 import MealListWidget from './MealListWidget';
 
+
 const mapStateToProps = (dayId, dayVersion, uiEnclosure) => (state) => {
     const dayPlan = findFood(state, dayId, dayVersion);
     const mealsAndRefs = dayPlan.ingredientsRefs.map(foodRef =>
@@ -27,6 +28,8 @@ function ConnectedMealListWidget({dayId, uiEnclosure=emptyEnclosure()}) {
 
     return <Widget />;
 }
+
+
 ConnectedMealListWidget.PropTypeDef = {
     dayId: PropTypes.number.isRequired,
     dayVersion: PropTypes.number.isRequired,

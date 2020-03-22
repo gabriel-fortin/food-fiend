@@ -1,6 +1,7 @@
 .meal {
     --mealMacrosSize: 300px;
     --headerBackgroundColor: white;
+    padding-top: 3em;
 }
 
 .meal-header {
