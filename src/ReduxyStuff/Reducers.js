@@ -1,5 +1,7 @@
+import Immer_produce from "immer";
 import FoodType from "../data/FoodType";
-import { findFood } from "../Store/Store";
+import { findFood, mutatePutFood as putFoodIntoMutableState } from "../Store/Store";
+import { replaceIngredient } from "./ActionCreators";
 
 export default RootReducer;
 
@@ -9,11 +11,17 @@ export default RootReducer;
  * @param {*} functions functions tha will transform the object
  */
 function applyFunctionsTo(initialObject, functions) {
-    return functions.reduce((obj, fun) => fun(obj), initialObject);
+    return functions
+        .reduce((obj, fun) => fun(obj), initialObject);
 }
 
 function RootReducer(state, action) {
-    return validateStateAfterReducing(routeAction(state, action));
+    if (state === undefined) {
+        console.error(">> RootReducer: missing initial state");
+    }
+
+    const newState = validateStateAfterReducing(routeAction(state, action));
+    return newState;
 }
 
 function validateStateAfterReducing(state) {
@@ -22,10 +30,6 @@ function validateStateAfterReducing(state) {
 }
 
 function routeAction(state, action) {
-    if (state === undefined) {
-        console.error(">> RootReducer: missing initial state");
-    }
-
     if (action.type === "IMPORT_DATA") {
         // TODO: do not accept data blindly but:
         //       - compute what is a derived value (e.g. macros) and
@@ -69,50 +73,99 @@ function routeAction(state, action) {
         };
     }
 
-    if (action.type === "CHANGE_FOOD_QUANTITY") {
-        return {
-            ...state,
-            current: {
-                ...state.current,
-                foodData: updateIngredientQuantity(action, state.current.foodData, state),
+    // =======================================================================
+    // from this place, a newer reducing style is used
+    // TODO: translate old reducers to new style
+
+    const reducersByActionType = {
+        "CHANGE_FOOD_QUANTITY": reducer_changeIngredientQuantity,
+        "REPLACE INGREDIENT": reducer_replaceIngredient,
+    };
+    // we start with one action to handle
+    let actionsToProcess = [action];
+    // reducers might add their own actions (so we can put shared functionality into reducers)
+    // they'll be called "synthetic actions"
+
+    return Immer_produce(state, mutableState => {
+        do {
+            const currentAction = actionsToProcess.shift();
+            const reducer = reducersByActionType[currentAction.type];
+
+            // stop further processing if action is unrecognised
+            if (reducer === undefined) {
+                if (action.type.startsWith("@@redux/INIT")) break;
+
+                console.error(`@Reducer: unhandled action: ${currentAction.type}`);
+
+                //it's not normal if we can't handle the action
+                throw new Error(`Unhandled action: ${currentAction.type}`);
             }
-        };
-    }
 
-    return state;
-};
+            console.debug(`@Reducers: calling reducer ${reducer.name}`);
+            const additionalActions = reducer(currentAction, mutableState);
+            console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: `,
+                    JSON.stringify(additionalActions));
 
-const updateIngredientQuantity = (action, allFoods, state) => {
-    const {mealId, mealVersion, ingredientPosInMeal, newQuantity} = action;
+            actionsToProcess.push(...additionalActions);
+        } while(actionsToProcess.length > 0)
+        // if no changes were made, Immer returns the original object
+    });
+}
 
-    let mealToUpdate = null;
-    const updatedFoods = allFoods
-        .map(food => {
-            if (food.id !== mealId || food.version !== mealVersion) return food;
+// CONVENTION
+// functions of the form "reducer_*" take two arguments: action, mutable state
 
-            mealToUpdate = food;
-            return {
-                ...food,
-                // TODO: update `usedBy` field of `food`
-            };
-        });
+const reducer_changeIngredientQuantity = (action, mutableState) => {
+    const {mealId, mealVersion, ingredientPosInMeal, newQuantity, context} = action;
 
-    if (mealToUpdate === null) {
-        console.error(`Reducer: changing food quantity: meal to update not found! `
-                + `meal id: ${mealId}, meal version: ${mealVersion}`);
-    }
+    const meal = findFood(mutableState, mealId, mealVersion);
 
-    const newVersionOfMeal = applyFunctionsTo(mealToUpdate, [
-        doUpdateQuantity(ingredientPosInMeal, newQuantity),
-        doCalculateMacros(state),
+    const updatedMeal = applyFunctionsTo(meal, [
         doUpdateVersion(),
-    ])
-    updatedFoods.push(newVersionOfMeal); // 'updatedFoods' is a local var so we can modify it
-    return updatedFoods;
+        doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
+        doCalculateMacros(mutableState),
+    ]);
+    putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
+
+    // TODO: update EACH ingredient's 'usedBy', like so:
+    // addRefToArrayIfNotThere(ingredient.usedBy, updatedMeal.id, updatedMeal.version);
+    
+    const [_ingPos, _meal, mealPosInParent, mealParent, ...contextTail] = context.items();
+    if (mealParent === undefined) {
+        return [];
+    }
+    const syntheticAction = replaceIngredient(mealParent.id, mealParent.version,
+        mealPosInParent.position, updatedMeal.version, contextTail);
+    return [syntheticAction];
 };
+
+const reducer_replaceIngredient = (action, mutableState) => {
+    console.debug(`@Reducer: replace ingredient, action:`, action);
+    const {parentId, parentVersion, ingredientPosition, newVersion, context} = action;
+
+    const parentFood = findFood(mutableState, parentId, parentVersion);
+
+    const updatedParentFood = applyFunctionsTo(parentFood, [
+        doUpdateVersion(),
+        doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
+        doCalculateMacros(mutableState),
+    ]);
+    putFoodIntoMutableState(mutableState, updatedParentFood);
+
+    const [parentPosInSuperParent, superParent, ...contextTail] = context;
+    if (superParent === undefined) {
+        return [];
+    }
+    const syntheticAction = replaceIngredient(superParent.id, superParent.version,
+        parentPosInSuperParent.position, updatedParentFood.vresion, contextTail);
+    return [syntheticAction];
+
+    // TODO: update each ingredients' 'usedBy'
+};
+
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateQuantity = (posToUpdate, newQuantity) => (meal) => {
+const doModifyIngredientQuantityAtPos = (posToUpdate, newQuantity) => (meal) => {
     // PERF: do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
 
@@ -122,7 +175,7 @@ const doUpdateQuantity = (posToUpdate, newQuantity) => (meal) => {
     if (!Number.isFinite(quantityAsNumber))
         throw new Error(`The new quantity '${newQuantity}' is not a number`);
 
-    return {
+    const updatedMeal = {
         ...meal,
         ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
             if (foodRef.position !== posToUpdate) return foodRef;
@@ -132,12 +185,33 @@ const doUpdateQuantity = (posToUpdate, newQuantity) => (meal) => {
             };
         }),
     };
-}
+
+    return updatedMeal;
+};
+
+// helper to be used with 'applyFunctionsTo'
+const doUpdateIngredientVersionAtPos = (ingredientPosition, newVersion) => (meal) => {
+    const updatedMeal = {
+        ...meal,
+        ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
+            if (foodRef.position != ingredientPosition) return foodRef;
+            return {
+                ...foodRef,
+                version: newVersion,
+            };
+        }),
+    };
+
+    return updatedMeal;
+};
 
 // helper to be used with 'applyFunctionsTo'
 const doCalculateMacros = (state) => (meal) => {
-    if (meal.type !== FoodType.Compound) {
-        throw new Error(`${doCalculateMacros.name} should only be used for meals`);
+    const handledTypes = [FoodType.Compound, FoodType.Day];
+
+    if (!handledTypes.includes(meal.type)) {
+        throw new Error(`${doCalculateMacros.name} should only be used for meals; ` + 
+            `found: ${meal.type}, food: ${meal.name}`);
     }
 
     // TODO(perf): if new macros are the same, return the input object
@@ -147,21 +221,31 @@ const doCalculateMacros = (state) => (meal) => {
         ref: foodRef,
     }));
 
-    const sumMacro = (macroName) => (partialSum, food) =>
-        partialSum + food.data.macros[macroName] * food.ref.quantity / 100;
+    const sumMacro = (macroName) => (partialSum, food) => {
+        const macroStat = food.data.macros[macroName];
+        const quantity = food.ref.quantity;
+        const macroResultValue = macroStat * quantity / 100;
+        return partialSum + macroResultValue;
+    };
+
+    const newMacros = {
+        fat: mealIngredients.reduce(sumMacro('fat'), 0),
+        protein: mealIngredients.reduce(sumMacro('protein'), 0),
+        carbs: mealIngredients.reduce(sumMacro('carbs'), 0),
+    };
 
     return {
         ...meal,
-        macros: {
-            fat: mealIngredients.reduce(sumMacro('fat'), 0),
-            protein: mealIngredients.reduce(sumMacro('protein'), 0),
-            carbs: mealIngredients.reduce(sumMacro('carbs'), 0),
-        }
+        macros: newMacros,
     };
-}
+    // TODO: calculate also uncertainty
+};
 
 // helper to be used with 'applyFunctionsTo'
 const doUpdateVersion = () => (food) => {
+    // a day exists only in a single version
+    if (food.type === FoodType.Day) return food;
+
     // FIXME: doing 'version++' is not appropriate when updating a non-latest version;
     //        so, when updating, we need to find out what is the current latest existing version
     const newVersion = food.version + 1;
@@ -169,5 +253,21 @@ const doUpdateVersion = () => (food) => {
         ...food,
         version: newVersion,
     };
+};
+
+// helper to be used with 'applyFunctionsTo'
+const doClearDependingMeals = () => (food) => {
+    return {
+        ...food,
+        usedBy: [],
+    };
+};
+
+
+const addRefToArrayIfNotThere = (someArray, id, version) => {
+    for (let item of someArray) {
+        if (item.id === id && item.version === version) return;
+    }
+    someArray.push({id, version});
 };
 

@@ -57,5 +57,41 @@ function getAllMeals(state) {
     return latestVersionOfEachMeal;
 }
 
+/**
+ * Either adds food to state or updates (if a food with same id and version already exists)
+ * @param {*} mutableState state that is allowed to be changed
+ * @param {*} food 
+ */
+function mutatePutFood(mutableState, food) {
+    // TODO: use this function in the "import data" reducer (so all mutations happen using this function)
 
-export { createEmptyStore, findFood, LATEST, getAllMeals };
+    function updateExistingFoodInState(existsingFood) {
+        for (var prop in food) {
+            existsingFood[prop] = food[prop];
+        }
+    }
+    function addNewFoodToState() {
+        mutableState.current.foodData.push(food);
+    }
+
+    try {
+        const existsingFood = findFood(mutableState, food.id, food.version);
+        if (existsingFood === undefined) {
+            // the requested version doesn't exist => add
+            addNewFoodToState();
+            return;
+        }
+        // food exists in store => update
+        updateExistingFoodInState(existsingFood);
+    }
+    catch (e) {
+        if (e.message.includes("no entries for food")) {
+            // food does not exist in store => add
+            addNewFoodToState();
+        }
+        else throw e;
+    }
+}
+
+
+export { createEmptyStore, findFood, mutatePutFood, LATEST, getAllMeals };

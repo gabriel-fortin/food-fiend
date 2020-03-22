@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
+import { emptyEnclosure } from '../EnclosingContext';
 
 /*
  * This file is an API to the store.
@@ -19,6 +20,15 @@ const AddSimpleFoodAction_PropTypeDef = {
     macros: MacrosInfo.PropTypeDef,
 };
 
+const ReplaceIngredientAction_PropTypeDef = {
+    type: PropTypes.oneOf(["REPLACE INGREDIENT"]),
+    id: PropTypes.number.isRequired,
+    version: PropTypes.number.isRequired,
+    ingredientPosition: PropTypes.number.isRequired,
+    ingredientQuantity: PropTypes.number.isRequired,
+    context: PropTypes.array,
+};
+
 
 function importData(data) {
     // TODO: ActionCreators: validate input for 'importData'
@@ -28,14 +38,14 @@ function importData(data) {
     };
 }
 
-function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQuantity, autoUpdate=[]) {
+function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQuantity, context=emptyEnclosure()) {
     const action = {
         type: "CHANGE_FOOD_QUANTITY",
         mealId,
         mealVersion,
         ingredientPosInMeal,
         newQuantity,
-        autoUpdate,
+        context: context,
     };
 
     PropTypes.checkPropTypes(IngredientQuantityChangeAction_PropTypeDef, action,
@@ -63,4 +73,24 @@ function addSimpleFood(name, unit, macros, macrosUncertainty=false, extra={}) {
     return action;
 }
 
-export { importData, changeIngredientQuantity, addSimpleFood };
+
+// TODO: parent id and parent version can be taken from context
+//       no need to provide them explicitly
+function replaceIngredient(parentId, parentVersion, ingredientPosition, newVersion, context=emptyEnclosure()) {
+    // TODO: replace all id+ver with a new 'ref' type (this is a global change I'm requesting here)
+    const action = {
+        type: "REPLACE INGREDIENT",
+        parentId,
+        parentVersion,
+        ingredientPosition,
+        newVersion,
+        context,
+    };
+
+    PropTypes.checkPropTypes(ReplaceIngredientAction_PropTypeDef, action,
+        `parameter`, `${replaceIngredient.name}`);
+
+    return action;
+}
+
+export { importData, changeIngredientQuantity, replaceIngredient, addSimpleFood };
