@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import { emptyEnclosure } from '../EnclosingContext';
+import { emptyEnclosure, EnclosingContext_PropTypeDef } from '../EnclosingContext';
 
 /*
  * This file is an API to the store.
@@ -8,25 +8,27 @@ import { emptyEnclosure } from '../EnclosingContext';
  */
 
 const IngredientQuantityChangeAction_PropTypeDef = {
+    type: PropTypes.oneOf(["CHANGE_FOOD_QUANTITY"]).isRequired,
     mealId: PropTypes.number.isRequired,
     mealVersion: PropTypes.number.isRequired,
     ingredientPosInMeal: PropTypes.number.isRequired,
     newQuantity: PropTypes.number.isRequired,
-    autoUpdate: PropTypes.arrayOf(PropTypes.number),
+    context: EnclosingContext_PropTypeDef.isRequired,
 };
 
 const AddSimpleFoodAction_PropTypeDef = {
+    type: PropTypes.oneOf(["ADD_SIMPLE_FOOD"]),
     name: PropTypes.string.isRequired,
     macros: MacrosInfo.PropTypeDef,
 };
 
 const ReplaceIngredientAction_PropTypeDef = {
     type: PropTypes.oneOf(["REPLACE INGREDIENT"]),
-    id: PropTypes.number.isRequired,
-    version: PropTypes.number.isRequired,
+    parentId: PropTypes.number.isRequired,
+    parentVersion: PropTypes.number.isRequired,
     ingredientPosition: PropTypes.number.isRequired,
-    ingredientQuantity: PropTypes.number.isRequired,
-    context: PropTypes.array,
+    newVersion: PropTypes.number.isRequired,
+    context: EnclosingContext_PropTypeDef.isRequired,
 };
 
 
