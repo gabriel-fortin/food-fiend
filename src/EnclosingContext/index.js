@@ -1,3 +1,3 @@
-import { EnclosingContext_PropTypeDef, foodItemEnclosure} from './Enclosure';
+import { EnclosingContext_PropTypeDef, emptyEnclosure } from './Enclosure';
 
-export { EnclosingContext_PropTypeDef, foodItemEnclosure };
+export { EnclosingContext_PropTypeDef, emptyEnclosure };

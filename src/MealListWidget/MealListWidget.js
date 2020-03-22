@@ -2,13 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ConnectedMealWidget from '../MealWidget';
-import { EnclosingContext_PropTypeDef } from '../EnclosingContext';
+import { EnclosingContext_PropTypeDef, emptyEnclosure } from '../EnclosingContext';
 
 
-function MealListWidget({meals, uiEnclosure=[]}) {
-    return meals.map(meal =>
+function MealListWidget({mealsAndRefs, uiEnclosure=emptyEnclosure()}) {
+    return mealsAndRefs.map(({foodRef: mealRef, foodData: meal}) =>
         // TODO: MealListWidget: use a better value for 'key'?
-        <ConnectedMealWidget key={meal.id} mealId={meal.id} mealVersion={meal.version} uiEnclosure={uiEnclosure}/>
+        <ConnectedMealWidget
+                key={meal.id}
+                mealId={meal.id}
+                mealVersion={meal.version}
+                uiEnclosure={uiEnclosure.withPosition(mealRef.position)}
+                />
     );
 }
 
