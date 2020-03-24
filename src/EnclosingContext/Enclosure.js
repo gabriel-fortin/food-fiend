@@ -16,7 +16,7 @@ function enclosureWith(items) {
     };
     enc.withFoodItem = addFoodItemToEnclosure(enc);
     enc.withPosition = addPositionToEnclosure(enc);
-    enc.items = getEnclosureItems(enc);
+    enc.popItems = popEnclosureItems(enc);
     return enc;
 }
 
@@ -31,7 +31,7 @@ function addFoodItemToEnclosure(enclosure) {
         const newEnclosureElement = {
             type: REF,
             id: foodId,
-            version: foodVersion,
+            ver: foodVersion,
         };
         return enclosureWith([newEnclosureElement, ...enclosure.data]);
     };
@@ -48,7 +48,7 @@ function addPositionToEnclosure(enclosure) {
         }
         const newEnclosureElement = {
             type: POSITION,
-            position,
+            pos: position,
         };
         return enclosureWith([newEnclosureElement, ...enclosure.data]);
     };
@@ -56,13 +56,16 @@ function addPositionToEnclosure(enclosure) {
 }
 
 // helper
-function getEnclosureItems(enclosure) {
-    const itemsGetter = (count) => {
+function popEnclosureItems(enclosure) {
+    const itemsPopper = (count) => {
         const requestedItems = enclosure.data.slice(0, count);
-        const itemsTail = enclosure.data.slice(count);
-        return [requestedItems, enclosureWith(itemsTail)];
+        const remainingItems = enclosure.data.slice(count);
+        return {
+            items: requestedItems,
+            remainingContext: enclosureWith(remainingItems)
+        };
     };
-    return itemsGetter;
+    return itemsPopper;
 }
 
 
@@ -71,7 +74,7 @@ function getEnclosureItems(enclosure) {
 const RefItem_PropTypeDef = {
     type: PropTypes.oneOf([REF]).isRequired,
     id: PropTypes.number.isRequired,
-    version: PropTypes.oneOfType([
+    ver: PropTypes.oneOfType([
         PropTypes.number,
         PropTypes.oneOf([LATEST]),
     ]).isRequired,
@@ -79,7 +82,7 @@ const RefItem_PropTypeDef = {
 
 const PositionItem_PropTypeDef = {
     type: PropTypes.oneOf([POSITION]).isRequired,
-    position: PropTypes.number.isRequired,
+    pos: PropTypes.number.isRequired,
 };
 
 const EnclosingContext_PropTypeDef = PropTypes.exact({
@@ -87,11 +90,11 @@ const EnclosingContext_PropTypeDef = PropTypes.exact({
         PropTypes.oneOfType([
             PropTypes.exact(RefItem_PropTypeDef),
             PropTypes.exact(PositionItem_PropTypeDef),
-        ]),
-    ),
+        ])
+    ).isRequired,
     withFoodItem: PropTypes.func,
     withPosition: PropTypes.func,
-    items: PropTypes.func,
+    popItems: PropTypes.func,
 });
 
 

@@ -117,6 +117,8 @@ function routeAction(state, action) {
 
 const reducer_changeIngredientQuantity = (action, mutableState) => {
     const {mealId, mealVersion, ingredientPosInMeal, newQuantity, context} = action;
+    const context1 = context;
+    context1.popItems(2);
 
     const meal = findFood(mutableState, mealId, mealVersion);
 
@@ -130,12 +132,16 @@ const reducer_changeIngredientQuantity = (action, mutableState) => {
     // TODO: update EACH ingredient's 'usedBy', like so:
     // addRefToArrayIfNotThere(ingredient.usedBy, updatedMeal.id, updatedMeal.version);
     
-    const [[_ingPos, _meal, mealPosInParent, mealParent], outerContext] = context.items(4);
+    const {
+        items: [{pos: mealPosInParent}, mealParent],
+        remainingContext: context3,
+    } = context2.popItems(2);
+
     if (mealParent === undefined) {
         return [];
     }
-    const syntheticAction = replaceIngredient(mealParent.id, mealParent.version,
-        mealPosInParent.position, updatedMeal.version, outerContext);
+    const syntheticAction = replaceIngredient(mealParent.id, mealParent.ver,
+        mealPosInParent, updatedMeal.version, context3);
     return [syntheticAction];
 };
 
@@ -152,12 +158,15 @@ const reducer_replaceIngredient = (action, mutableState) => {
     ]);
     putFoodIntoMutableState(mutableState, updatedParentFood);
 
-    const [[parentPosInSuperParent, superParent], outerContext] = context.items(2);
+    const {
+        items: [parentPosInSuperParent, superParent],
+        remainingContext: outerContext
+    } = context.popItems(2);
     if (superParent === undefined) {
         return [];
     }
-    const syntheticAction = replaceIngredient(superParent.id, superParent.version,
-        parentPosInSuperParent.position, updatedParentFood.vresion, outerContext);
+    const syntheticAction = replaceIngredient(superParent.id, superParent.ver,
+        parentPosInSuperParent.pos, updatedParentFood.version, outerContext);
     return [syntheticAction];
 
     // TODO: update each ingredients' 'usedBy'
