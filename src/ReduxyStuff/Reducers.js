@@ -103,7 +103,7 @@ function routeAction(state, action) {
 
             console.debug(`@Reducers: calling reducer ${reducer.name}`);
             const additionalActions = reducer(currentAction, mutableState);
-            console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: `,
+            console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: \n`,
                     JSON.stringify(additionalActions));
 
             actionsToProcess.push(...additionalActions);
@@ -116,60 +116,51 @@ function routeAction(state, action) {
 // functions of the form "reducer_*" take two arguments: action, mutable state
 
 const reducer_changeIngredientQuantity = (action, mutableState) => {
-    const {mealId, mealVersion, ingredientPosInMeal, newQuantity, context} = action;
-    const context1 = context;
-    context1.popItems(2);
+    const { newQuantity, context } = action;
+    const {
+        items: [{ pos: ingredientPosInMeal }, { id: mealId, ver: mealVersion }],
+        remainingContext,
+    } = context.popItems(2);
 
     const meal = findFood(mutableState, mealId, mealVersion);
-
     const updatedMeal = applyFunctionsTo(meal, [
         doUpdateVersion(),
         doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
         doCalculateMacros(mutableState),
     ]);
     putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
+    
+    const followUpAction = replaceIngredient(updatedMeal.version, remainingContext);
+    return [followUpAction];
 
     // TODO: update EACH ingredient's 'usedBy', like so:
     // addRefToArrayIfNotThere(ingredient.usedBy, updatedMeal.id, updatedMeal.version);
-    
-    const {
-        items: [{pos: mealPosInParent}, mealParent],
-        remainingContext: context3,
-    } = context2.popItems(2);
-
-    if (mealParent === undefined) {
-        return [];
-    }
-    const syntheticAction = replaceIngredient(mealParent.id, mealParent.ver,
-        mealPosInParent, updatedMeal.version, context3);
-    return [syntheticAction];
 };
 
 const reducer_replaceIngredient = (action, mutableState) => {
-    console.debug(`@Reducer: replace ingredient, action:`, action);
-    const {parentId, parentVersion, ingredientPosition, newVersion, context} = action;
+    try {
+        const { newVersion, context } = action;
+        const {
+            items: [{ pos: ingredientPosition }, parentRef],
+            remainingContext,
+        } = context.popItems(2);  // this throws if there are no items to pop
 
-    const parentFood = findFood(mutableState, parentId, parentVersion);
+        const parentFood = findFood(mutableState, parentRef.id, parentRef.ver);
+        const updatedParentFood = applyFunctionsTo(parentFood, [
+            doUpdateVersion(),
+            doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
+            doCalculateMacros(mutableState),
+        ]);
+        putFoodIntoMutableState(mutableState, updatedParentFood);
 
-    const updatedParentFood = applyFunctionsTo(parentFood, [
-        doUpdateVersion(),
-        doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
-        doCalculateMacros(mutableState),
-    ]);
-    putFoodIntoMutableState(mutableState, updatedParentFood);
+        const followUpAction = replaceIngredient(updatedParentFood.version, remainingContext);
+        return [followUpAction];
 
-    const {
-        items: [parentPosInSuperParent, superParent],
-        remainingContext: outerContext
-    } = context.popItems(2);
-    if (superParent === undefined) {
-        return [];
+        // TODO: update each ingredients' 'usedBy'
+    } catch (e) {
+        if (e instanceof RangeError) return [];  // no more actions to process
+        throw e;
     }
-    const syntheticAction = replaceIngredient(superParent.id, superParent.ver,
-        parentPosInSuperParent.pos, updatedParentFood.version, outerContext);
-    return [syntheticAction];
-
-    // TODO: update each ingredients' 'usedBy'
 };
 
 
@@ -203,7 +194,7 @@ const doUpdateIngredientVersionAtPos = (ingredientPosition, newVersion) => (meal
     const updatedMeal = {
         ...meal,
         ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
-            if (foodRef.position != ingredientPosition) return foodRef;
+            if (foodRef.position !== ingredientPosition) return foodRef;
             return {
                 ...foodRef,
                 version: newVersion,

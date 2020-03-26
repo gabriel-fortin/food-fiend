@@ -58,6 +58,9 @@ function addPositionToEnclosure(enclosure) {
 // helper
 function popEnclosureItems(enclosure) {
     const itemsPopper = (count) => {
+        if (enclosure.data.length < count) {
+            throw RangeError(`Cannot pop ${count} items, there are only ${enclosure.data.length}`);
+        }
         const requestedItems = enclosure.data.slice(0, count);
         const remainingItems = enclosure.data.slice(count);
         return {

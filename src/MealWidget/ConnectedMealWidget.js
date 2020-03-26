@@ -28,13 +28,13 @@ const mapStateToProps = (mealId, mealVersion, uiEnclosure) => (state) => {
     };
 };
 
-const mapDispatchToProps = (mealId, mealVersion, uiEnclosure) => ({
+const mapDispatchToProps = (uiEnclosure) => ({
     changeIngredientQuantity: (ingredientPos, newQuantity) => {
         // Replace any comma with a dot
         const quantityAsNumber = Number.parseFloat(newQuantity.replace(/,/, "."));
 
         const nestedEnclosure = uiEnclosure.withPosition(ingredientPos);
-        return changeIngredientQuantity(mealId, mealVersion, ingredientPos, quantityAsNumber, nestedEnclosure);
+        return changeIngredientQuantity(quantityAsNumber, nestedEnclosure);
     },
 });
 
@@ -43,10 +43,10 @@ const mapDispatchToProps = (mealId, mealVersion, uiEnclosure) => ({
  */
 const ConnectedMealWidget = ({mealId, mealVersion, uiEnclosure=emptyEnclosure()}) => {
     const nestedEnclosure = uiEnclosure.withFoodItem(mealId, mealVersion);
-
+    
     const HereIAm = connect(
         mapStateToProps(mealId, mealVersion, nestedEnclosure),
-        mapDispatchToProps(mealId, mealVersion, nestedEnclosure),
+        mapDispatchToProps(nestedEnclosure),
     )(MealWidget);
 
     return <HereIAm />;

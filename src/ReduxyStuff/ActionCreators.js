@@ -9,9 +9,6 @@ import { emptyEnclosure, EnclosingContext_PropTypeDef } from '../EnclosingContex
 
 const IngredientQuantityChangeAction_PropTypeDef = {
     type: PropTypes.oneOf(["CHANGE_FOOD_QUANTITY"]).isRequired,
-    mealId: PropTypes.number.isRequired,
-    mealVersion: PropTypes.number.isRequired,
-    ingredientPosInMeal: PropTypes.number.isRequired,
     newQuantity: PropTypes.number.isRequired,
     context: EnclosingContext_PropTypeDef.isRequired,
 };
@@ -24,9 +21,6 @@ const AddSimpleFoodAction_PropTypeDef = {
 
 const ReplaceIngredientAction_PropTypeDef = {
     type: PropTypes.oneOf(["REPLACE INGREDIENT"]),
-    parentId: PropTypes.number.isRequired,
-    parentVersion: PropTypes.number.isRequired,
-    ingredientPosition: PropTypes.number.isRequired,
     newVersion: PropTypes.number.isRequired,
     context: EnclosingContext_PropTypeDef.isRequired,
 };
@@ -40,12 +34,9 @@ function importData(data) {
     };
 }
 
-function changeIngredientQuantity(mealId, mealVersion, ingredientPosInMeal, newQuantity, context=emptyEnclosure()) {
+function changeIngredientQuantity(newQuantity, context=emptyEnclosure()) {
     const action = {
         type: "CHANGE_FOOD_QUANTITY",
-        mealId,
-        mealVersion,
-        ingredientPosInMeal,
         newQuantity,
         context: context,
     };
@@ -78,13 +69,10 @@ function addSimpleFood(name, unit, macros, macrosUncertainty=false, extra={}) {
 
 // TODO: parent id and parent version can be taken from context
 //       no need to provide them explicitly
-function replaceIngredient(parentId, parentVersion, ingredientPosition, newVersion, context=emptyEnclosure()) {
+function replaceIngredient(newVersion, context=emptyEnclosure()) {
     // TODO: replace all id+ver with a new 'ref' type (this is a global change I'm requesting here)
     const action = {
         type: "REPLACE INGREDIENT",
-        parentId,
-        parentVersion,
-        ingredientPosition,
         newVersion,
         context,
     };

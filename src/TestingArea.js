@@ -42,8 +42,6 @@ function DisplayDay() {
     store.dispatch(importData(obiad));
     store.dispatch(importData(tempDay));
 
-    store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
-
     return (
         <Provider store={store}>
             <TestingFrame>
