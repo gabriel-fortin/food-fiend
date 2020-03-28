@@ -30,7 +30,48 @@ function validateStateAfterReducing(state) {
 }
 
 function routeAction(state, action) {
-    if (action.type === "IMPORT_DATA") {
+    const reducersByActionType = {
+        "IMPORT_DATA": reducer_importData,
+        "CHANGE_FOOD_QUANTITY": reducer_changeIngredientQuantity,
+        "REPLACE INGREDIENT": reducer_replaceIngredient,
+    };
+    
+    // we start with one action to handle
+    let actionsToProcess = [action];
+    // reducers might add/trigger their own actions (which allowsw to put shared functionality into reducers)
+    // they'll be called "synthetic actions"
+
+    return Immer_produce(state, mutableState => {
+        do {
+            const currentAction = actionsToProcess.shift();
+            const reducer = reducersByActionType[currentAction.type];
+
+            // stop further processing if action is unrecognised
+            if (reducer === undefined) {
+                // but make an exception for initialisation done by Redux itself
+                if (action.type.startsWith("@@redux/INIT")) break;
+
+                console.error(`@Reducer: unhandled action: ${currentAction.type}`);
+
+                // it's not normal if we can't handle the action
+                throw new Error(`Unhandled action: ${currentAction.type}`);
+            }
+
+            console.debug(`@Reducers: calling reducer ${reducer.name}`);
+            const additionalActions = reducer(currentAction, mutableState);
+            console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: \n`,
+                    JSON.stringify(additionalActions));
+
+            actionsToProcess.push(...additionalActions);
+        } while(actionsToProcess.length > 0)
+        // if no changes were made, Immer returns the original object
+    });
+}
+
+// CONVENTION
+// functions of the form "reducer_*" take two arguments: action, mutable state
+
+const reducer_importData = (action, mutableState) => {
         // TODO: do not accept data blindly but:
         //       - compute what is a derived value (e.g. macros) and
         //       - assign the id ourselves
@@ -54,7 +95,7 @@ function routeAction(state, action) {
         };
 
         // TODO: use lens/accessor to get current data
-        const mergedData = state.current.foodData.concat(action.data);
+        const mergedData = mutableState.current.foodData.concat(action.data);
         const mergedAndSanitisedData = mergedData
                 // sort by id, then by version (if ids equal)
                 .sort((x, y) => {
@@ -64,56 +105,12 @@ function routeAction(state, action) {
                 })
                 .reduce(discoverNeighbouringDuplicates, startValue)
                 .res;
-        return {
-            ...state,
-            current: {
-                ...state.current,
-                foodData: mergedAndSanitisedData,
-            }
-        };
-    }
+        mutableState.current.foodData = mergedAndSanitisedData;
 
-    // =======================================================================
-    // from this place, a newer reducing style is used
-    // TODO: translate old reducers to new style
-
-    const reducersByActionType = {
-        "CHANGE_FOOD_QUANTITY": reducer_changeIngredientQuantity,
-        "REPLACE INGREDIENT": reducer_replaceIngredient,
-    };
-    // we start with one action to handle
-    let actionsToProcess = [action];
-    // reducers might add their own actions (so we can put shared functionality into reducers)
-    // they'll be called "synthetic actions"
-
-    return Immer_produce(state, mutableState => {
-        do {
-            const currentAction = actionsToProcess.shift();
-            const reducer = reducersByActionType[currentAction.type];
-
-            // stop further processing if action is unrecognised
-            if (reducer === undefined) {
-                if (action.type.startsWith("@@redux/INIT")) break;
-
-                console.error(`@Reducer: unhandled action: ${currentAction.type}`);
-
-                //it's not normal if we can't handle the action
-                throw new Error(`Unhandled action: ${currentAction.type}`);
-            }
-
-            console.debug(`@Reducers: calling reducer ${reducer.name}`);
-            const additionalActions = reducer(currentAction, mutableState);
-            console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: \n`,
-                    JSON.stringify(additionalActions));
-
-            actionsToProcess.push(...additionalActions);
-        } while(actionsToProcess.length > 0)
-        // if no changes were made, Immer returns the original object
-    });
-}
-
-// CONVENTION
-// functions of the form "reducer_*" take two arguments: action, mutable state
+        return [];  // no more actions to take
+        // MAYBE: this can use the 'add food' action for each imported item?
+        // adding would be only one reducer's responsibility
+};
 
 const reducer_changeIngredientQuantity = (action, mutableState) => {
     const { newQuantity, context } = action;
