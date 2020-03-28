@@ -21,20 +21,21 @@ function findFood(state, foodId, foodVersion = LATEST) {
             .filter(food => food.id === foodId);
 
     if (allVersionsOfSelectedFood.length === 0) {
-        throw new Error(`Store: find food -- no entries for food with id '${foodId}'`);
+        console.error(`Store: find food -- no entries for food with id '${foodId}'`);
+        return undefined;
     }
 
     const chosenVersionOfFood = (foodVersion === LATEST)
             ? [allVersionsOfSelectedFood.reduce(selectLatestVersionFromArray)]
             : allVersionsOfSelectedFood.filter(food => food.version === foodVersion);
 
-    if (chosenVersionOfFood.length !== 1) {
-        console.error(`Expected exactly one food with id ${foodId}` +
+    if (chosenVersionOfFood.length > 1) {
+        console.error(`Expected at most one food with id ${foodId}` +
             ` and version ${foodVersion} but found ${chosenVersionOfFood.length}`);
-        // if there are more than one then the first one will be shown
+        return undefined;
     }
 
-    return chosenVersionOfFood[0];
+    return chosenVersionOfFood[0];  // undefined if chosenVersionOfFood.length == 0
 }
 
 function getAllMeals(state) {
@@ -74,23 +75,14 @@ function mutatePutFood(mutableState, food) {
         mutableState.current.foodData.push(food);
     }
 
-    try {
-        const existsingFood = findFood(mutableState, food.id, food.version);
-        if (existsingFood === undefined) {
-            // the requested version doesn't exist => add
-            addNewFoodToState();
-            return;
-        }
-        // food exists in store => update
-        updateExistingFoodInState(existsingFood);
+    const existsingFood = findFood(mutableState, food.id, food.version);
+    if (existsingFood === undefined) {
+        // the requested version doesn't exist => add
+        addNewFoodToState();
+        return;
     }
-    catch (e) {
-        if (e.message.includes("no entries for food")) {
-            // food does not exist in store => add
-            addNewFoodToState();
-        }
-        else throw e;
-    }
+    // food exists in store => update
+    updateExistingFoodInState(existsingFood);
 }
 
 
