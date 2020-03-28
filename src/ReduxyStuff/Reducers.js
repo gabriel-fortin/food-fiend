@@ -1,6 +1,6 @@
 import Immer_produce from "immer";
 import FoodType from "../data/FoodType";
-import { findFood, mutatePutFood as putFoodIntoMutableState } from "../Store/Store";
+import { findFood, mutatePutFood as putFoodIntoMutableState, LATEST } from "../Store/Store";
 import { replaceIngredient } from "./ActionCreators";
 
 export default RootReducer;
@@ -35,7 +35,7 @@ function routeAction(state, action) {
         "CHANGE_FOOD_QUANTITY": reducer_changeIngredientQuantity,
         "REPLACE INGREDIENT": reducer_replaceIngredient,
     };
-    
+
     // we start with one action to handle
     let actionsToProcess = [action];
     // reducers might add/trigger their own actions (which allowsw to put shared functionality into reducers)
@@ -121,12 +121,12 @@ const reducer_changeIngredientQuantity = (action, mutableState) => {
 
     const meal = findFood(mutableState, mealId, mealVersion);
     const updatedMeal = applyFunctionsTo(meal, [
-        doUpdateVersion(),
+        doUpdateVersion(mutableState),
         doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
         doCalculateMacros(mutableState),
     ]);
     putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
-    
+
     const followUpAction = replaceIngredient(updatedMeal.version, remainingContext);
     return [followUpAction];
 
@@ -144,7 +144,7 @@ const reducer_replaceIngredient = (action, mutableState) => {
 
         const parentFood = findFood(mutableState, parentRef.id, parentRef.ver);
         const updatedParentFood = applyFunctionsTo(parentFood, [
-            doUpdateVersion(),
+            doUpdateVersion(mutableState),
             doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
             doCalculateMacros(mutableState),
         ]);
@@ -239,13 +239,14 @@ const doCalculateMacros = (state) => (meal) => {
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateVersion = () => (food) => {
+const doUpdateVersion = (state) => (food) => {
     // a day exists only in a single version
     if (food.type === FoodType.Day) return food;
+    // TODO: use an "isSingleton" function instead of comparing to 'Day'
+    // this way when new FoodTypes are added this code doesn't need to change
 
-    // FIXME: doing 'version++' is not appropriate when updating a non-latest version;
-    //        so, when updating, we need to find out what is the current latest existing version
-    const newVersion = food.version + 1;
+    const latestVersionOfFood = findFood(state, food.id, LATEST);
+    const newVersion = latestVersionOfFood.version + 1;
     return {
         ...food,
         version: newVersion,
