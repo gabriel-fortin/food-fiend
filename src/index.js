@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import * as serviceWorker from './serviceWorker';
-import TestingArea from './TestingArea';
+import './main/index.css';
+import * as serviceWorker from './main/serviceWorker';
+import TestingArea from './main/TestingArea';
 
 
 ReactDOM.render(<TestingArea />, document.getElementById('root'));

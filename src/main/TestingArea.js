@@ -1,16 +1,16 @@
 import React, { /* useState */ } from 'react';
-import { MacrosBar, MacrosInfo } from './MacrosDisplay/MacrosDisplay';
-import IngredientsDisplay from './IngredientsListWidget';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
-import Reducer from './ReduxyStuff/Reducers.js'
-import { importData, changeIngredientQuantity } from './ReduxyStuff/ActionCreators.js'
-import initialData from './data/initialData';
-import FoodSelector from './FoodSelector/FoodSelector'
-import { createEmptyStore, getAllMeals } from './Store/Store';
-import FoodType from './data/FoodType';
-import ConnectedMealWidget from './MealWidget';
-import ConnectedMealListWidget, { MealListWidget } from './MealListWidget';
+
+import { storeReducer, importData, changeIngredientQuantity, createEmptyStore, getAllMeals } from '../Store'
+import FoodType from '../data/FoodType';
+import initialData from '../data/initialData';
+
+import { MacrosBar, MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
+import IngredientsDisplay from '../IngredientsListWidget';
+import FoodSelector from '../FoodSelector/FoodSelector'
+import ConnectedMealWidget from '../MealWidget';
+import ConnectedMealListWidget, { MealListWidget } from '../MealListWidget';
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -215,7 +215,7 @@ function DisplayDataFromStore() {
         },
         history: null,
     };
-    const store = createStore(Reducer, initialState);
+    const store = createStore(storeReducer, initialState);
 
     const mapStateToProps = (state) => ({
         populatedIngredients: state.current.foodData.slice(0,20).map(x => ({

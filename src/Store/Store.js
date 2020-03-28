@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
-import Reducer from '../ReduxyStuff/Reducers.js'
-import FoodType from '../data/FoodType.js';
+import storeReducer from './Reducers'
+import FoodType from '../data/FoodType';
 
 function createEmptyStore() {
     const initialStateShape = {
@@ -10,7 +10,7 @@ function createEmptyStore() {
         history: null,
     };
 
-    return createStore(Reducer, initialStateShape);
+    return createStore(storeReducer, initialStateShape);
 }
 
 const selectLatestVersionFromArray = (foodA, foodB) => foodA.version > foodB.version ? foodA : foodB;

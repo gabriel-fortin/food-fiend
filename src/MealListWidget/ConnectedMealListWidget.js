@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { findFood, LATEST } from '../Store/Store';
+import { findFood, LATEST } from '../Store';
 import { EnclosingContext_PropTypeDef, emptyEnclosure} from '../EnclosingContext';
 
 import MealListWidget from './MealListWidget';

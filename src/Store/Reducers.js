@@ -1,9 +1,12 @@
-import Immer_produce from "immer";
-import FoodType from "../data/FoodType";
-import { findFood, mutatePutFood as putFoodIntoMutableState, LATEST } from "../Store/Store";
-import { replaceIngredient } from "./ActionCreators";
+import Immer_produce from 'immer';
 
-export default RootReducer;
+import FoodType from '../data/FoodType';
+
+import { findFood, mutatePutFood as putFoodIntoMutableState, LATEST } from './Store';
+import { replaceIngredient } from './ActionCreators';
+
+
+export default rootReducer;
 
 /**
  * Helper function to syntactically reverse the order of chained functions
@@ -15,7 +18,7 @@ function applyFunctionsTo(initialObject, functions) {
         .reduce((obj, fun) => fun(obj), initialObject);
 }
 
-function RootReducer(state, action) {
+function rootReducer(state, action) {
     if (state === undefined) {
         console.error(">> RootReducer: missing initial state");
     }

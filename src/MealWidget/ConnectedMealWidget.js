@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { findFood } from '../Store/Store';
-import { changeIngredientQuantity } from '../ReduxyStuff/ActionCreators';
+import { findFood, changeIngredientQuantity } from '../Store';
 import { EnclosingContext_PropTypeDef, emptyEnclosure } from '../EnclosingContext';
 
 import MealWidget from './MealWidget';
