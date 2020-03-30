@@ -14,6 +14,7 @@ function enclosureWith(items) {
     const enc = {
         data: items,
     };
+    // TODO: rename 'withFoodItem' to 'withRef'
     enc.withFoodItem = addFoodItemToEnclosure(enc);
     enc.withPosition = addPositionToEnclosure(enc);
     enc.popItems = popEnclosureItems(enc);

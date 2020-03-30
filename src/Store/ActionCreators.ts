@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
+
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import { emptyEnclosure, EnclosingContext_PropTypeDef } from '../EnclosingContext';
+
+import Food from './Food';
+
 
 /*
  * This file is an API to the store.
@@ -26,7 +30,7 @@ const ReplaceIngredientAction_PropTypeDef = {
 };
 
 
-function importData(data) {
+function importData(data: Food) {
     // TODO: ActionCreators: validate input for 'importData'
     return {
         type: "IMPORT_DATA",
@@ -34,7 +38,8 @@ function importData(data) {
     };
 }
 
-function changeIngredientQuantity(newQuantity, context=emptyEnclosure()) {
+// TODO: TS: make newQuantity of a weight type
+function changeIngredientQuantity(newQuantity: number, context=emptyEnclosure()) {
     const action = {
         type: "CHANGE_FOOD_QUANTITY",
         newQuantity,
@@ -50,7 +55,8 @@ function changeIngredientQuantity(newQuantity, context=emptyEnclosure()) {
 /**
  * Add simple food to the store
  */
-function addSimpleFood(name, unit, macros, macrosUncertainty=false, extra={}) {
+// TODO: TS: make macros and macrosUncertainty of appropriate types
+function addSimpleFood(name: string, unit: string, macros: any, macrosUncertainty=false, extra={}) {
     const action = {
         type: "ADD_SIMPLE_FOOD",
         name,
@@ -67,9 +73,7 @@ function addSimpleFood(name, unit, macros, macrosUncertainty=false, extra={}) {
 }
 
 
-// TODO: parent id and parent version can be taken from context
-//       no need to provide them explicitly
-function replaceIngredient(newVersion, context=emptyEnclosure()) {
+function replaceIngredient(newVersion: number, context=emptyEnclosure()) {
     // TODO: replace all id+ver with a new 'ref' type (this is a global change I'm requesting here)
     const action = {
         type: "REPLACE INGREDIENT",
