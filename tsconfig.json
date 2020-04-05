@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "noImplicitAny": true,
     "jsx": "react",
     "target": "es5",
     "lib": [
@@ -17,7 +18,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    /* The 'baseUrl' enables absolute imports.
+       For the IDE, a change in .eslintrc is also needed */
+    "baseUrl": "src"
   },
   "include": [
     "src"
