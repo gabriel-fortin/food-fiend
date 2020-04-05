@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
 import { emptyEnclosure, EnclosingContext_PropTypeDef } from '../EnclosingContext';
 
-import Food from './Food';
+import { Food } from 'Model';
 
 
 /*
@@ -30,7 +30,7 @@ const ReplaceIngredientAction_PropTypeDef = {
 };
 
 
-function importData(data: Food) {
+function importData(data: Food[]) {
     // TODO: ActionCreators: validate input for 'importData'
     return {
         type: "IMPORT_DATA",
