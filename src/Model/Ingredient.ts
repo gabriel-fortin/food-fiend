@@ -1,6 +1,6 @@
-import Ref from "./Ref";
+import { Ref } from "./Ref";
 
-class Ingredient {
+export class Ingredient {
 
     ref: Ref;
     
@@ -21,5 +21,3 @@ class Ingredient {
         this.quantity = quantity;
     }
 }
-
-export default Ingredient;

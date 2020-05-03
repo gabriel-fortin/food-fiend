@@ -1,4 +1,4 @@
-class Ref {
+export class Ref {
 
     id: number;
     
@@ -12,5 +12,3 @@ class Ref {
         this.ver = version;
     }
 }
-
-export default Ref;

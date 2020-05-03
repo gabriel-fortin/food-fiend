@@ -1,9 +1,9 @@
-import Ref from './Ref';
-import Ingredient from './Ingredient';
-import Macros from './Macros';
-import FoodType from './FoodType';
+import { Ref } from './Ref';
+import { Ingredient } from './Ingredient';
+import { Macros, MacrosUncertainty } from './Macros';
+import { FoodType } from './FoodType';
 
-class Food {
+export class Food {
 
     ref: Ref;
 
@@ -12,7 +12,8 @@ class Food {
     macros: Macros;
 
     /** Uncertainty of macros; false means no uncertainty */
-    uncertainty: Macros | false;
+    uncertainty: MacrosUncertainty;
+    // TODO: start using uncertainty
 
     extra: any;
 
@@ -54,5 +55,3 @@ class Food {
         this.uncertainty = false;
     }
 }
-
-export default Food;

@@ -2,7 +2,7 @@ import React, { /* useState */ } from 'react';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 
-import { storeReducer, importData, changeIngredientQuantity, createEmptyStore, getAllMeals } from '../Store'
+import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals } from 'Store'
 import FoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -11,6 +11,13 @@ import IngredientsDisplay from '../IngredientsListWidget';
 import FoodSelector from '../FoodSelector/FoodSelector'
 import ConnectedMealWidget from '../MealWidget';
 import ConnectedMealListWidget, { MealListWidget } from '../MealListWidget';
+import Onion from 'Onion';
+
+
+function createEmptyStore() {
+    // return createStore<State, Action, any, any>(storeReducer, new State());
+    return createStore(storeReducer, new State());
+}
 
 export default function TestingArea() {
     // return showOfMacrosBar();
@@ -35,6 +42,7 @@ function DisplayDay() {
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
+
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
@@ -47,7 +55,8 @@ function DisplayDay() {
             <TestingFrame>
                 {/* TODO: after implementing usedBy somethingRandom might be not needed */}
                 <ConnectedMealListWidget
-                    dayId={666} />
+                    dayId={666}
+                    uiEnclosure={Onion.create()} />
             </TestingFrame>
         </Provider>
     );
@@ -143,9 +152,10 @@ function TestingFrame({children}) {
 
 // use this just for dev
 const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") => ({
-    version: mealVersion,
-
-    id: mealId,
+    ref: {
+        id: mealId,
+        ver: mealVersion,
+    },
     name: title,
     macros: {  // 30g of each product
         fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
@@ -159,8 +169,10 @@ const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") =
     portionSize: mealIngredients.length * 30,  // grams per portion
     portions: 1,
     ingredientsRefs: mealIngredients.map((ingredient, i) => ({
-        id: ingredient.id,
-        version: ingredient.version,
+        ref: {
+            id: ingredient.ref.id,
+            ver: ingredient.ref.ver,
+        },
         /* TODO: rename 'position' to 'key' */
         position: i,  // position of food within meal; used as key in react lists
         quantity: 30,  // measured in the food's portions (which is 1g for simple foods)

@@ -1,4 +1,4 @@
-import IngredientsListWidget from './IngredientsListWidget';
+import { IngredientsListWidget } from './IngredientsListWidget';
 
 export default IngredientsListWidget;
 export { IngredientsListWidget };

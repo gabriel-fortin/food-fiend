@@ -1,4 +1,4 @@
-class Macros {
+export class Macros {
 
     fat: number;
 
@@ -17,4 +17,4 @@ class Macros {
     }
 }
 
-export default Macros;
+export type MacrosUncertainty = Macros | false;

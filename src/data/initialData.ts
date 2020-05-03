@@ -1,14 +1,14 @@
 import fullRawData from './full-data';
-import FoodType from './FoodType';
+import { Food, FoodType } from 'Model';
 
 const initialStructuredData = fullRawData
     .map(reshapeIntoExpectedForm)
     .map(ensureIdIsANonZeroInteger)
     .map(parseMacrosValues);
 
-function reshapeIntoExpectedForm(item) {
+function reshapeIntoExpectedForm(item: any): Food {
     // some simple hash implementation from StackOverflow
-    const hashCode = argString => {
+    const hashCode = (argString: string) => {
         let hash = 0;
         for (let i = 0; i < argString.length; i++) {
             let char = argString.charCodeAt(i);
@@ -19,9 +19,10 @@ function reshapeIntoExpectedForm(item) {
     };
 
     return {
-        version: 1,  // to enable immutability but still allow changes
-
-        id: hashCode(JSON.stringify(item)),
+        ref: {
+            id: hashCode(JSON.stringify(item)),
+            ver: 1,
+        },
         name: item.name,
         macros: {  // quantities per 100g of product
             fat: item.fat,
@@ -44,31 +45,31 @@ function reshapeIntoExpectedForm(item) {
     };
 }
 
-function ensureIdIsANonZeroInteger(item) {
-    if (item.id === 0) throw new Error(`Invalid id (expected non-zero) on item "${item.name}"; the value is "${item.id}"`);
-    if (Number.isInteger(item.id)) return item;
-    throw new Error(`Invalid value (expected integer) on item "${item.name}"; the value is "${item.id}"`);
+function ensureIdIsANonZeroInteger(item: Food) {
+    if (item.ref.id === 0) throw new Error(`Invalid id (expected non-zero) on item "${item.name}"; the value is "${item.ref.id}"`);
+    if (Number.isInteger(item.ref.id)) return item;
+    throw new Error(`Invalid value (expected integer) on item "${item.name}"; the value is "${item.ref.id}"`);
 }
 
-function parseMacrosValues(item) {
+function parseMacrosValues(item: any) {
     const uncertaintyValues = {  // used occasionally, when some data missing or unparseable
         fat: 0,
         protein: 0,
         carbs: 0,
-        messages: [],
+        messages: new Array<any>(),
     };
 
-    const parse = (value, field) => {
+    const parse = (inValue: string, field: string) => {
         // we treat trace amounts as zero
-        if (value === "Tr") return 0;
+        if (inValue === "Tr") return 0;
 
         // most of the time we should get a number
-        value = Number.parseFloat(value);
+        const value = Number.parseFloat(inValue);
         if (Number.isFinite(value)) return value;
 
         // finally, we give up on parsing
         // assume 100g of the substance can be additionally present per 100g of product
-        uncertaintyValues[field] = 100;
+        (uncertaintyValues as any)[field] = 100;
         uncertaintyValues.messages.push(`Unknown ${field} value for "${item.name}; assuming 100g"`);
         return 0;
     };

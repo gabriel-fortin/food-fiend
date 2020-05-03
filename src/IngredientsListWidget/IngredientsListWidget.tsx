@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+
+import { MacrosInfo } from 'MacrosDisplay/MacrosDisplay';
+import { Ingredient, Food, Ref, Macros } from 'Model';
+
+
 import './ingredients-list-widget.css';
-import { MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import { IngredientRef_PropTypeDef, IngredientData_PropTypeDef } from '../Store/PropTypeDefs';
+
 
 // default value for some optional props
-const warnThatMissing = (what) => () =>
+const warnThatMissing = (what: string) => () =>
     console.warn(`${IngredientsListWidget.name}: missing callback for '${what}'`);
 
-function IngredientsListWidget({
-        ingredients,
+
+interface ILWProps{
+    data: {ingredient: Ingredient, food: Food}[];
+    onQuantityChange: (pos: number, q: string) => void;
+    onSelectionToggle?: (ref: Ref) => void;
+}
+export const IngredientsListWidget: React.FC<ILWProps> = ({
+        data,
         onQuantityChange = warnThatMissing('quantity change'),
         onSelectionToggle = warnThatMissing('selection toggle')
-    }) {
+    }) => {
     return (
         <div className="table-display">
             {headerRow()}
-            {ingredients.map(({ref, data}) =>
+            {data.map(({ingredient: asIngredient, food: asFood}) =>
                 <DataRow
                     // TODO: possible repeated key if e.g. butter if twice on the list
-                    key={data.id}
-                    name={data.name}
-                    macros={data.macros}
-                    quantity={ref.quantity}
-                    onQuantityChange={newQuantity => onQuantityChange(ref.position, newQuantity)}
-                    onSelectionToggle={() => onSelectionToggle(data.id)}
+                    key={JSON.stringify(asFood.ref)}
+                    name={asFood.name}
+                    macros={asFood.macros}
+                    quantity={asIngredient.quantity}
+                    onQuantityChange={(newQuantity: string) => onQuantityChange(asIngredient.position, newQuantity)}
+                    onSelectionToggle={() => onSelectionToggle(asFood.ref)}
                 />)}
         </div>
     );
 }
 
-IngredientsListWidget.PropTypeDef = {
-    ingredients: PropTypes.arrayOf(PropTypes.shape({
-        ref: PropTypes.shape(IngredientRef_PropTypeDef).isRequired,
-        data: PropTypes.shape(IngredientData_PropTypeDef).isRequired,
-    })).isRequired,
-    onQuantityChange: PropTypes.func,
-    onSelectionToggle: PropTypes.func,
-};
-IngredientsListWidget.propTypes = IngredientsListWidget.PropTypeDef;
 
 function headerRow() {
     const headers = ["Product Name", "Macros", "Quantity"];
@@ -54,13 +55,20 @@ function headerRow() {
     );
 }
 
-function DataRow({name, macros, quantity, onQuantityChange, onSelectionToggle}) {
+interface DRProps {
+    name: string;
+    macros: Macros;
+    quantity: number;
+    onQuantityChange: (q: string) => void;
+    onSelectionToggle: (ref: Ref) => void;
+}
+const DataRow: React.FC<DRProps> = ({name, macros, quantity, onQuantityChange, onSelectionToggle}) => {
     const [editMode, setEditMode] = useState(false);
 
     const userClicksQuantityValue = () => {
         setEditMode(true);
     };
-    const userAcceptsQuantityChange = (newQuantity) => {
+    const userAcceptsQuantityChange = (newQuantity: string) => {
         onQuantityChange(newQuantity);
         setEditMode(false);
     };
@@ -96,7 +104,12 @@ function DataRow({name, macros, quantity, onQuantityChange, onSelectionToggle}) 
     );
 }
 
-function QuantityEditor({quantity, userAbandonsEditing, userAcceptsQuantityChange}) {
+interface QEProps {
+    quantity: number;
+    userAbandonsEditing: () => void;
+    userAcceptsQuantityChange: (q: string) => void;
+}
+const QuantityEditor: React.FC<QEProps> = ({quantity, userAbandonsEditing, userAcceptsQuantityChange}) => {
     return (
         <span className="quantity-editor">
             <input pattern="\d+(\.\d+)?"
@@ -104,18 +117,17 @@ function QuantityEditor({quantity, userAbandonsEditing, userAcceptsQuantityChang
                 onFocus={e => {
                     // when editing starts, put the current value in and select it
                     // so the user can enter a new value more easily
-                    e.target.value = quantity;
+                    e.target.value = String(quantity);
                     e.target.select();
                 }}
                 onBlur={e => userAbandonsEditing()}
                 onKeyUp={e => {
                     if (e.key === 'Escape') userAbandonsEditing();
-                    if (e.key === 'Enter') userAcceptsQuantityChange(e.target.value);
+                    if (e.key === 'Enter') userAcceptsQuantityChange((e.target as any).value);
+                            // TODO: remove casting to 'any'
                 }}
                 />
         </span>
     );
 }
 
-
-export default IngredientsListWidget;
