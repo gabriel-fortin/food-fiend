@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/prop-types": "^15.7.3",
+    "@types/react-redux": "^7.1.7",
     "immer": "^5.3.6",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
