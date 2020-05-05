@@ -1,6 +1,3 @@
-import PropTypes from 'prop-types';
-
-import { MacrosInfo } from 'MacrosDisplay/MacrosDisplay';
 import Onion from 'Onion';
 
 import { Food, Macros, MacrosUncertainty } from 'Model';
@@ -10,24 +7,6 @@ import { Food, Macros, MacrosUncertainty } from 'Model';
 //  * This file is an API to the store.
 //  * All inputs should be type-verified here before actions are dispatched.
 //  */
-
-// const IngredientQuantityChangeAction_PropTypeDef = {
-//     type: PropTypes.oneOf(["CHANGE_FOOD_QUANTITY"]).isRequired,
-//     newQuantity: PropTypes.number.isRequired,
-//     context: EnclosingContext_PropTypeDef.isRequired,
-// };
-
-// const AddSimpleFoodAction_PropTypeDef = {
-//     type: PropTypes.oneOf(["ADD_SIMPLE_FOOD"]),
-//     name: PropTypes.string.isRequired,
-//     macros: MacrosInfo.PropTypeDef,
-// };
-
-// const ReplaceIngredientAction_PropTypeDef = {
-//     type: PropTypes.oneOf(["REPLACE INGREDIENT"]),
-//     newVersion: PropTypes.number.isRequired,
-//     context: EnclosingContext_PropTypeDef.isRequired,
-// };
 
 export interface ImportDataAction {
     type: "IMPORT_DATA",
@@ -73,17 +52,15 @@ export function importData(data: Food[]): ImportDataAction {
 }
 
 // TODO: TS: make newQuantity of a weight type
-export function changeIngredientQuantity(newQuantity: number, context: Onion = Onion.create()): ChangeIngredientQuantityAction {
-    const action: ChangeIngredientQuantityAction = {
+export function changeIngredientQuantity(
+    newQuantity: number,
+    context: Onion = Onion.create()
+): ChangeIngredientQuantityAction {
+    return {
         type: "CHANGE_FOOD_QUANTITY",
         newQuantity,
         context,
     };
-
-    // PropTypes.checkPropTypes(IngredientQuantityChangeAction_PropTypeDef, action,
-    //     `parameter`, `${changeIngredientQuantity.name}`);
-
-    return action;
 }
 
 /**
@@ -96,7 +73,7 @@ export function addSimpleFood(
     macrosUncertainty: MacrosUncertainty = false,
     extra: any = {},
 ): AddSimpleFoodAction {
-    const action: AddSimpleFoodAction = {
+    return {
         type: "ADD_SIMPLE_FOOD",
         name,
         unit,
@@ -104,23 +81,16 @@ export function addSimpleFood(
         macrosUncertainty,
         extra,
     };
-
-    // PropTypes.checkPropTypes(AddSimpleFoodAction_PropTypeDef, action,
-        // `parameter`, `${addSimpleFood.name}`);
-
-    return action;
 }
 
 
-export function replaceIngredient(newVersion: number, context=Onion.create()): ReplaceIngredientAction {
-    const action: ReplaceIngredientAction = {
+export function replaceIngredient(
+    newVersion: number,
+    context=Onion.create()
+): ReplaceIngredientAction {
+    return {
         type: "REPLACE INGREDIENT",
         newVersion,
         context,
     };
-
-    // PropTypes.checkPropTypes(ReplaceIngredientAction_PropTypeDef, action,
-    //     `parameter`, `${replaceIngredient.name}`);
-
-    return action;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MacrosInfo } from 'MacrosDisplay/MacrosDisplay';
+import { MacrosInfo } from 'MacrosDisplay';
 import { Macros, Food, Ingredient } from 'Model';
 import IngredientsListWidget from 'IngredientsListWidget';
 import Onion from 'Onion';

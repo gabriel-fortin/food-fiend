@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
-import { MacrosInfo } from 'MacrosDisplay/MacrosDisplay';
+import { MacrosInfo } from 'MacrosDisplay';
 import { Ingredient, Food, Ref, Macros } from 'Model';
-
 
 import './ingredients-list-widget.css';
 

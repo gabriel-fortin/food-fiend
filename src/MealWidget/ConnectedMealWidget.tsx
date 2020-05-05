@@ -8,12 +8,6 @@ import Onion from 'Onion';
 import { MealWidget } from './MealWidget';
 
 
-// interface StateMapping {
-//     (mealRef: Ref, uiEnclosure: Onion): (state: State) => {
-            // ???
-//     }
-// }
-// const mapStateToProps = (mealId, mealVersion, uiEnclosure) => (state) => {
 const mapStateToProps = (mealRef: Ref, uiEnclosure: Onion) => (state: State) => {
     const meal = state.findFood(mealRef);
     const data = meal.ingredientsRefs

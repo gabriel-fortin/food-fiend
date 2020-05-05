@@ -1,5 +1,4 @@
 import { importData, changeIngredientQuantity, replaceIngredient, addSimpleFood } from './ActionCreators';
-import { IngredientRef_PropTypeDef, IngredientData_PropTypeDef } from './PropTypeDefs';
 import { rootReducer as storeReducer } from './Reducers';
 import { mutatePutFood, getAllMeals, State, NoFoodFoundError } from './Store';
 
@@ -12,7 +11,6 @@ export type Action = import('./ActionCreators').Action;
 
 export {
     importData, changeIngredientQuantity, replaceIngredient, addSimpleFood,
-    IngredientRef_PropTypeDef, IngredientData_PropTypeDef,
     storeReducer,
     mutatePutFood, getAllMeals, State, NoFoodFoundError,
 };

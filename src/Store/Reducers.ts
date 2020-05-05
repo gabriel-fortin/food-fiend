@@ -1,14 +1,14 @@
 import Immer_produce from 'immer';
 
-import FoodType from 'data/FoodType';
-
-import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
-import { replaceIngredient, Action, ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction } from './ActionCreators';
-import { Food, Ref, Ingredient } from 'Model';
+import { Food, Ref, Ingredient, FoodType } from 'Model';
 import { PositionLayer, RefLayer } from 'Onion';
 
+import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
+import {
+    replaceIngredient, Action,
+    ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction
+} from './ActionCreators';
 
-// export default rootReducer;
 
 /**
  * Helper function prettier chaining
