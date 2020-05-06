@@ -68,7 +68,7 @@ function findFood(state: State, foodRef: Ref): Food {
     }
 
     if (chosenVersionOfFood.length === 0)
-        throw new NoFoodFoundError(`No food found with ref: ${foodRef}`);
+        throw new NoFoodFoundError(`No food found with ref: ${JSON.stringify(foodRef)}`);
 
     return chosenVersionOfFood[0];
 }
