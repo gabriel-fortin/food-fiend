@@ -1,6 +1,21 @@
 import { Ref } from 'Model';
 
 
+export enum LayerKind {
+    REF = "REF LAYER",
+    POS = "POSITION LAYER",
+}
+export interface RefLayer {
+    kind: LayerKind.REF;
+    ref: Ref;
+}
+export interface PositionLayer {
+    kind: LayerKind.POS;
+    pos: number;
+}
+export type Layer = RefLayer | PositionLayer;
+
+
 /**
  * For keeping track of the navigation path or UI context.
  * A little like breadcrumbs.
@@ -58,17 +73,4 @@ export class Onion {
 
         return [peeledLayers, new Onion(remainingOnion)] as const;
     }
-}
-
-export type Layer = RefLayer | PositionLayer;
-export enum LayerKind { REF = "REF LAYER", POS = "POSITION LAYER" }
-
-export interface RefLayer {
-    kind: LayerKind.REF;
-    ref: Ref;
-}
-
-export interface PositionLayer {
-    kind: LayerKind.POS;
-    pos: number;
 }
