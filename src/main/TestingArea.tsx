@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 
 import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals } from 'Store'
-import FoodType from '../data/FoodType';
+import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
 import { MacrosBar, MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
@@ -12,6 +12,7 @@ import FoodSelector from '../FoodSelector/FoodSelector'
 import ConnectedMealWidget from '../MealWidget';
 import ConnectedMealListWidget, { MealListWidget } from '../MealListWidget';
 import Onion from 'Onion';
+import { Ingredient, Food, FoodType } from 'Model';
 
 
 function createEmptyStore() {
@@ -46,9 +47,9 @@ function DisplayDay() {
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    store.dispatch(importData(lunch));
-    store.dispatch(importData(obiad));
-    store.dispatch(importData(tempDay));
+    store.dispatch(importData([lunch]));
+    store.dispatch(importData([obiad]));
+    store.dispatch(importData([tempDay]));
 
     return (
         <Provider store={store}>
@@ -62,7 +63,7 @@ function DisplayDay() {
     );
 }
 
-function createDay(id, meals, title) {
+function createDay(id: number, meals: Food[], title: string) {
     let day = createMeal(id, -14, meals, title);
     day.type = FoodType.Day;  // items of this type are used at most once
                 // 'usedBy' will have one element at most
@@ -82,12 +83,12 @@ function DisplayAllMeals() {
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    store.dispatch(importData(temporaryMeal1));
-    store.dispatch(importData(temporaryMeal2));
+    store.dispatch(importData([temporaryMeal1]));
+    store.dispatch(importData([temporaryMeal2]));
 
-    store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));
+    // store.dispatch(changeIngredientQuantity(12345, 1, 0, 400));  // this doesn't work since some changes were made
 
-    const mapStateToProps = (state) => ({
+    const mapStateToProps = (state: State) => ({
         meals: getAllMeals(store.getState()),
     });
     const GoGoMealListWidget = connect(mapStateToProps)(MealListWidget);
@@ -95,7 +96,7 @@ function DisplayAllMeals() {
     return (
         <Provider store={store}>
             <TestingFrame>
-                <GoGoMealListWidget />
+                {/* <GoGoMealListWidget />  // this doesn't work since some changes were made */}
             </TestingFrame>
         </Provider>
     );
@@ -118,7 +119,7 @@ function DisplayMeal() {
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    store.dispatch(importData(temporaryMeal));
+    store.dispatch(importData([temporaryMeal]));
 
     // render
     const style = {
@@ -130,13 +131,13 @@ function DisplayMeal() {
     return (
         <Provider store={store}>
             <div style={style}>
-                <ConnectedMealWidget mealId={mealId} mealVersion={mealVersion} />
+                <ConnectedMealWidget mealRef={{id: 14, ver: 1}} uiEnclosure={Onion.create()} />
             </div>
         </Provider>
     );
 }
 
-function TestingFrame({children}) {
+function TestingFrame({children}: any) {
     const style = {
         border: "solid 1px grey",
         margin: "70px 100px",
@@ -151,7 +152,12 @@ function TestingFrame({children}) {
 }
 
 // use this just for dev
-const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") => ({
+const createMeal = (
+    mealId: number,
+    mealVersion: number,
+    mealIngredients: Food[],
+    title = "Test Meal"
+): Food => ({
     ref: {
         id: mealId,
         ver: mealVersion,
@@ -162,6 +168,7 @@ const createMeal = (mealId, mealVersion, mealIngredients, title = "Test Meal") =
         protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
         carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30/100, 0),
     },
+    uncertainty: false,
     extra: {},
 
     type: FoodType.Compound,
@@ -187,15 +194,15 @@ function FoodSelection() {
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
 
-    const mapStateToProps = (state) => ({
+    const mapStateToProps = (state: State) => ({
         data: state.current.foodData.map(x => ({
-            id: x.id,
+            id: x.ref.id,
             name: x.name,
         })),
     });
     const mapDispatchToProps = {
-        onFoodSelected: id => {
-            const matchingFood = store.getState().current.foodData.filter(x => x.id === id);
+        onFoodSelected: (id: number) => {
+            const matchingFood = store.getState().current.foodData.filter(x => x.ref.id === id);
             console.log(`>> food selected: ${id} - ${JSON.stringify(matchingFood)}`);
             return {
                 type: "user typed a letter",
@@ -229,10 +236,10 @@ function DisplayDataFromStore() {
     };
     const store = createStore(storeReducer, initialState);
 
-    const mapStateToProps = (state) => ({
+    const mapStateToProps = (state: State) => ({
         populatedIngredients: state.current.foodData.slice(0,20).map(x => ({
-            id: x.id,
-            version: x.version,
+            id: x.ref.id,
+            version: x.ref.ver,
             name: x.name,
             quantity: 0,
             macros: x.macros,
@@ -250,7 +257,7 @@ function DisplayDataFromStore() {
     return (
         <Provider store={store}>
             <div style={style}>
-                <ConnectedIngredientsDisplay />
+                <ConnectedIngredientsDisplay data={[]} onQuantityChange={()=>{}} />
             </div>
         </Provider>
     );
