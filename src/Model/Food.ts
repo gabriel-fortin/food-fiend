@@ -3,6 +3,7 @@ import { Ingredient } from './Ingredient';
 import { Macros, MacrosUncertainty } from './Macros';
 import { FoodType } from './FoodType';
 
+
 export class Food {
 
     ref: Ref;
@@ -41,6 +42,7 @@ export class Food {
         unitName: string = "g",
         portionSize: number = 1,
         portions: number = 1,
+        extra: any = {},
     ) {
         this.ref = ref;
         this.name = name;
@@ -53,5 +55,6 @@ export class Food {
         this.ingredientsRefs = [];
         this.usedBy = [];
         this.uncertainty = false;
+        this.extra = extra;
     }
 }

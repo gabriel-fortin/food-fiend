@@ -157,25 +157,24 @@ const createMeal = (
     mealVersion: number,
     mealIngredients: Food[],
     title = "Test Meal"
-): Food => ({
-    ref: {
-        id: mealId,
-        ver: mealVersion,
-    },
-    name: title,
-    macros: {  // 30g of each product
-        fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
-        protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
-        carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30/100, 0),
-    },
-    uncertainty: false,
-    extra: {},
-
-    type: FoodType.Compound,
-    unit: "g",  // for quantity display only
-    portionSize: mealIngredients.length * 30,  // grams per portion
-    portions: 1,
-    ingredientsRefs: mealIngredients.map((ingredient, i) => ({
+): Food => {
+    const food = new Food(
+        {
+            id: mealId,
+            ver: mealVersion,
+        },
+        title,
+        FoodType.Compound,
+        {  // 30g of each product
+            fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
+            protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),
+            carbs: mealIngredients.reduce((acc, x) => acc + x.macros.carbs * 30/100, 0),
+        },
+        "g",
+        mealIngredients.length * 30,
+        1,
+    );
+    food.ingredientsRefs = mealIngredients.map((ingredient, i) => ({
         ref: {
             id: ingredient.ref.id,
             ver: ingredient.ref.ver,
@@ -184,10 +183,9 @@ const createMeal = (
         position: i,  // position of food within meal; used as key in react lists
         quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
         notes: null,  // some additional text to display
-    })),
-    usedBy: [],  // list of <id, version> of depending meals
-    //uncertainty: false,  // we ignore this now (normally, we should compute it)
-});
+    }));
+    return food;
+};
 
 // eslint-disable-next-line
 function FoodSelection() {

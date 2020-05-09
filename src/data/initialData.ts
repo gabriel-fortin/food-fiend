@@ -1,5 +1,7 @@
 import fullRawData from './full-data';
+
 import { Food, FoodType } from 'Model';
+
 
 const initialStructuredData = fullRawData
     .map(reshapeIntoExpectedForm)
@@ -18,31 +20,26 @@ function reshapeIntoExpectedForm(item: any): Food {
         return hash;
     };
 
-    return {
-        ref: {
+    return new Food(
+        {
             id: hashCode(JSON.stringify(item)),
             ver: 1,
         },
-        name: item.name,
-        macros: {  // quantities per 100g of product
+        item.name,
+        FoodType.Simple,
+        {  // quantities per 100g of product
             fat: item.fat,
             protein: item.protein,
             carbs: item.carbs,
         },
-        extra: item.extra,
-
-        type: FoodType.Simple,
-        unit: "g",  // for quantity display only
-        portionSize: 1,  // grams per portion
-        portions: 1,
-        ingredientsRefs: [],  // list of <id, version> of ingredients
-        usedBy: [],  // list of <id, version> of depending meals
-                    // it's redundant data so it's there for potential performance gain
-        uncertainty: false,  // allow uncertainty of macros (and maybe other things)
+        "g",  // unitName: for quantity display only
+        1,  // portionSize: grams per portion
+        1,  // portions
+        item.extra,
 
         // to be used, maybe, in the future
         // portionStep: 5,  // in grams
-    };
+    );
 }
 
 function ensureIdIsANonZeroInteger(item: Food) {
