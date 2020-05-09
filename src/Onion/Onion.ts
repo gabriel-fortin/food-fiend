@@ -63,9 +63,14 @@ export class Onion {
         return new Onion([newLayer, ...this.layers]);
     }
 
+    layersLeft(): number {
+        return this.layers.length;
+    }
+
     peelLayers(howMany: number) {
         if (this.layers.length < howMany) {
-            throw RangeError(`Cannot peel ${howMany} layers, there are only ${this.layers.length} left in this Onion`);
+            throw RangeError(`Cannot peel ${howMany} layers, ` +
+                `there are only ${this.layers.length} left in this Onion: ${JSON.stringify(this.layers)}`);
         }
 
         const peeledLayers = this.layers.slice(0, howMany);

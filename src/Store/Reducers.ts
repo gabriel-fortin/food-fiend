@@ -6,7 +6,7 @@ import { PositionLayer, RefLayer } from 'Onion';
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
     replaceIngredient, Action,
-    ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction
+    ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction, SetCurrentDayAction, setCurrentDay
 } from './ActionCreators';
 
 
@@ -42,6 +42,7 @@ function routeAction(state: State, action: Action): State {
         ["IMPORT_DATA", reducer_importData],
         ["CHANGE_FOOD_QUANTITY", reducer_changeIngredientQuantity],
         ["REPLACE INGREDIENT", reducer_replaceIngredient],
+        ["SET CURRENT DAY", reducer_setCurrentDay],
     ]);
 
     // we start with one action to handle
@@ -144,7 +145,6 @@ const reducer_changeIngredientQuantity = (action: Action, mutableState: State): 
 };
 
 const reducer_replaceIngredient = (action: Action, mutableState: State): Action[] => {
-    try {
         const { newVersion, context } = action as ReplaceIngredientAction;
 
         const [[layer1, layer2], remainingContext] = context.peelLayers(2);
@@ -152,21 +152,36 @@ const reducer_replaceIngredient = (action: Action, mutableState: State): Action[
         const parentRef = (layer2 as RefLayer).ref;
 
         const parentFood = mutableState.findFood(parentRef);
+        console.log(`REPLACE INGREDIENT reducer, parent food ref: ${JSON.stringify(parentFood.ref)}`);
         const updatedParentFood = applyFunctionsTo(parentFood, [
             doUpdateVersion(mutableState),
             doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
             doCalculateMacros(mutableState),
         ]);
+        console.log(`REPLACE INGREDNEIT reducer, updated parent food ref: ${JSON.stringify(updatedParentFood.ref)}`);
+        
         putFoodIntoMutableState(mutableState, updatedParentFood);
 
-        const followUpAction = replaceIngredient(updatedParentFood.ref.ver, remainingContext);
-        return [followUpAction];
+
+        if (remainingContext.layersLeft() > 0) {
+            return [replaceIngredient(updatedParentFood.ref.ver, remainingContext)];
+        } else {
+            return [setCurrentDay(updatedParentFood.ref)];
+        }
 
         // TODO: update each ingredients' 'usedBy'
-    } catch (e) {
-        if (e instanceof RangeError) return [];  // no more actions to process
-        throw e;
-    }
+};
+
+const reducer_setCurrentDay = (action: Action, mutableState: State): Action[] => {
+    const { dayRef } = action as SetCurrentDayAction;
+    console.log(`setting current.day, before: ${JSON.stringify(mutableState.getCurrentDay())}`);
+    mutableState.day = dayRef;
+    // mutableState.current = {
+    //     ...mutableState.current,
+    //     day: dayRef,
+    // };
+    console.log(`setting current.day, after: ${JSON.stringify(mutableState.getCurrentDay())}`);
+    return [];
 };
 
 
@@ -251,7 +266,7 @@ const doCalculateMacros = (state: State) => (meal: Food): Food => {
 // helper to be used with 'applyFunctionsTo'
 const doUpdateVersion = (state: State) => (food: Food): Food => {
     // a day exists only in a single version
-    if (food.type === FoodType.Day) return food;
+    // if (food.type === FoodType.Day) return food;
     // TODO: use an "isSingleton" function instead of comparing to 'Day'
     // this way when new FoodTypes are added this code doesn't need to change
 
