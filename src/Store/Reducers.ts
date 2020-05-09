@@ -104,7 +104,7 @@ const reducer_importData = (action: Action, mutableState: State): Action[] => {
     };
 
     // TODO: use lens/accessor to get current data
-    const mergedData = mutableState.current.foodData.concat((action as ImportDataAction).data);  // TODO: remove casting
+    const mergedData = mutableState.foodData.concat((action as ImportDataAction).data);  // TODO: remove casting
     const mergedAndSanitisedData = mergedData
             // sort by id, then by version (if ids equal)
             .sort((x: Food, y: Food) => {
@@ -114,7 +114,7 @@ const reducer_importData = (action: Action, mutableState: State): Action[] => {
             })
             .reduce(discoverNeighbouringDuplicates, startValue)
             .res;
-    mutableState.current.foodData = mergedAndSanitisedData;
+    mutableState.foodData = mergedAndSanitisedData;
 
     return [];  // no more actions to take
     // MAYBE: this can use the 'add food' action for each imported item?

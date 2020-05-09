@@ -17,7 +17,7 @@ import { Ingredient, Food, FoodType } from 'Model';
 
 function createEmptyStore() {
     // return createStore<State, Action, any, any>(storeReducer, new State());
-    return createStore(storeReducer, new State());
+    return createStore(storeReducer, State.create());
 }
 
 export default function TestingArea() {
@@ -195,14 +195,14 @@ function FoodSelection() {
     store.dispatch(importData(initialData));
 
     const mapStateToProps = (state: State) => ({
-        data: state.current.foodData.map(x => ({
+        data: state.foodData.map(x => ({
             id: x.ref.id,
             name: x.name,
         })),
     });
     const mapDispatchToProps = {
         onFoodSelected: (id: number) => {
-            const matchingFood = store.getState().current.foodData.filter(x => x.ref.id === id);
+            const matchingFood = store.getState().foodData.filter(x => x.ref.id === id);
             console.log(`>> food selected: ${id} - ${JSON.stringify(matchingFood)}`);
             return {
                 type: "user typed a letter",
@@ -229,15 +229,13 @@ function FoodSelection() {
 // eslint-disable-next-line
 function DisplayDataFromStore() {
     const initialState = {
-        current: {
-            foodData: initialData,
-        },
+        foodData: initialData,
         history: null,
     };
     const store = createStore(storeReducer, initialState);
 
     const mapStateToProps = (state: State) => ({
-        populatedIngredients: state.current.foodData.slice(0,20).map(x => ({
+        populatedIngredients: state.foodData.slice(0,20).map(x => ({
             id: x.ref.id,
             version: x.ref.ver,
             name: x.name,

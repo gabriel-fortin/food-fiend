@@ -1,80 +1,79 @@
 import { Food, FoodType, Ref } from 'Model';
 
-export class State {
+
+export abstract class State {
     
-    current: {
-        foodData: Food[];
-    };
+    foodData: Food[];
+    day: Ref | null;
 
     history: any = null;
 
-    constructor() {
-        this.current = {
-            foodData: [],
-        };
+    protected constructor() {
+        this.foodData = [];
+        this.day = null;
+    }
+
+    static create(): State {
+        return new StateImpl();
     }
 
     /** Finds all food items having the specified id */
-    findFoodAllVersions(foodId: typeof Ref.prototype.id): Food[] {
-        return findFoodAllVersions(this, foodId);
-    }
+    abstract findFoodAllVersions(foodId: typeof Ref.prototype.id): Food[];
 
     /** Finds the newest food item having the specified id */
-    findFoodLatest(foodId: typeof Ref.prototype.id): Food {
-        return findFoodLatest(this, foodId);
-    }
+    abstract findFoodLatest(foodId: typeof Ref.prototype.id): Food;
 
     /** Finds the food item having the specified ref */
-    findFood(ref: Ref): Food {
-        return findFood(this, ref);
-    }
-
+    abstract findFood(ref: Ref): Food;
 }
+
 
 // helper
 const chooseFoodWithHigherVersion = (foodA: Food, foodB: Food) =>
     foodA.ref.ver > foodB.ref.ver ? foodA : foodB;
 
-function findFoodAllVersions(state: State, foodId: typeof Ref.prototype.id): Food[] {
-    return state.current.foodData.filter(food => food.ref.id === foodId);
-}
 
-function findFoodLatest(state: State, foodId: typeof Ref.prototype.id): Food {
-    const allVersionsOfSelectedFood = findFoodAllVersions(state, foodId);
-
-    if (allVersionsOfSelectedFood.length === 0) {
-        console.error(`Store: find food -- no entries for food with id '${foodId}'`);
-        throw new NoFoodFoundError(`No food found with id: ${foodId}`);
+export class StateImpl extends State {
+    findFoodAllVersions(foodId: typeof Ref.prototype.id): Food[] {
+        return this.foodData.filter(food => food.ref.id === foodId);
     }
 
-    return allVersionsOfSelectedFood.reduce(chooseFoodWithHigherVersion);
-}
-
-function findFood(state: State, foodRef: Ref): Food {
-    const allVersionsOfSelectedFood = findFoodAllVersions(state, foodRef.id);
-
-    if (allVersionsOfSelectedFood.length === 0) {
-        console.error(`Store: find food -- no entries for food with id '${foodRef.id}'`);
-        throw new NoFoodFoundError(`No food found with id: ${foodRef.id}`);
+    findFoodLatest(foodId: typeof Ref.prototype.id): Food {
+        const allVersionsOfSelectedFood = this.findFoodAllVersions(foodId);
+    
+        if (allVersionsOfSelectedFood.length === 0) {
+            console.error(`Store: find food -- no entries for food with id '${foodId}'`);
+            throw new NoFoodFoundError(`No food found with id: ${foodId}`);
+        }
+    
+        return allVersionsOfSelectedFood.reduce(chooseFoodWithHigherVersion);
     }
 
-    const chosenVersionOfFood = allVersionsOfSelectedFood
-        .filter(food => food.ref.ver === foodRef.ver);
-
-    if (chosenVersionOfFood.length > 1) {
-        console.error(`Expected at most one food with id ${foodRef.id}` +
-            ` and version ${foodRef.ver} but found ${chosenVersionOfFood.length}`, chosenVersionOfFood);
-        throw new Error(`Found two (or more) food items with the same id and version!!!  ref: ${foodRef}`);
+    findFood(foodRef: Ref): Food {
+        const allVersionsOfSelectedFood = this.findFoodAllVersions(foodRef.id);
+    
+        if (allVersionsOfSelectedFood.length === 0) {
+            console.error(`Store: find food -- no entries for food with id '${foodRef.id}'`);
+            throw new NoFoodFoundError(`No food found with id: ${foodRef.id}`);
+        }
+    
+        const chosenVersionOfFood = allVersionsOfSelectedFood
+            .filter(food => food.ref.ver === foodRef.ver);
+    
+        if (chosenVersionOfFood.length > 1) {
+            console.error(`Expected at most one food with id ${foodRef.id}` +
+                ` and version ${foodRef.ver} but found ${chosenVersionOfFood.length}`, chosenVersionOfFood);
+            throw new Error(`Found two (or more) food items with the same id and version!!!  ref: ${foodRef}`);
+        }
+    
+        if (chosenVersionOfFood.length === 0)
+            throw new NoFoodFoundError(`No food found with ref: ${JSON.stringify(foodRef)}`);
+    
+        return chosenVersionOfFood[0];
     }
-
-    if (chosenVersionOfFood.length === 0)
-        throw new NoFoodFoundError(`No food found with ref: ${JSON.stringify(foodRef)}`);
-
-    return chosenVersionOfFood[0];
-}
 
 export function getAllMeals(state: State): Food[] {
-    const mealsGroupedById: Map<number, Food[]> = state.current.foodData
+    const mealsGroupedById: Map<number, Food[]> = state.foodData
         .filter(food => food.type === FoodType.Compound)
         .reduce((groupedMeals, food) => {
             const group = groupedMeals.get(food.ref.id) || [];
@@ -108,17 +107,22 @@ export function mutatePutFood(mutableState: State, food: Food): void {
         }
     }
     function addNewFoodToState() {
-        mutableState.current.foodData.push(food);
+        mutableState.foodData.push(food);
     }
 
-    const existsingFood = findFood(mutableState, food.ref);
-    if (existsingFood === null) {
-        // the requested version doesn't exist => add
-        addNewFoodToState();
-        return;
+    try {
+        const existsingFood = mutableState.findFood(food.ref);
+        // food exists in store => update
+        updateExistingFoodInState(existsingFood);
+    } catch (ex) {
+        if (ex instanceof NoFoodFoundError) {
+            // the requested version doesn't exist => add
+            addNewFoodToState();
+            return;
+        }
+
+        throw ex;
     }
-    // food exists in store => update
-    updateExistingFoodInState(existsingFood);
 }
 
 
