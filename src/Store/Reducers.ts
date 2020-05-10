@@ -265,11 +265,6 @@ const doCalculateMacros = (state: State) => (meal: Food): Food => {
 
 // helper to be used with 'applyFunctionsTo'
 const doUpdateVersion = (state: State) => (food: Food): Food => {
-    // a day exists only in a single version
-    // if (food.type === FoodType.Day) return food;
-    // TODO: use an "isSingleton" function instead of comparing to 'Day'
-    // this way when new FoodTypes are added this code doesn't need to change
-
     const latestVersionOfFood = state.findFoodLatest(food.ref.id);
     const newVersion = latestVersionOfFood.ref.ver + 1;
     return {

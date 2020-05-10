@@ -10,7 +10,7 @@ export type ActionType = import('./ActionCreators').ActionType;
 export type Action = import('./ActionCreators').Action;
 
 export {
-    importData, changeIngredientQuantity, replaceIngredient, addSimpleFood,
+    importData, changeIngredientQuantity, replaceIngredient, addSimpleFood, setCurrentDay,
     storeReducer,
     mutatePutFood, getAllMeals, State, NoFoodFoundError,
 };

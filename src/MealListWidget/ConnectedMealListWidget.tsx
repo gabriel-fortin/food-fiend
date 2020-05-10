@@ -20,16 +20,14 @@ const mapDispatchToProps = {};
 
 
 interface CMLWProps {
-    dayId: number;
+    dayRef: Ref;
     uiEnclosure: Onion;
 }
-export const ConnectedMealListWidget: React.FC<CMLWProps> = ({ dayId, uiEnclosure = Onion.create() }) => {
-    const ref = new Ref(dayId, -14);  // TODO: replace -14 with constant?
-    const nestedEnclosure = uiEnclosure.withFoodLayer(ref);
+export const ConnectedMealListWidget: React.FC<CMLWProps> = ({ dayRef, uiEnclosure = Onion.create() }) => {
+    const nestedEnclosure = uiEnclosure.withFoodLayer(dayRef);
 
     const Widget = connect(
-        // FIX: maybe need to replace -14 with something proper
-        mapStateToProps(ref, nestedEnclosure),
+        mapStateToProps(dayRef, nestedEnclosure),
         mapDispatchToProps
     )(MealListWidget);
 

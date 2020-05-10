@@ -25,6 +25,8 @@ export abstract class State {
 
     /** Finds the food item having the specified ref */
     abstract findFood(ref: Ref): Food;
+    
+    abstract getCurrentDay(): Ref | null;
 }
 
 
@@ -71,6 +73,11 @@ export class StateImpl extends State {
     
         return chosenVersionOfFood[0];
     }
+
+    getCurrentDay(): Ref | null {
+        return this.day;
+    }
+}
 
 export function getAllMeals(state: State): Food[] {
     const mealsGroupedById: Map<number, Food[]> = state.foodData

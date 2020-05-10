@@ -1,6 +1,6 @@
 import Onion from 'Onion';
 
-import { Food, Macros, MacrosUncertainty } from 'Model';
+import { Food, Macros, MacrosUncertainty, Ref } from 'Model';
 
 
 // /*
@@ -34,12 +34,18 @@ export interface ReplaceIngredientAction {
     context: Onion,
 }
 
-export type ActionType = {type: "IMPORT_DATA" | "CHANGE_FOOD_QUANTITY" | "ADD_SIMPLE_FOOD" | "REPLACE INGREDIENT"};
+export interface SetCurrentDayAction {
+    type: "SET CURRENT DAY",
+    dayRef: Ref,
+}
+
+export type ActionType = {type: "IMPORT_DATA" | "CHANGE_FOOD_QUANTITY" | "ADD_SIMPLE_FOOD" | "REPLACE INGREDIENT" | "SET CURRENT DAY"};
 export type Action = ActionType & (
         | ImportDataAction
         | ChangeIngredientQuantityAction
         | AddSimpleFoodAction
         | ReplaceIngredientAction
+        | SetCurrentDayAction
     );
 
 
@@ -92,5 +98,12 @@ export function replaceIngredient(
         type: "REPLACE INGREDIENT",
         newVersion,
         context,
+    };
+}
+
+export function setCurrentDay(dayRef: Ref): SetCurrentDayAction {
+    return {
+        type: "SET CURRENT DAY",
+        dayRef,
     };
 }

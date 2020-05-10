@@ -2,7 +2,7 @@ import React, { /* useState */ } from 'react';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 
-import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals } from 'Store'
+import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals, setCurrentDay } from 'Store'
 import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -12,7 +12,7 @@ import FoodSelector from '../FoodSelector/FoodSelector'
 import ConnectedMealWidget from '../MealWidget';
 import ConnectedMealListWidget, { MealListWidget } from '../MealListWidget';
 import Onion from 'Onion';
-import { Ingredient, Food, FoodType } from 'Model';
+import { Ingredient, Food, FoodType, Ref } from 'Model';
 
 
 function createEmptyStore() {
@@ -50,14 +50,19 @@ function DisplayDay() {
     store.dispatch(importData([lunch]));
     store.dispatch(importData([obiad]));
     store.dispatch(importData([tempDay]));
+    store.dispatch(setCurrentDay(new Ref(666, -14)));
+
+    const mapState = (state: State) => ({
+        dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
+        uiEnclosure: Onion.create(),
+    });
+    const DoubleConnectedMealListWidget = connect(mapState)(ConnectedMealListWidget);
 
     return (
         <Provider store={store}>
             <TestingFrame>
                 {/* TODO: after implementing usedBy somethingRandom might be not needed */}
-                <ConnectedMealListWidget
-                    dayId={666}
-                    uiEnclosure={Onion.create()} />
+                <DoubleConnectedMealListWidget />
             </TestingFrame>
         </Provider>
     );
