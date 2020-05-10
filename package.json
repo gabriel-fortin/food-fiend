@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@chakra-ui/core": "^0.7.0",
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
     "@types/prop-types": "^15.7.3",
     "@types/react-redux": "^7.1.7",
+    "emotion-theming": "^10.0.27",
     "immer": "^5.3.6",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
