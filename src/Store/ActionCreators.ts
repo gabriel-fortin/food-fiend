@@ -39,14 +39,13 @@ export interface SetCurrentDayAction {
     dayRef: Ref,
 }
 
-export type ActionType = {type: "IMPORT_DATA" | "CHANGE_FOOD_QUANTITY" | "ADD_SIMPLE_FOOD" | "REPLACE INGREDIENT" | "SET CURRENT DAY"};
-export type Action = ActionType & (
-        | ImportDataAction
-        | ChangeIngredientQuantityAction
-        | AddSimpleFoodAction
-        | ReplaceIngredientAction
-        | SetCurrentDayAction
-    );
+export type Action =
+    | ImportDataAction
+    | ChangeIngredientQuantityAction
+    | AddSimpleFoodAction
+    | ReplaceIngredientAction
+    | SetCurrentDayAction
+    ;
 
 
 export function importData(data: Food[]): ImportDataAction {

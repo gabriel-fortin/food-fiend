@@ -51,7 +51,6 @@ function validateStateAfterReducing(state: State): State {
 
 function routeAction(state: State, action: Action): State {
     type ActualReducer = (a: Action, s: State) => Action[];
-    // TODO: use discriminated unions?
     const reducersByActionType: Map<string, ActualReducer> = new Map([
         ["IMPORT_DATA", reducer_importData],
         ["CHANGE_FOOD_QUANTITY", reducer_changeIngredientQuantity],
@@ -94,7 +93,6 @@ function routeAction(state: State, action: Action): State {
 // CONVENTION
 // functions of the form "reducer_*" take two arguments: action, mutable state
 
-// TODO: change type of action to ImportDataAction; use discriminated unions in caller
 const reducer_importData = (action: Action, mutableState: State): Action[] => {
     // TODO: do not accept data blindly but:
     //       - compute what is a derived value (e.g. macros) and
