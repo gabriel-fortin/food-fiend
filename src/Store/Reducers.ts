@@ -1,6 +1,6 @@
 import Immer_produce from 'immer';
 
-import { Food, Ref, Ingredient, FoodType } from 'Model';
+import { Food, Ref, Ingredient, FoodType, Macros } from 'Model';
 import { PositionLayer, RefLayer } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
@@ -18,6 +18,20 @@ import {
 function applyFunctionsTo<T>(initialObject: T, functions: ((o: T) => T)[]): T {
     return functions
         .reduce((obj, fun) => fun(obj), initialObject);
+}
+
+/**
+ * Works like '.filter' but expects exactly one element to match predicate.
+ * 
+ * Returns the single element that matches the predicate.
+ */
+function filterOne<T>(array: T[], predicate: (x: T) => boolean) {
+    const arrayWithOneElement = array.filter(predicate);
+
+    const len = arrayWithOneElement.length;
+    if (len !== 1) throw new Error(`Expected exactly one element but found ${len}`);
+
+    return arrayWithOneElement[0];
 }
 
 export function rootReducer(state: State | undefined, action: Action): State {
@@ -196,35 +210,20 @@ const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: numbe
     if (!Number.isFinite(quantityAsNumber))
         throw new Error(`The new quantity '${newQuantity}' is not a number`);
 
-    const updatedMeal = {
-        ...meal,
-        ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
-            if (foodRef.position !== posToUpdate) return foodRef;
-            return {
-                ...foodRef,
-                quantity: quantityAsNumber,
-            };
-        }),
-    };
+    return Immer_produce(meal, m => {
+        const ingredient = filterOne(m.ingredientsRefs, x => x.position === posToUpdate);
+        ingredient.quantity = newQuantity;
+    });
 
-    return updatedMeal;
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateIngredientVersionAtPos = (ingredientPosition: number, newVersion: number) => (meal: Food): Food => {
-    const updatedMeal = {
-        ...meal,
-        ingredientsRefs: meal.ingredientsRefs.map(foodRef => {
-            if (foodRef.position !== ingredientPosition) return foodRef;
-            return {
-                ...foodRef,
-                version: newVersion,
-            };
-        }),
-    };
+const doUpdateIngredientVersionAtPos = (ingredientPosition: number, newVersion: number) => (meal: Food): Food => 
+    Immer_produce(meal, m => {
+        const ingredient = filterOne(m.ingredientsRefs, x => x.position === ingredientPosition);
+        ingredient.ref.ver = newVersion;
+    });
 
-    return updatedMeal;
-};
 
 // helper to be used with 'applyFunctionsTo'
 const doCalculateMacros = (state: State) => (meal: Food): Food => {
@@ -250,16 +249,14 @@ const doCalculateMacros = (state: State) => (meal: Food): Food => {
         return partialSum + macroResultValue;
     };
 
-    const newMacros = {
-        fat: mealIngredients.reduce(sumMacro('fat'), 0),
-        protein: mealIngredients.reduce(sumMacro('protein'), 0),
-        carbs: mealIngredients.reduce(sumMacro('carbs'), 0),
-    };
+    const newMacros = new Macros(
+        mealIngredients.reduce(sumMacro('fat'), 0),
+        mealIngredients.reduce(sumMacro('protein'), 0),
+        mealIngredients.reduce(sumMacro('carbs'), 0),
+    );
 
-    return {
-        ...meal,
-        macros: newMacros,
-    };
+    return Immer_produce(meal, x => void (x.macros = newMacros));
+    
     // TODO: calculate also uncertainty
 };
 
@@ -267,21 +264,13 @@ const doCalculateMacros = (state: State) => (meal: Food): Food => {
 const doUpdateVersion = (state: State) => (food: Food): Food => {
     const latestVersionOfFood = state.findFoodLatest(food.ref.id);
     const newVersion = latestVersionOfFood.ref.ver + 1;
-    return {
-        ...food,
-        ref: {
-            ...food.ref,
-            ver: newVersion,
-        },
-    };
+
+    return Immer_produce(food, f => void (f.ref.ver = newVersion));
 };
 
 // helper to be used with 'applyFunctionsTo'
 const doClearDependingMeals = () => (food: Food): Food => {
-    return {
-        ...food,
-        usedBy: [],
-    };
+    return Immer_produce(food, f => void (f.usedBy = []));
 };
 
 
