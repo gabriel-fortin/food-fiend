@@ -1,6 +1,7 @@
 import React, { /* useState */ } from 'react';
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
+import { ThemeProvider } from '@chakra-ui/core';
 
 import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals, setCurrentDay } from 'Store'
 import OldFoodType from '../data/FoodType';
@@ -59,12 +60,14 @@ function DisplayDay() {
     const DoubleConnectedMealListWidget = connect(mapState)(ConnectedMealListWidget);
 
     return (
-        <Provider store={store}>
-            <TestingFrame>
-                {/* TODO: after implementing usedBy somethingRandom might be not needed */}
-                <DoubleConnectedMealListWidget />
-            </TestingFrame>
-        </Provider>
+        <ThemeProvider>
+            <Provider store={store}>
+                <TestingFrame>
+                    {/* TODO: after implementing usedBy somethingRandom might be not needed */}
+                    <DoubleConnectedMealListWidget />
+                </TestingFrame>
+            </Provider>
+        </ThemeProvider>
     );
 }
 
