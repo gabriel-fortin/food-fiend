@@ -16,7 +16,7 @@ export const MealListWidget: React.FC<MLWProps> = ({mealsAndRefs, uiEnclosure=On
             // TODO: MealListWidget: use a better value for 'key'
                     // because 'ingredient.ref' wil not work when same food is repeated
             <ConnectedMealWidget
-                    key={JSON.stringify(ingredient.ref)}
+                    key={ingredient.key}
                     mealRef={ingredient.ref}
                     uiEnclosure={uiEnclosure.withPositionLayer(ingredient.position)}
                     />

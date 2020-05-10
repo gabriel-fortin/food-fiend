@@ -105,8 +105,6 @@ export function getAllMeals(state: State): Food[] {
  * @param {*} food 
  */
 export function mutatePutFood(mutableState: State, food: Food): void {
-    // TODO: use this function in the "import data" reducer (so all mutations happen using this function)
-
     function updateExistingFoodInState(existsingFood: Food) {
         for (var prop in food) {
             // cast to 'any' to access properties via indexing
@@ -136,6 +134,3 @@ export function mutatePutFood(mutableState: State, food: Food): void {
 export class NoFoodFoundError extends Error {
 
 }
-
-
-// TODO: Store imports from Reducers, Reducers imports from Store; fix this (extract State class?)

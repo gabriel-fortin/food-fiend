@@ -179,16 +179,15 @@ const createMeal = (
         mealIngredients.length * 30,
         1,
     );
-    food.ingredientsRefs = mealIngredients.map((ingredient, i) => ({
-        ref: {
-            id: ingredient.ref.id,
-            ver: ingredient.ref.ver,
-        },
-        /* TODO: rename 'position' to 'key' */
-        position: i,  // position of food within meal; used as key in react lists
-        quantity: 30,  // measured in the food's portions (which is 1g for simple foods)
-        notes: null,  // some additional text to display
-    }));
+    food.ingredientsRefs = mealIngredients.map((ingredient, i) => new Ingredient(
+        new Ref(
+            ingredient.ref.id,
+            ingredient.ref.ver,
+        ),
+        i,  // position of food within meal
+        30,  // quantity, measured in the food's portions (which is 1g for simple foods)
+        null,  // some additional text to display
+    ));
     return food;
 };
 

@@ -27,7 +27,7 @@ export const IngredientsListWidget: React.FC<ILWProps> = ({
             {data.map(({ingredient: asIngredient, food: asFood}) =>
                 <DataRow
                     // TODO: possible repeated key if e.g. butter if twice on the list
-                    key={JSON.stringify(asFood.ref)}
+                    key={asIngredient.key}
                     name={asFood.name}
                     macros={asFood.macros}
                     quantity={asIngredient.quantity}
