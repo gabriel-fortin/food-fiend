@@ -164,16 +164,13 @@ const reducer_replaceIngredient = (action: Action, mutableState: State): Action[
         const parentRef = (layer2 as RefLayer).ref;
 
         const parentFood = mutableState.findFood(parentRef);
-        console.log(`REPLACE INGREDIENT reducer, parent food ref: ${JSON.stringify(parentFood.ref)}`);
         const updatedParentFood = applyFunctionsTo(parentFood, [
             doUpdateVersion(mutableState),
             doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
             doCalculateMacros(mutableState),
         ]);
-        console.log(`REPLACE INGREDNEIT reducer, updated parent food ref: ${JSON.stringify(updatedParentFood.ref)}`);
         
         putFoodIntoMutableState(mutableState, updatedParentFood);
-
 
         if (remainingContext.layersLeft() > 0) {
             return [replaceIngredient(updatedParentFood.ref.ver, remainingContext)];
@@ -186,13 +183,7 @@ const reducer_replaceIngredient = (action: Action, mutableState: State): Action[
 
 const reducer_setCurrentDay = (action: Action, mutableState: State): Action[] => {
     const { dayRef } = action as SetCurrentDayAction;
-    console.log(`setting current.day, before: ${JSON.stringify(mutableState.getCurrentDay())}`);
     mutableState.day = dayRef;
-    // mutableState.current = {
-    //     ...mutableState.current,
-    //     day: dayRef,
-    // };
-    console.log(`setting current.day, after: ${JSON.stringify(mutableState.getCurrentDay())}`);
     return [];
 };
 
