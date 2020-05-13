@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
+
 import './food-selector.css';
 
-function FoodSelector({data, onFoodSelected}) {
+
+interface DataItem {
+    id: number,
+    name: string,
+}
+
+
+interface FoodSelectorProps {
+    data: DataItem[],
+    onFoodSelected: (id: number) => void,
+}
+export const FoodSelectorWidget: React.FC<FoodSelectorProps> = ({data, onFoodSelected}) => {
     let [currentText, setCurrentText] = useState("");
     let [popupVisible, setPopupVisibility] = useState(false);
 
     // data processing
-    const foodMatching = input => {
+    const foodMatching = (input: string) => {
         const sanitisedInput = input.replace(/[^-'%/a-zA-Z]/g, "");
         const regex = new RegExp(sanitisedInput, "i");
         return data.filter(x => regex.test(x.name));
@@ -14,7 +26,7 @@ function FoodSelector({data, onFoodSelected}) {
     const filteredSuggestions = foodMatching(currentText);
 
     // reactions to user actions
-    const onTextChange = text => {
+    const onTextChange = (text : string) => {
         setCurrentText(text);
         setPopupVisibility(text.length > 0);
     };
@@ -34,7 +46,12 @@ function FoodSelector({data, onFoodSelected}) {
     );
 }
 
-function TheInputField({onTextChange, onEscape}) {
+
+interface TheInputFieldProps {
+    onTextChange: (value: string) => void,
+    onEscape: () => void,
+}
+const TheInputField: React.FC<TheInputFieldProps> = ({onTextChange, onEscape}) => {
     return (
         <input
             onChange={e => onTextChange(e.target.value)}
@@ -43,13 +60,18 @@ function TheInputField({onTextChange, onEscape}) {
     );
 }
 
-function PopupList({dataToDisplay, onSelection}) {
+
+interface PopupListProps {
+    dataToDisplay: DataItem[],
+    onSelection: (id: number) => void,
+}
+const PopupList: React.FC<PopupListProps> = ({dataToDisplay, onSelection}) => {
     return (
         <div id="popup">
             {dataToDisplay.map(x => (
                 <div
                     key={x.id}
-                    value={x.id}
+                    // value={x.id}
                     onClick={e => onSelection(x.id)}
                     >
                         {x.name}
@@ -58,5 +80,3 @@ function PopupList({dataToDisplay, onSelection}) {
         </div>
     );
 }
-
-export default FoodSelector;
