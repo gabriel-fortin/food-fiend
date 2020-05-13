@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 
+import { Food, Ref } from 'Model';
+
+import { TheInputField } from './TheInputField';
+import { PopupList } from './PopupList';
+import { DataItem } from './DataItem';
 import './food-selector.css';
-
-
-interface DataItem {
-    id: number,
-    name: string,
-}
 
 
 interface FoodSelectorProps {
@@ -42,41 +41,6 @@ export const FoodSelectorWidget: React.FC<FoodSelectorProps> = ({data, onFoodSel
             {popupVisible && <PopupList
                                 dataToDisplay={filteredSuggestions}
                                 onSelection={onFoodSelected} />}
-        </div>
-    );
-}
-
-
-interface TheInputFieldProps {
-    onTextChange: (value: string) => void,
-    onEscape: () => void,
-}
-const TheInputField: React.FC<TheInputFieldProps> = ({onTextChange, onEscape}) => {
-    return (
-        <input
-            onChange={e => onTextChange(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Escape') onEscape(); }}
-        />
-    );
-}
-
-
-interface PopupListProps {
-    dataToDisplay: DataItem[],
-    onSelection: (id: number) => void,
-}
-const PopupList: React.FC<PopupListProps> = ({dataToDisplay, onSelection}) => {
-    return (
-        <div id="popup">
-            {dataToDisplay.map(x => (
-                <div
-                    key={x.id}
-                    // value={x.id}
-                    onClick={e => onSelection(x.id)}
-                    >
-                        {x.name}
-                </div>
-            ))}
         </div>
     );
 }
