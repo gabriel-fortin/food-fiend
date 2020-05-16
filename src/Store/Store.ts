@@ -27,6 +27,8 @@ export abstract class State {
     abstract findFood(ref: Ref): Food;
     
     abstract getCurrentDay(): Ref | null;
+
+    abstract getAllLatestFoods(): Food[];
 }
 
 
@@ -76,6 +78,21 @@ export class StateImpl extends State {
 
     getCurrentDay(): Ref | null {
         return this.day;
+    }
+
+    getAllLatestFoods(): Food[] {
+        type Id = typeof Ref.prototype.id;
+        
+        const takeHigherVersion: (acc: Map<Id, Food>, item: Food) => Map<Id, Food> = (acc, item) => {
+            let selectedVersion = acc.get(item.ref.id);
+            if (selectedVersion === undefined || selectedVersion.ref.ver < item.ref.ver) {
+                acc.set(item.ref.id, item);
+            }
+            return acc;
+        };
+
+        const mapOfAllLatestFoods = this.foodData.reduce(takeHigherVersion, new Map<Id, Food>());
+        return Array.from(mapOfAllLatestFoods.values());
     }
 }
 
