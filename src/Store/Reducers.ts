@@ -50,42 +50,43 @@ function validateStateAfterReducing(state: State): State {
 }
 
 function routeAction(state: State, action: Action): State {
-    type ActualReducer = (a: Action, s: State) => Action[];
-    const reducersByActionType: Map<string, ActualReducer> = new Map([
-        ["IMPORT_DATA", reducer_importData],
-        ["CHANGE_FOOD_QUANTITY", reducer_changeIngredientQuantity],
-        ["REPLACE INGREDIENT", reducer_replaceIngredient],
-        ["SET CURRENT DAY", reducer_setCurrentDay],
-    ]);
-
-    // we start with one action to handle
-    let actionsToProcess = [action];
-    // reducers might add/trigger their own actions (which allowsw to put shared functionality into reducers)
+    // reducers might add/trigger their own actions (which allows to put shared functionality into reducers)
     // they'll be called "synthetic actions"
 
     return Immer_produce(state, (mutableState: State) => {
+        /// we start with no backlog of actions to handle
+        let actionsToProcess: Action[] = [];
+        let currentAction: Action | undefined = action;
+
         do {
-            const currentAction: Action = actionsToProcess.shift() as Action; // never undefined
-            const reducer = reducersByActionType.get(currentAction.type);
+            let newSyntheticActions: Action[] = [];
+            switch (currentAction.type) {
+                case "IMPORT_DATA": 
+                    newSyntheticActions = reducer_importData(currentAction, mutableState);
+                    break;
+                case "CHANGE_FOOD_QUANTITY":
+                    newSyntheticActions = reducer_changeIngredientQuantity(currentAction, mutableState);
+                    break;
+                case "REPLACE INGREDIENT":
+                    newSyntheticActions = reducer_replaceIngredient(currentAction, mutableState);
+                    break;
+                case "SET CURRENT DAY":
+                    newSyntheticActions = reducer_setCurrentDay(currentAction, mutableState);
+                    break;
+                default:
+                    // make an exception for initialisation done by Redux itself
+                    if (currentAction.type.startsWith("@@redux/INIT")) break;
 
-            // stop further processing if action is unrecognised
-            if (reducer === undefined) {
-                // but make an exception for initialisation done by Redux itself
-                if (action.type.startsWith("@@redux/INIT")) break;
-
-                console.error(`@Reducer: unhandled action: ${currentAction.type}`);
-
-                // it's not normal if we can't handle the action
-                throw new Error(`Unhandled action: ${currentAction.type}`);
+                    console.error(`@Reducer: unhandled action: ${currentAction.type}`);
+                    throw new Error(`Unhandled action: ${currentAction.type}`);
             }
 
-            console.debug(`@Reducers: calling reducer ${reducer.name}`);
-            const additionalActions = reducer(currentAction, mutableState);
             console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: \n`,
-                    JSON.stringify(additionalActions));
+                    JSON.stringify(newSyntheticActions));
 
-            actionsToProcess.push(...additionalActions);
-        } while(actionsToProcess.length > 0)
+            actionsToProcess.push(...newSyntheticActions);
+            currentAction = actionsToProcess.shift();
+        } while(currentAction !== undefined)
         // if no changes were made, Immer returns the original object
     });
 }
@@ -93,7 +94,7 @@ function routeAction(state: State, action: Action): State {
 // CONVENTION
 // functions of the form "reducer_*" take two arguments: action, mutable state
 
-const reducer_importData = (action: Action, mutableState: State): Action[] => {
+const reducer_importData = (action: ImportDataAction, mutableState: State): Action[] => {
     // TODO: do not accept data blindly but:
     //       - compute what is a derived value (e.g. macros) and
     //       - assign the id ourselves
@@ -117,7 +118,7 @@ const reducer_importData = (action: Action, mutableState: State): Action[] => {
     };
 
     // TODO: use lens/accessor to get current data
-    const mergedData = mutableState.foodData.concat((action as ImportDataAction).data);  // TODO: remove casting
+    const mergedData = mutableState.foodData.concat(action.data);  // TODO: remove casting
     const mergedAndSanitisedData = mergedData
             // sort by id, then by version (if ids equal)
             .sort((x: Food, y: Food) => {
@@ -134,31 +135,29 @@ const reducer_importData = (action: Action, mutableState: State): Action[] => {
     // adding would be only one reducer's responsibility
 };
 
-const reducer_changeIngredientQuantity = (action: Action, mutableState: State): Action[] => {
-    const { newQuantity, context } = action as ChangeIngredientQuantityAction;
+const reducer_changeIngredientQuantity =
+    ({ newQuantity, context }: ChangeIngredientQuantityAction, mutableState: State): Action[] => {
+        const [[layer1, layer2], remainingContext] = context.peelLayers(2);
+        const ingredientPosInMeal = (layer1 as PositionLayer).pos;
+        const mealRef = (layer2 as RefLayer).ref;
 
-    const [[layer1, layer2], remainingContext] = context.peelLayers(2);
-    const ingredientPosInMeal = (layer1 as PositionLayer).pos;
-    const mealRef = (layer2 as RefLayer).ref;
+        const meal = mutableState.findFood(mealRef);
+        const updatedMeal = applyFunctionsTo(meal, [
+            doUpdateVersion(mutableState),
+            doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
+            doCalculateMacros(mutableState),
+        ]);
+        putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
 
-    const meal = mutableState.findFood(mealRef);
-    const updatedMeal = applyFunctionsTo(meal, [
-        doUpdateVersion(mutableState),
-        doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
-        doCalculateMacros(mutableState),
-    ]);
-    putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
+        const followUpAction = replaceIngredient(updatedMeal.ref.ver, remainingContext);
+        return [followUpAction];
 
-    const followUpAction = replaceIngredient(updatedMeal.ref.ver, remainingContext);
-    return [followUpAction];
+        // TODO: update EACH ingredient's 'usedBy', like so:
+        // addRefToArrayIfNotThere(ingredient.usedBy, updatedMeal.id, updatedMeal.version);
+    };
 
-    // TODO: update EACH ingredient's 'usedBy', like so:
-    // addRefToArrayIfNotThere(ingredient.usedBy, updatedMeal.id, updatedMeal.version);
-};
-
-const reducer_replaceIngredient = (action: Action, mutableState: State): Action[] => {
-        const { newVersion, context } = action as ReplaceIngredientAction;
-
+const reducer_replaceIngredient =
+    ({ newVersion, context }: ReplaceIngredientAction, mutableState: State): Action[] => {
         const [[layer1, layer2], remainingContext] = context.peelLayers(2);
         const ingredientPosition = (layer1 as PositionLayer).pos;
         const parentRef = (layer2 as RefLayer).ref;
@@ -181,8 +180,7 @@ const reducer_replaceIngredient = (action: Action, mutableState: State): Action[
         // TODO: update each ingredients' 'usedBy'
 };
 
-const reducer_setCurrentDay = (action: Action, mutableState: State): Action[] => {
-    const { dayRef } = action as SetCurrentDayAction;
+const reducer_setCurrentDay = ({ dayRef }: SetCurrentDayAction, mutableState: State): Action[] => {
     mutableState.day = dayRef;
     return [];
 };
