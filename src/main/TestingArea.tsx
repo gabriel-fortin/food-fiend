@@ -225,7 +225,7 @@ function FoodSelection() {
     return (
         <Provider store={store}>
             <div style={style}>
-                <ConnectedFoodSelector />
+                <ConnectedFoodSelector context={Onion.create()} />
             </div>
         </Provider>
     );

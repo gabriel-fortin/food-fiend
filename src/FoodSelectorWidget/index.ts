@@ -1,4 +1,5 @@
 import { FoodSelectorWidget } from './FoodSelectorWidget';
+import { ConnectedFoodSelectorWidget } from "./ConnectedFoodSelectorWidget";
 
-export { FoodSelectorWidget };
-export default FoodSelectorWidget;
+export { FoodSelectorWidget, ConnectedFoodSelectorWidget };
+export default ConnectedFoodSelectorWidget;
