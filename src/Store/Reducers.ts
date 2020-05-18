@@ -201,7 +201,7 @@ const reducer_appendIngredient =
         const updatedParentFood = applyFunctionsTo(parentFood, [
             doUpdateVersion(mutableState),
             doAddIngredient(ingredientRef),
-            // update macros if the quantity is non-zero
+            // maybe someday: update macros if the quantity is non-zero
         ]);
 
         putFoodIntoMutableState(mutableState, updatedParentFood);

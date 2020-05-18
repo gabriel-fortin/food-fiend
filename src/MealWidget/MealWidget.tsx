@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Box, Button, Collapse, Flex, Input, IconButton, useTheme, CloseButton } from '@chakra-ui/core';
 
 import { MacrosInfo } from 'MacrosDisplay';
 import { Macros, Food, Ingredient } from 'Model';
 import IngredientsListWidget from 'IngredientsListWidget';
 import Onion from 'Onion';
+import FoodSelectorWidget from 'FoodSelectorWidget';
 
 import './meal-widget.css';
 
@@ -32,6 +34,46 @@ export const MealWidget: React.FC<MWProps> = ({name, totalMacros, data, changeIn
                 onQuantityChange={(pos: number, q: string) => changeIngredientQuantity(pos, q)}
                 onSelectionToggle={undefined}
             />
+            <AddFoodWidget context={uiEnclosure} />
         </div>
     );
 }
+
+
+interface AddFoodButtonProps {
+    context: Onion,
+}
+const AddFoodWidget: React.FC<AddFoodButtonProps> = ({ context }) => {
+    const [showFoodSelector, setShowFoodSelector] = useState(false);
+
+    return (
+        <Box marginX={2} marginY={3}>
+            <Collapse isOpen={!showFoodSelector}>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    variantColor="pink"
+                    borderStyle="solid 1px black"
+                    onClick={() => setShowFoodSelector(true)}
+                >
+                    + Add food
+                </Button>
+            </Collapse>
+            <Collapse isOpen={showFoodSelector}>
+                <Flex alignItems="center">
+                    <IconButton aria-label="close food selector"
+                        variant="outline"
+                        icon="close"
+                        variantColor="red"
+                        size="sm"
+                        mr={2}
+                        opacity={0.6}
+                        _hover={{opacity: 1}}
+                        onClick={() => setShowFoodSelector(false)}
+                    />
+                    <FoodSelectorWidget context={context} />
+                </Flex>
+            </Collapse>
+        </Box>
+    );
+};
