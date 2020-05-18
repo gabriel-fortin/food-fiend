@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { DataItem } from './DataItem';
+import { Ref, Food } from 'Model';
 
 
 interface PopupListProps {
-    dataToDisplay: DataItem[],
-    onSelection: (id: number) => void,
+    dataToDisplay: Food[],
+    onSelection: (ref: Ref) => void,
 }
 
 export const PopupList: React.FC<PopupListProps> = ({dataToDisplay, onSelection}) => {
@@ -13,9 +13,9 @@ export const PopupList: React.FC<PopupListProps> = ({dataToDisplay, onSelection}
         <div id="popup">
             {dataToDisplay.map(x => (
                 <div
-                    key={x.id}
+                    key={x.ref.id}
                     // value={x.id}  // was there but doesn't compile in typescript
-                    onClick={e => onSelection(x.id)}
+                    onClick={e => onSelection(x.ref)}
                     >
                         {x.name}
                 </div>

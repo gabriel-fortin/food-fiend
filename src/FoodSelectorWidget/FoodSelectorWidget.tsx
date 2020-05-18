@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 
-import { Food, Ref } from 'Model';
+import { Ref, Food } from 'Model';
 
 import { TheInputField } from './TheInputField';
 import { PopupList } from './PopupList';
-import { DataItem } from './DataItem';
 import './food-selector.css';
 
 
-interface FoodSelectorProps {
-    data: DataItem[],
-    onFoodSelected: (id: number) => void,
+export interface FoodSelectorProps {
+    data: Food[],
+    onFoodSelected: (ref: Ref) => void,
 }
 export const FoodSelectorWidget: React.FC<FoodSelectorProps> = ({data, onFoodSelected}) => {
     let [currentText, setCurrentText] = useState("");
