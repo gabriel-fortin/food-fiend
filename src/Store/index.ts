@@ -1,6 +1,13 @@
 import { immerable } from 'immer';
 
-import { importData, changeIngredientQuantity, replaceIngredient, addSimpleFood, setCurrentDay } from './ActionCreators';
+import {
+    importData,
+    changeIngredientQuantity,
+    replaceIngredient,
+    addSimpleFood,
+    setCurrentDay,
+    appendIngredient,
+} from './ActionCreators';
 import { rootReducer as storeReducer } from './Reducers';
 import { mutatePutFood, getAllMeals, State, NoFoodFoundError } from './Store';
 
@@ -15,10 +22,26 @@ export type ImportDataAction = import('./ActionCreators').ImportDataAction;
 export type ChangeIngredientQuantityAction = import('./ActionCreators').ChangeIngredientQuantityAction;
 export type AddSimpleFoodAction = import('./ActionCreators').AddSimpleFoodAction;
 export type ReplaceIngredientAction = import('./ActionCreators').ReplaceIngredientAction;
+export type AppendIngredientAction = import('./ActionCreators').AppendIngredientAction;
 export type Action = import('./ActionCreators').Action;
 
 export {
-    importData, changeIngredientQuantity, replaceIngredient, addSimpleFood, setCurrentDay,
+    /* action creators */
+    importData,
+    changeIngredientQuantity,
+    replaceIngredient,
+    addSimpleFood,
+    setCurrentDay,
+    appendIngredient,
+
+    /* main reducer */
     storeReducer,
-    mutatePutFood, getAllMeals, State, NoFoodFoundError,
+
+    /* helpers / accessors to State*/
+    mutatePutFood,
+    getAllMeals,
+
+    /* classes */
+    State,
+    NoFoodFoundError,
 };

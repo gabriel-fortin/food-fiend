@@ -39,12 +39,19 @@ export interface SetCurrentDayAction {
     dayRef: Ref,
 }
 
+export interface AppendIngredientAction {
+    type: "APPEND INGREDIENT",
+    ingredientRef: Ref,
+    context: Onion,
+}
+
 export type Action =
     | ImportDataAction
     | ChangeIngredientQuantityAction
     | AddSimpleFoodAction
     | ReplaceIngredientAction
     | SetCurrentDayAction
+    | AppendIngredientAction
     ;
 
 
@@ -88,7 +95,7 @@ export function addSimpleFood(
     };
 }
 
-
+/** Action creator */
 export function replaceIngredient(
     newVersion: number,
     context=Onion.create()
@@ -100,9 +107,19 @@ export function replaceIngredient(
     };
 }
 
+/** Action creator */
 export function setCurrentDay(dayRef: Ref): SetCurrentDayAction {
     return {
         type: "SET CURRENT DAY",
         dayRef,
+    };
+}
+
+/** Action creator */
+export function appendIngredient(ingredientRef: Ref, context: Onion): AppendIngredientAction {
+    return {
+        type: "APPEND INGREDIENT",
+        ingredientRef,
+        context,
     };
 }

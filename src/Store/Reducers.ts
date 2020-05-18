@@ -5,8 +5,10 @@ import { PositionLayer, RefLayer } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
-    replaceIngredient, Action,
-    ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction, SetCurrentDayAction, setCurrentDay
+    replaceIngredient, setCurrentDay,
+    Action,
+    ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
+     SetCurrentDayAction, AppendIngredientAction
 } from './ActionCreators';
 
 
@@ -72,6 +74,9 @@ function routeAction(state: State, action: Action): State {
                     break;
                 case "SET CURRENT DAY":
                     newSyntheticActions = reducer_setCurrentDay(currentAction, mutableState);
+                    break;
+                case "APPEND INGREDIENT":
+                    newSyntheticActions = reducer_appendIngredient(currentAction, mutableState);
                     break;
                 default:
                     // make an exception for initialisation done by Redux itself
@@ -150,6 +155,7 @@ const reducer_changeIngredientQuantity =
         putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
 
         const followUpAction = replaceIngredient(updatedMeal.ref.ver, remainingContext);
+            // no check for remainingContext being empty; will it be a bug some day?
         return [followUpAction];
 
         // TODO: update EACH ingredient's 'usedBy', like so:
@@ -169,6 +175,7 @@ const reducer_replaceIngredient =
             doCalculateMacros(mutableState),
         ]);
         
+        // XXX: if days are mutable, this is always an insert
         putFoodIntoMutableState(mutableState, updatedParentFood);
 
         if (remainingContext.layersLeft() > 0) {
@@ -184,6 +191,23 @@ const reducer_setCurrentDay = ({ dayRef }: SetCurrentDayAction, mutableState: St
     mutableState.day = dayRef;
     return [];
 };
+
+const reducer_appendIngredient =
+    ({ ingredientRef, context}: AppendIngredientAction, mutableState: State): Action[] => {
+        const [[layer1], remainingContext] = context.peelLayers(1);
+        const parentFoodRef = (layer1 as RefLayer).ref;
+
+        const parentFood = mutableState.findFood(parentFoodRef);
+        const updatedParentFood = applyFunctionsTo(parentFood, [
+            doUpdateVersion(mutableState),
+            doAddIngredient(ingredientRef),
+            // update macros if the quantity is non-zero
+        ]);
+
+        putFoodIntoMutableState(mutableState, updatedParentFood);
+
+        return [replaceIngredient(updatedParentFood.ref.ver, remainingContext)];
+    };
 
 
 // helper to be used with 'applyFunctionsTo'
@@ -253,6 +277,17 @@ const doUpdateVersion = (state: State) => (food: Food): Food => {
     const newVersion = latestVersionOfFood.ref.ver + 1;
 
     return Immer_produce(food, f => void (f.ref.ver = newVersion));
+};
+
+const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): Food => {
+    const maxPos = parentFood.ingredientsRefs
+        .reduce((r1, r2) => r1.position > r2.position ? r1 : r2)
+        .position;
+    const newIngredient = new Ingredient(ingredientRef, maxPos + 1, /*quantity:*/ 0, null);
+
+    return Immer_produce(parentFood, f => void
+        f.ingredientsRefs.push(newIngredient)
+    );
 };
 
 // helper to be used with 'applyFunctionsTo'
