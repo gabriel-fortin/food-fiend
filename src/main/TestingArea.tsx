@@ -11,7 +11,7 @@ import { MacrosBar, MacrosInfo } from 'Widget';
 import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 import {ConnectedFoodSelectorWidget as FoodSelector } from 'Widget';
 import { ConnectedMealWidget } from 'Widget';
-import { ConnectedMealListWidget, MealListWidget } from 'Widget';
+import { MealList } from 'Widget';
 import Onion from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 
@@ -57,7 +57,7 @@ function DisplayDay() {
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
         uiEnclosure: Onion.create(),
     });
-    const DoubleConnectedMealListWidget = connect(mapState)(ConnectedMealListWidget);
+    const DoubleConnectedMealListWidget = connect(mapState)(MealList);
 
     return (
         <ThemeProvider>
@@ -78,6 +78,7 @@ function createDay(id: number, meals: Food[], title: string) {
     return day;
 }
 
+/*
 // eslint-disable-next-line
 function DisplayAllMeals() {
     // meal to test on
@@ -104,11 +105,12 @@ function DisplayAllMeals() {
     return (
         <Provider store={store}>
             <TestingFrame>
-                {/* <GoGoMealListWidget />  // this doesn't work since some changes were made */}
+                {/* <GoGoMealListWidget />  // this doesn't work since some changes were made * /}
             </TestingFrame>
         </Provider>
     );
 }
+*/
 
 // eslint-disable-next-line
 function DisplayMeal() {
