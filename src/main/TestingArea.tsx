@@ -55,7 +55,7 @@ function DisplayDay() {
 
     const mapState = (state: State) => ({
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
-        uiEnclosure: Onion.create(),
+        onion: Onion.create(),
     });
     const DoubleConnectedMealListWidget = connect(mapState)(MealList);
 
