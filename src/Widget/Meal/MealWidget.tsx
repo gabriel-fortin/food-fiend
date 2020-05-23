@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, Collapse, Flex, Input, IconButton, useTheme, CloseButton } from '@chakra-ui/core';
+import { Box, Button, Collapse, Flex, IconButton, } from '@chakra-ui/core';
 
-import { MacrosInfo } from 'MacrosDisplay';
+import { MacrosInfo } from 'Widget';
 import { Macros, Food, Ingredient } from 'Model';
-import IngredientsListWidget from 'IngredientsListWidget';
+import { IngredientsListWidget } from 'Widget';
 import Onion from 'Onion';
-import FoodSelectorWidget from 'FoodSelectorWidget';
+import { ConnectedFoodSelectorWidget as FoodSelectorWidget } from 'Widget';
 
 import './meal-widget.css';
 

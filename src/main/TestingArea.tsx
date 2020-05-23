@@ -7,11 +7,11 @@ import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals,
 import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { MacrosBar, MacrosInfo } from '../MacrosDisplay/MacrosDisplay';
-import IngredientsDisplay from '../IngredientsListWidget';
-import FoodSelector from 'FoodSelectorWidget';
-import ConnectedMealWidget from '../MealWidget';
-import ConnectedMealListWidget, { MealListWidget } from '../MealListWidget';
+import { MacrosBar, MacrosInfo } from 'Widget';
+import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
+import {ConnectedFoodSelectorWidget as FoodSelector } from 'Widget';
+import { ConnectedMealWidget } from 'Widget';
+import { ConnectedMealListWidget, MealListWidget } from 'Widget';
 import Onion from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 

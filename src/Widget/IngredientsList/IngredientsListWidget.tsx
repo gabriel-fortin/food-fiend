@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { MacrosInfo } from 'MacrosDisplay';
+import { MacrosInfo } from 'Widget';
 import { Ingredient, Food, Ref, Macros } from 'Model';
 
 import './ingredients-list-widget.css';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ConnectedMealWidget from 'MealWidget';
+import { ConnectedMealWidget} from 'Widget';
 import Onion from 'Onion';
 import { Ingredient } from 'Model';
 
