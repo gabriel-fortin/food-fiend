@@ -3,7 +3,7 @@ import React from "react";
 import { MacrosInfo } from "Widget";
 import { Macros, Food, Ingredient } from "Model";
 import { IngredientsListWidget } from "Widget";
-import Onion from "Onion";
+import Onion, { PlantOnionGarden } from "Onion";
 
 import { FoodAdder } from "./FoodAdder";
 import "./meal-widget.css";
@@ -34,7 +34,9 @@ export const MealWidget: React.FC<Props> = ({name, totalMacros, data, changeIngr
                 onQuantityChange={(pos: number, q: string) => changeIngredientQuantity(pos, q)}
                 onSelectionToggle={undefined}
             />
-            <FoodAdder context={uiEnclosure} />
+            <PlantOnionGarden onion={uiEnclosure}>
+                <FoodAdder />
+            </PlantOnionGarden>
         </div>
     );
 }

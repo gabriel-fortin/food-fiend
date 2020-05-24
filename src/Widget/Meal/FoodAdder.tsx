@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { Box, Button, Collapse, Flex, IconButton } from "@chakra-ui/core";
 
-import { Onion, PlantOnionGarden } from "Onion";
 import { FoodSelector } from "Widget";
 
 
-interface Props {
-    context: Onion,
-}
-
-export const FoodAdder: React.FC<Props> = ({ context }) => {
+export const FoodAdder: React.FC = () => {
     const [showFoodSelector, setShowFoodSelector] = useState(false);
 
     return (
@@ -37,9 +32,7 @@ export const FoodAdder: React.FC<Props> = ({ context }) => {
                         _hover={{opacity: 1}}
                         onClick={() => setShowFoodSelector(false)}
                     />
-                    <PlantOnionGarden onion={context}>
-                        <FoodSelector />
-                    </PlantOnionGarden>
+                    <FoodSelector />
                 </Flex>
             </Collapse>
         </Box>
