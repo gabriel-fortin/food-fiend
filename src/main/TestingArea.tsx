@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { ThemeProvider } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals, setCurrentDay } from 'Store'
+import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals, setCurrentDay, AppStateProvider } from 'Store'
 import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -61,12 +61,12 @@ function DisplayDay() {
 
     return (
         <ThemeProvider>
-            <Provider store={store}>
+            <AppStateProvider _debug__injectStore={store}>
                 <TestingFrame>
                     {/* TODO: after implementing usedBy somethingRandom might be not needed */}
                     <DoubleConnectedMealListWidget />
                 </TestingFrame>
-            </Provider>
+            </AppStateProvider>
         </ThemeProvider>
     );
 }
@@ -196,6 +196,7 @@ const createMeal = (
     return food;
 };
 
+/*
 // eslint-disable-next-line
 function FoodSelection() {
     const store = createEmptyStore();
@@ -232,6 +233,7 @@ function FoodSelection() {
         </Provider>
     );
 }
+*/
 
 // eslint-disable-next-line
 function DisplayDataFromStore() {

@@ -3,7 +3,7 @@ import { connect, useStore } from "react-redux";
 
 import Onion from "Onion";
 import { Ref } from "Model";
-import { State } from "Store";
+import { useAppState } from "Store";
 import { ConnectedMealWidget } from "Widget";
 
 import { UnstyledMealList as MealListUI } from "./UnstyledMealList";
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const Connector: React.FC<Props> = ({ dayRef, onion }) => {
-    const state = useStore().getState() as State;  // TODO: strong typing instead of casting
+    const state = useAppState();
     const ingredients = state.findFood(dayRef).ingredientsRefs;
     const glazedOnion = onion.withFoodLayer(dayRef);
     
