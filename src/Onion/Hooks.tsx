@@ -3,9 +3,10 @@ import React, { useContext, createContext } from "react";
 import { Ref } from "Model";
 
 import { Onion } from "./Onion";
+import { NonInitialisedOnion } from "./NonInitilisedOnion";
 
 
-const OnionReactContext = createContext(Onion.create());
+const OnionReactContext = createContext(new NonInitialisedOnion());
 
 export const useOnion: () => Onion = () =>
     useContext(OnionReactContext);

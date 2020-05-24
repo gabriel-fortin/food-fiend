@@ -26,7 +26,7 @@ export class Onion {
     
     private readonly layers: Layer[];
 
-    private constructor(layers: Layer[]) {
+    protected constructor(layers: Layer[]) {
         this.layers = layers;
     }
 
