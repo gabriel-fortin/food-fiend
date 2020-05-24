@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const Connector: React.FC<Props> = ({ dayRef, onion }) => {
-    const state = useStore().getState() as State;
+    const state = useStore().getState() as State;  // TODO: strong typing instead of casting
     const ingredients = state.findFood(dayRef).ingredientsRefs;
     const glazedOnion = onion.withFoodLayer(dayRef);
     
