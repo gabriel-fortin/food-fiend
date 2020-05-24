@@ -1,7 +1,7 @@
 /** Onion **/
 
 import { Onion } from './Onion';
-import { useOnion, FoodLayerProvider, PositionLayerProvider, PlantOnionGarden } from "./Providers";
+import { useOnion, FoodLayerProvider, PositionLayerProvider, PlantOnionGarden } from "./Hooks";
 
 export type Layer = import('./Onion').Layer;
 export type RefLayer = import('./Onion').RefLayer;
