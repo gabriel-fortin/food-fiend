@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Button, Collapse, Flex, IconButton } from "@chakra-ui/core";
 
-import { Onion } from "Onion";
-import { ConnectedFoodSelectorWidget } from "Widget";
+import { Onion, PlantOnionGarden } from "Onion";
+import { FoodSelector } from "Widget";
 
 
 interface Props {
@@ -37,7 +37,9 @@ export const FoodAdder: React.FC<Props> = ({ context }) => {
                         _hover={{opacity: 1}}
                         onClick={() => setShowFoodSelector(false)}
                     />
-                    <ConnectedFoodSelectorWidget context={context} />
+                    <PlantOnionGarden onion={context}>
+                        <FoodSelector />
+                    </PlantOnionGarden>
                 </Flex>
             </Collapse>
         </Box>

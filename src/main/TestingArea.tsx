@@ -9,7 +9,7 @@ import initialData from '../data/initialData';
 
 import { MacrosBar, MacrosInfo } from 'Widget';
 import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
-import {ConnectedFoodSelectorWidget as FoodSelector } from 'Widget';
+import { FoodSelector } from 'Widget';
 import { ConnectedMealWidget } from 'Widget';
 import { MealList } from 'Widget';
 import Onion from 'Onion';

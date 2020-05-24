@@ -5,7 +5,7 @@ import { State, appendIngredient } from "Store";
 import { useOnion } from "Onion";
 import { Ref } from "Model";
 
-import { FoodSelectorWidget } from "./FoodSelectorWidget";
+import { ChakraStyledFoodSelector as FoodSelectorUI } from "./ChakraStyledFoodSelector";
 
 
 export const ReduxStoreConnector: React.FC<{}> = () => {
@@ -14,7 +14,7 @@ export const ReduxStoreConnector: React.FC<{}> = () => {
     const mapState = (state: State) => ({
         data: state.getAllLatestFoods(),
     });
-    
+
     const mapDispatch = {
         onFoodSelected: (ref: Ref) => {
             // add ingredient to whatever is indicated by the current Onion context
@@ -22,6 +22,6 @@ export const ReduxStoreConnector: React.FC<{}> = () => {
         },
     };
 
-    const Connected = connect(mapState, mapDispatch)(FoodSelectorWidget);
+    const Connected = connect(mapState, mapDispatch)(FoodSelectorUI);
     return <Connected />;
 };

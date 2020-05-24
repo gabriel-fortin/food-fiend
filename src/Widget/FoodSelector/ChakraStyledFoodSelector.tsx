@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { Ref, Food } from 'Model';
+import { Ref, Food } from "Model";
 
-import { TheInputField } from './TheInputField';
-import { PopupList } from './PopupList';
-import './food-selector.css';
+import { TheInputField } from "./TheInputField";
+import { PopupList } from "./PopupList";
+import "./food-selector.css";
 
 
-export interface FoodSelectorProps {
+export interface Props {
     data: Food[],
     onFoodSelected: (ref: Ref) => void,
 }
-export const FoodSelectorWidget: React.FC<FoodSelectorProps> = ({data, onFoodSelected}) => {
+export const ChakraStyledFoodSelector: React.FC<Props> = ({data, onFoodSelected}) => {
     let [currentText, setCurrentText] = useState("");
     let [popupVisible, setPopupVisibility] = useState(false);
 
