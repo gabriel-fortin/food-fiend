@@ -11,6 +11,7 @@ export const useOnion: () => Onion = () =>
     useContext(OnionReactContext);
 
 export const PositionLayerProvider: React.FC<{ position: number }> = ({ position, children }) => {
+    // add one more layer to the onion
     const glazedOnion = useOnion().withPositionLayer(position);
 
     return (
@@ -21,6 +22,7 @@ export const PositionLayerProvider: React.FC<{ position: number }> = ({ position
 };
 
 export const FoodLayerProvider: React.FC<{ food: Ref }> = ({ food, children }) => {
+    // add one more layer to the onion
     const glazedOnion = useOnion().withFoodLayer(food);
 
     return(
@@ -29,3 +31,8 @@ export const FoodLayerProvider: React.FC<{ food: Ref }> = ({ food, children }) =
         </OnionReactContext.Provider>
     );
 };
+
+export const PlantOnionGarden: React.FC<{ onion: Onion }> = ({ onion, children }) =>
+    <OnionReactContext.Provider value={onion}>
+        {children}
+    </OnionReactContext.Provider>;
