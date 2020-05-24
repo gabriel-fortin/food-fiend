@@ -142,7 +142,7 @@ const reducer_importData = (action: ImportDataAction, mutableState: State): Acti
 
 const reducer_changeIngredientQuantity =
     ({ newQuantity, context }: ChangeIngredientQuantityAction, mutableState: State): Action[] => {
-        const [[layer1, layer2], remainingContext] = context.peelLayers(2);
+        const [layer1, layer2, remainingContext] = context.peelTwoLayers();
         const ingredientPosInMeal = (layer1 as PositionLayer).pos;
         const mealRef = (layer2 as RefLayer).ref;
 
@@ -164,7 +164,7 @@ const reducer_changeIngredientQuantity =
 
 const reducer_replaceIngredient =
     ({ newVersion, context }: ReplaceIngredientAction, mutableState: State): Action[] => {
-        const [[layer1, layer2], remainingContext] = context.peelLayers(2);
+        const [layer1, layer2, remainingContext] = context.peelTwoLayers();
         const ingredientPosition = (layer1 as PositionLayer).pos;
         const parentRef = (layer2 as RefLayer).ref;
 
@@ -194,7 +194,7 @@ const reducer_setCurrentDay = ({ dayRef }: SetCurrentDayAction, mutableState: St
 
 const reducer_appendIngredient =
     ({ ingredientRef, context}: AppendIngredientAction, mutableState: State): Action[] => {
-        const [[layer1], remainingContext] = context.peelLayers(1);
+        const [layer1, remainingContext] = context.peelOneLayer();
         const parentFoodRef = (layer1 as RefLayer).ref;
 
         const parentFood = mutableState.findFood(parentFoodRef);

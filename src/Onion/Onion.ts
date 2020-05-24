@@ -67,15 +67,27 @@ export class Onion {
         return this.layers.length;
     }
 
-    peelLayers(howMany: number) {
-        if (this.layers.length < howMany) {
-            throw RangeError(`Cannot peel ${howMany} layers, ` +
-                `there are only ${this.layers.length} left in this Onion: ${JSON.stringify(this.layers)}`);
+    peelOneLayer(): [Layer, Onion] {
+        if (this.layers.length < 1) {
+            throw RangeError(`Cannot peel one layer, there are only none left in this Onion.`);
         }
 
-        const peeledLayers = this.layers.slice(0, howMany);
-        const remainingOnion = this.layers.slice(howMany);
+        const peeledLayers = this.layers.slice(0, 1);
+        const remainingOnion = this.layers.slice(1);
 
-        return [peeledLayers, new Onion(remainingOnion)] as const;
+        return [peeledLayers[0], new Onion(remainingOnion)];
     }
+
+    peelTwoLayers(): [Layer, Layer, Onion] {
+        if (this.layers.length < 2) {
+            throw RangeError(`Cannot peel two layers, there are only ` + 
+                `${this.layers.length} left in this Onion: ${JSON.stringify(this.layers)}`);
+        }
+
+        const peeledLayers = this.layers.slice(0, 2);
+        const remainingOnion = this.layers.slice(2);
+
+        return [peeledLayers[0], peeledLayers[1], new Onion(remainingOnion)];
+    }
+
 }
