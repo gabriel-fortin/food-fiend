@@ -1,5 +1,4 @@
-import { ConnectedMealWidget } from './ConnectedMealWidget';
-import { MealWidget } from './MealWidget';
+/** Meal **/
 
-export default ConnectedMealWidget;
-export { ConnectedMealWidget, MealWidget }
+import { Connector } from './Connector';
+export default Connector;

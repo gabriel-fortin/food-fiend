@@ -1,11 +1,12 @@
 /** Widget **/
 
-import MealList from "./MealList";
 import FoodSelector from "./FoodSelector";
+import Meal from "./Meal";
+import MealList from "./MealList";
 
-export { MealList };
 export { FoodSelector };
+export { Meal };
+export { MealList };
 
 export { IngredientsListWidget } from "./IngredientsList";
 export { MacrosBar, MacrosInfo } from "./MacrosDisplay";
-export { ConnectedMealWidget, MealWidget } from "./Meal";

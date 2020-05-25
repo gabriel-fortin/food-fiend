@@ -10,9 +10,9 @@ import initialData from '../data/initialData';
 import { MacrosBar, MacrosInfo } from 'Widget';
 import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 import { FoodSelector } from 'Widget';
-import { ConnectedMealWidget } from 'Widget';
+import { Meal } from 'Widget';
 import { MealList } from 'Widget';
-import Onion from 'Onion';
+import Onion, { PlantOnionGarden } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 
 
@@ -62,10 +62,12 @@ function DisplayDay() {
     return (
         <ThemeProvider>
             <AppStateProvider _debug__injectStore={store}>
-                <TestingFrame>
-                    {/* TODO: after implementing usedBy somethingRandom might be not needed */}
-                    <DoubleConnectedMealListWidget />
-                </TestingFrame>
+                <PlantOnionGarden>
+                    <TestingFrame>
+                        {/* TODO: after implementing usedBy somethingRandom might be not needed */}
+                        <DoubleConnectedMealListWidget />
+                    </TestingFrame>
+                </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
     );
@@ -141,7 +143,7 @@ function DisplayMeal() {
     return (
         <Provider store={store}>
             <div style={style}>
-                <ConnectedMealWidget mealRef={{id: 14, ver: 1}} uiEnclosure={Onion.create()} />
+                <Meal mealRef={{id: 14, ver: 1}} />
             </div>
         </Provider>
     );
