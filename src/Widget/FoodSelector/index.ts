@@ -1,5 +1,5 @@
 /** Food Selector **/
 
-import { ReduxStoreConnector } from "./ReduxStoreConnector";
+import { Connector } from "./Connector";
 
-export default ReduxStoreConnector;
+export default Connector;

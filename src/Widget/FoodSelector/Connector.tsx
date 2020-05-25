@@ -8,7 +8,7 @@ import { Ref } from "Model";
 import { ChakraStyledFoodSelector as FoodSelectorUI } from "./ChakraStyledFoodSelector";
 
 
-export const ReduxStoreConnector: React.FC<{}> = () => {
+export const Connector: React.FC<{}> = () => {
     const onion = useOnion();
 
     const mapState = (state: State) => ({
