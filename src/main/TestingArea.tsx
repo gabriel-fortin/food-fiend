@@ -8,7 +8,7 @@ import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
 import { MacrosBar, MacrosInfo } from 'Widget';
-import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
+// import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
 import { MealList } from 'Widget';
@@ -55,7 +55,6 @@ function DisplayDay() {
 
     const mapState = (state: State) => ({
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
-        onion: Onion.create(),
     });
     const DoubleConnectedMealListWidget = connect(mapState)(MealList);
 
@@ -64,7 +63,6 @@ function DisplayDay() {
             <AppStateProvider _debug__injectStore={store}>
                 <PlantOnionGarden>
                     <TestingFrame>
-                        {/* TODO: after implementing usedBy somethingRandom might be not needed */}
                         <DoubleConnectedMealListWidget />
                     </TestingFrame>
                 </PlantOnionGarden>
@@ -237,6 +235,7 @@ function FoodSelection() {
 }
 */
 
+/*
 // eslint-disable-next-line
 function DisplayDataFromStore() {
     const initialState = {
@@ -271,6 +270,7 @@ function DisplayDataFromStore() {
         </Provider>
     );
 }
+*/
 
 /*
 // eslint-disable-next-line

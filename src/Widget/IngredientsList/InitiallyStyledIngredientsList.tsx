@@ -8,15 +8,15 @@ import './ingredients-list-widget.css';
 
 // default value for some optional props
 const warnThatMissing = (what: string) => () =>
-    console.warn(`${IngredientsListWidget.name}: missing callback for '${what}'`);
+    console.warn(`${InitiallyStyledIngredientsList.name}: missing callback for '${what}'`);
 
 
-interface ILWProps{
+interface Props{
     data: {ingredient: Ingredient, food: Food}[];
     onQuantityChange: (pos: number, q: string) => void;
     onSelectionToggle?: (ref: Ref) => void;
 }
-export const IngredientsListWidget: React.FC<ILWProps> = ({
+export const InitiallyStyledIngredientsList: React.FC<Props> = ({
         data,
         onQuantityChange = warnThatMissing('quantity change'),
         onSelectionToggle = warnThatMissing('selection toggle')
@@ -26,7 +26,6 @@ export const IngredientsListWidget: React.FC<ILWProps> = ({
             {headerRow()}
             {data.map(({ingredient: asIngredient, food: asFood}) =>
                 <DataRow
-                    // TODO: possible repeated key if e.g. butter if twice on the list
                     key={asIngredient.key}
                     name={asFood.name}
                     macros={asFood.macros}

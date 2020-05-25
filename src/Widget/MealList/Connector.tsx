@@ -6,6 +6,7 @@ import { useAppState } from "Store";
 import { Meal } from "Widget";
 
 import { UnstyledMealList as MealListUI } from "./UnstyledMealList";
+import { FoodLayerProvider, PositionLayerProvider } from "Onion";
 
 
 interface Props {
@@ -16,15 +17,19 @@ export const Connector: React.FC<Props> = ({ dayRef }) => {
     const state = useAppState();
     const ingredients = state.findFood(dayRef).ingredientsRefs;
     
-    const Connected = connect()(MealListUI);
+    const ConnectedMealList = connect()(MealListUI);
     return (
-        <Connected>
-            {ingredients.map((ingredient) =>
-                <Meal
-                    key={ingredient.key}
-                    mealRef={ingredient.ref}
-                />
-            )}
-        </Connected>
+        <FoodLayerProvider food={dayRef}>
+            <ConnectedMealList>
+                {ingredients.map((ingredient) =>
+                    <PositionLayerProvider position={ingredient.position}>
+                        <Meal
+                            key={ingredient.key}
+                            mealRef={ingredient.ref}
+                        />
+                    </PositionLayerProvider>
+                )}
+            </ConnectedMealList>
+        </FoodLayerProvider>
     );
 };

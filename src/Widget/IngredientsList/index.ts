@@ -1,4 +1,3 @@
-import { IngredientsListWidget } from './IngredientsListWidget';
-
-export default IngredientsListWidget;
-export { IngredientsListWidget };
+/** IngredientsList **/
+import { Connector } from "./Connector";
+export default Connector;
