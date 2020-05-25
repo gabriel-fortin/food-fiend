@@ -66,7 +66,7 @@ export function importData(data: Food[]): ImportDataAction {
 // TODO: TS: make newQuantity of a weight type
 export function changeIngredientQuantity(
     newQuantity: number,
-    context: Onion = Onion.create()
+    context: Onion,
 ): ChangeIngredientQuantityAction {
     return {
         type: "CHANGE_FOOD_QUANTITY",
@@ -98,7 +98,7 @@ export function addSimpleFood(
 /** Action creator */
 export function replaceIngredient(
     newVersion: number,
-    context=Onion.create()
+    context: Onion,
 ): ReplaceIngredientAction {
     return {
         type: "REPLACE INGREDIENT",
