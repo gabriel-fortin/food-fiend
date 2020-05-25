@@ -33,7 +33,7 @@ export const FoodLayerProvider: React.FC<{ food: Ref }> = ({ food, children }) =
     );
 };
 
-export const PlantOnionGarden: React.FC<{ onion: Onion }> = ({ onion, children }) =>
-    <OnionReactContext.Provider value={onion}>
+export const PlantOnionGarden: React.FC<{ onion?: Onion }> = ({ onion, children }) =>
+    <OnionReactContext.Provider value={onion || Onion.create()}>
         {children}
     </OnionReactContext.Provider>;
