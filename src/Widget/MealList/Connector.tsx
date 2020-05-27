@@ -22,11 +22,8 @@ export const Connector: React.FC<Props> = ({ dayRef }) => {
         <FoodLayerProvider food={dayRef}>
             <ConnectedMealList>
                 {ingredients.map((ingredient) =>
-                    <PositionLayerProvider position={ingredient.position}>
-                        <Meal
-                            key={ingredient.key}
-                            mealRef={ingredient.ref}
-                        />
+                    <PositionLayerProvider key={ingredient.key} position={ingredient.position}>
+                        <Meal mealRef={ingredient.ref} />
                     </PositionLayerProvider>
                 )}
             </ConnectedMealList>
