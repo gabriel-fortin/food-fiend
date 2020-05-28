@@ -1,11 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
 
 import { Ref } from "Model";
-import { useOnion } from "Onion";
-import { changeIngredientQuantity, State } from "Store";
+import { PositionLayerProvider } from "Onion";
+import { useAppState } from "Store";
 
 import { InitiallyStyledIngredientsList as IngredientsListUI } from "./InitiallyStyledIngredientsList";
-import { connect } from "react-redux";
+import { DataRow } from "./DataRow";
 
 
 interface Props {
@@ -13,29 +14,16 @@ interface Props {
 }
 
 export const Connector: React.FC<Props> = ({ mealRef }) => {
-    const onion = useOnion();
+    const meal = useAppState().findFood(mealRef);
 
-    const mapState = (state: State) => {
-        const meal = state.findFood(mealRef);
-        const data = meal.ingredientsRefs.map(ingredient => (
-            {
-                ingredient,
-                food: state.findFood(ingredient.ref),
-            }
-        ));
-        return { data };
-    };
-
-    const mapDispatch = ({
-        onQuantityChange: (ingredientPos: number, newQuantity: string) => {
-            // Replace any comma with a dot
-            const quantityAsNumber = Number.parseFloat(newQuantity.replace(/,/, "."));
-
-            const glazedOnion = onion.withPositionLayer(ingredientPos);
-            return changeIngredientQuantity(quantityAsNumber, glazedOnion);
-        },
-    });
-
-    const ConnectedIngredientsList = connect(mapState, mapDispatch)(IngredientsListUI);
-    return <ConnectedIngredientsList />;
+    const ConnectedUI = connect()(IngredientsListUI);
+    return (
+        <ConnectedUI>
+            {meal.ingredientsRefs.map(ingredient =>
+                <PositionLayerProvider key={ingredient.key} position={ingredient.position}>
+                    <DataRow ingredient={ingredient} />
+                </PositionLayerProvider>
+            )}
+        </ConnectedUI>
+    );
 };

@@ -1,33 +1,35 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
-import { Macros, Ref } from "Model";
+import { Ingredient } from "Model";
 import { MacrosInfo } from "Widget";
+import { useAppState, changeIngredientQuantity } from "Store";
+import { useOnion } from "Onion";
 
 import { QuantityEditor } from "./QuantityEditor";
 
 
+// TODO: split into connector and UI
+
+
 interface Props {
-    name: string;
-    macros: Macros;
-    quantity: number;
-    onQuantityChange: (q: string) => void;
-    onSelectionToggle: (ref: Ref) => void;
+    ingredient: Ingredient,
 }
 
-export const DataRow: React.FC<Props> = ({
-    name,
-    macros,
-    quantity,
-    onQuantityChange,
-    onSelectionToggle,
-}) => {
-    const [editMode, setEditMode] = useState(false);
+export const DataRow: React.FC<Props> = ({ ingredient }) => {
+    const food = useAppState().findFood(ingredient.ref);
+    const onion = useOnion();
+    const dispatch = useDispatch();  // TODO: use 'mapDispatch' and 'connect' intead of 'useDispatch'
 
+    const [editMode, setEditMode] = useState(false);
     const userClicksQuantityValue = () => {
         setEditMode(true);
     };
     const userAcceptsQuantityChange = (newQuantity: string) => {
-        onQuantityChange(newQuantity);
+        // Replace any comma with a dot
+        const quantityAsNumber = Number.parseFloat(newQuantity.replace(/,/, "."));
+        
+        dispatch(changeIngredientQuantity(quantityAsNumber, onion));
         setEditMode(false);
     };
     const userAbandonsEditing = () => {
@@ -39,21 +41,21 @@ export const DataRow: React.FC<Props> = ({
             <div className="divider" />
 
             <div className="name">
-                <span>{name}</span>
+                <span>{food.name}</span>
             </div>
             <div className="macros">
-                <MacrosInfo macros={macros} />
+                <MacrosInfo macros={food.macros} />
             </div>
             <div className="quantity" onClick={userClicksQuantityValue}>
                 {
                     /* eslint-disable no-mixed-operators */
                     editMode
                     && <QuantityEditor
-                        quantity={quantity}
+                        quantity={ingredient.quantity}
                         userAbandonsEditing={userAbandonsEditing}
                         userAcceptsQuantityChange={userAcceptsQuantityChange}
                     />
-                    || quantity
+                    || ingredient.quantity
                     /* eslint-enable no-mixed-operators */
                 }
                 <span>g</span>
