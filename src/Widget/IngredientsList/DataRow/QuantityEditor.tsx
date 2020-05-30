@@ -24,10 +24,9 @@ export const QuantityEditor: React.FC<Props> = ({
                     e.target.select();
                 }}
                 onBlur={e => userAbandonsEditing()}
-                onKeyUp={e => {
+                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
                     if (e.key === 'Escape') userAbandonsEditing();
-                    if (e.key === 'Enter') userAcceptsQuantityChange((e.target as any).value);
-                    // TODO: remove casting to 'any'
+                    if (e.key === 'Enter') userAcceptsQuantityChange(e.currentTarget.value);
                 }}
             />
         </span>
