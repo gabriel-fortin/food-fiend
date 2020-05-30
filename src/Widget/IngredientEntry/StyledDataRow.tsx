@@ -32,15 +32,15 @@ export const StyledDataRow: React.FC<Props> = ({
 
     return (
         <>
-            <div className="divider" />
+            <Box className="divider" />
 
-            <div className="name">
+            <Box className="name">
                 <span>{name}</span>
-            </div>
-            <div className="macros">
+            </Box>
+            <Box className="macros">
                 <MacrosInfo macros={macros} />
-            </div>
-            <div className="quantity" onClick={userClicksQuantityValue}>
+            </Box>
+            <Box className="quantity-editor" onClick={userClicksQuantityValue}>
                 {
                     /* eslint-disable no-mixed-operators */
                     editMode
@@ -53,7 +53,7 @@ export const StyledDataRow: React.FC<Props> = ({
                     /* eslint-enable no-mixed-operators */
                 }
                 <span>g</span>
-            </div>
+            </Box>
         </>
     );
 };
