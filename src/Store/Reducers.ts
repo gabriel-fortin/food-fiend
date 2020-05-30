@@ -8,7 +8,7 @@ import {
     replaceIngredient, setCurrentDay,
     Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
-     SetCurrentDayAction, AppendIngredientAction
+     SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction
 } from './ActionCreators';
 
 
@@ -77,6 +77,9 @@ function routeAction(state: State, action: Action): State {
                     break;
                 case "APPEND INGREDIENT":
                     newSyntheticActions = reducer_appendIngredient(currentAction, mutableState);
+                    break;
+                case "REMOVE INGREDIENT":
+                    newSyntheticActions = reducer_removeIngredient(currentAction, mutableState);
                     break;
                 default:
                     // make an exception for initialisation done by Redux itself
@@ -209,6 +212,28 @@ const reducer_appendIngredient =
         return [replaceIngredient(updatedParentFood.ref.ver, remainingContext)];
     };
 
+const reducer_removeIngredient = (
+    { context }: RemoveIngredientAction,
+    mutableState: State,
+): Action[] => {
+    const [layer1, layer2, remainingContext] = context.peelTwoLayers();
+    const ingredientPosition = (layer1 as PositionLayer).pos;
+    const parentFoodRef = (layer2 as RefLayer).ref;
+    const parentFood = mutableState.findFood(parentFoodRef);
+
+    const updateParentFood = applyFunctionsTo(parentFood, [
+        doUpdateVersion(mutableState),
+        doRemoveIngredient(ingredientPosition),
+        doCalculateMacros(mutableState),
+    ]);
+
+    putFoodIntoMutableState(mutableState, updateParentFood);
+
+    return [replaceIngredient(updateParentFood.ref.ver, remainingContext)];
+    
+    // TODO: update ingredient food's 'usedBy'
+};
+
 
 // helper to be used with 'applyFunctionsTo'
 const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: number) => (meal: Food): Food => {
@@ -288,6 +313,12 @@ const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): Food => {
     return Immer_produce(parentFood, f => void
         f.ingredientsRefs.push(newIngredient)
     );
+};
+
+const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): Food => {
+    return Immer_produce(parentFood, f => {
+        f.ingredientsRefs = f.ingredientsRefs.filter(x => x.position != positionToRemove);
+    });
 };
 
 // helper to be used with 'applyFunctionsTo'

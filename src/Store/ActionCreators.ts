@@ -45,6 +45,11 @@ export interface AppendIngredientAction {
     context: Onion,
 }
 
+export interface RemoveIngredientAction {
+    type: "REMOVE INGREDIENT",
+    context: Onion,
+}
+
 export type Action =
     | ImportDataAction
     | ChangeIngredientQuantityAction
@@ -52,6 +57,7 @@ export type Action =
     | ReplaceIngredientAction
     | SetCurrentDayAction
     | AppendIngredientAction
+    | RemoveIngredientAction
     ;
 
 
@@ -120,6 +126,14 @@ export function appendIngredient(ingredientRef: Ref, context: Onion): AppendIngr
     return {
         type: "APPEND INGREDIENT",
         ingredientRef,
+        context,
+    };
+}
+
+/** Action creator */
+export function removeIngredient(context: Onion): RemoveIngredientAction {
+    return {
+        type: "REMOVE INGREDIENT",
         context,
     };
 }
