@@ -2,8 +2,7 @@ import React, { useState } from "react";
 
 import { Macros } from "Model";
 import { MacrosInfo } from "Widget";
-
-import { QuantityEditor } from "./QuantityEditor";
+import { QuantityEditor } from "UI";
 
 
 interface Props {
