@@ -6,7 +6,7 @@ import { PositionLayerProvider } from "Onion";
 import { useAppState } from "Store";
 
 import { InitiallyStyledIngredientsList as IngredientsListUI } from "./InitiallyStyledIngredientsList";
-import { DataRow } from "./DataRow";
+import { IngredientEntry } from "Widget";
 
 
 interface Props {
@@ -21,7 +21,7 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
         <ConnectedUI>
             {meal.ingredientsRefs.map(ingredient =>
                 <PositionLayerProvider key={ingredient.key} position={ingredient.position}>
-                    <DataRow ingredient={ingredient} />
+                    <IngredientEntry ingredient={ingredient} />
                 </PositionLayerProvider>
             )}
         </ConnectedUI>

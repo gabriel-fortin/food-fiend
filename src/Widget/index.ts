@@ -10,4 +10,5 @@ export { FoodSelector };
 export { Meal };
 export { MealList };
 
+export { IngredientEntry } from "./IngredientEntry";
 export { MacrosBar, MacrosInfo } from "./MacrosDisplay";
