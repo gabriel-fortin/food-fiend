@@ -5,18 +5,18 @@
 
     margin-left: var(--left-side-space-correction);
     display: grid;
-    grid-template-columns: minmax(10em, 30em) minmax(10em, 20em) auto;
+    grid-template-columns: minmax(10em, 30em) minmax(10em, 20em) 5em;
     align-items: center;
     justify-items: center;
 }
-.table-display > .name {
+/* .table-display .name {
     justify-self: start;
     margin-left: 0.5em;
-}
-.table-display > .macros {
+} */
+/* .table-display .macros {
     justify-self: stretch;
-}
-.table-display > .divider {
+} */
+.table-display .divider {
     width: calc(100% + var(--left-side-space-correction));
     justify-self: right;
     height: 1px;
@@ -24,9 +24,10 @@
     background-color: var(--divider-color);
     grid-column: 1 / -1;
 }
-.table-display .quantity-editor > input {
+/* .table-display .quantity-editor input {
     max-width: 3em;
-}
+} */
+
 
 /* styles for debug */
 /*
