@@ -5,6 +5,8 @@ import { Macros } from "Model";
 import { MacrosInfo } from "Widget";
 import { QuantityEditor } from "UI";
 
+import "./style.css";
+
 
 // FIX: style of a row is tied to the style of the header (which is defined in IngredientsList)
 
