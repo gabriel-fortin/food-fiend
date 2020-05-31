@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { Ref } from "Model";
 import { PositionLayerProvider } from "Onion";
 import { useAppState } from "Store";
+import { IngredientEntry } from "Widget";
 
 import { InitiallyStyledIngredientsList as IngredientsListUI } from "./InitiallyStyledIngredientsList";
-import { IngredientEntry } from "Widget";
 
 
 interface Props {
@@ -15,6 +15,14 @@ interface Props {
 
 export const Connector: React.FC<Props> = ({ mealRef }) => {
     const meal = useAppState().findFood(mealRef);
+
+    if (meal.ingredientsRefs.length === 0) {
+        return (
+            <>
+                <div>No food yet in this meal</div>
+            </>
+        );
+    }
 
     const ConnectedUI = connect()(IngredientsListUI);
     return (
