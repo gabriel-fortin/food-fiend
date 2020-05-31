@@ -22,12 +22,14 @@ export const StyledDataRow: React.FC<Props> = ({
     quantity,
     onQuantityChange,
 }) => {
+    const [showRightExtension, setShowRightExtension] = useState(false);
+    const mouseEntersRow = () => setShowRightExtension(true);
+    const mouseLeavesRow = () => setShowRightExtension(false);
+
     const [editMode, setEditMode] = useState(false);
     const userClicksQuantityValue = () => {
         setEditMode(true);
     };
-
-    const [hoveredOver, setHoveredOver] = useState(false);
 
     const userAcceptsQuantityChange = (newQuantity: string) => {
         onQuantityChange(newQuantity);
@@ -37,7 +39,7 @@ export const StyledDataRow: React.FC<Props> = ({
         setEditMode(false);
     };
 
-    const rightExtension = "6em";
+    const currentRightExtensionSize = showRightExtension ? "6em" : "0";
 
     return (
         <>
@@ -48,17 +50,18 @@ export const StyledDataRow: React.FC<Props> = ({
                 width="100%"
             >
                 <Flex
-                    justify="space-between"
-                    position="relative"
-                    style={hoveredOver && {
-                        boxShadow: "1px 1px 13px 1px grey"
-                    } || {}}
-                    marginRight={`-${rightExtension}`}
-                    onMouseEnter={e => setHoveredOver(true)}
-                    onMouseLeave={e => setHoveredOver(false)}
+                    style={showRightExtension
+                        ? {
+                            boxShadow: "1px 1px 13px 1px grey",
+                            paddingRight: currentRightExtensionSize,
+                        }
+                        : {}
+                    }
+                    marginRight={`-${currentRightExtensionSize}`}
+                    onMouseEnter={mouseEntersRow}
+                    onMouseLeave={mouseLeavesRow}
                 >
                     <Box
-                        className="name"
                         flexBasis="40%"
                         flexGrow={5}
                         alignSelf="center"
@@ -91,8 +94,10 @@ export const StyledDataRow: React.FC<Props> = ({
                         <span>g</span>
                     </Box>
                     <Box
+                        display={showRightExtension ? "unset" : "none"}
                         marginY="auto"
-                        width={rightExtension}
+                        marginRight={`-${currentRightExtensionSize}`}
+                        width={currentRightExtensionSize}
                         textAlign="center"
                     >
                         REMOVE
