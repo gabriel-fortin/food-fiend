@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Ingredient } from "Model";
 import { changeIngredientQuantity, State } from "Store";
 import { useOnion } from "Onion";
+import { removeIngredient } from "Store";
 
 import { StyledDataRow } from "./StyledDataRow";
 
@@ -30,6 +31,9 @@ export const Connector: React.FC<Props> = ({ ingredient }) => {
             const quantityAsNumber = Number.parseFloat(newQuantity.replace(/,/, "."));
 
             return changeIngredientQuantity(quantityAsNumber, onion);
+        },
+        onRemoveEntry: () => {
+            return removeIngredient(onion);
         },
     });
 

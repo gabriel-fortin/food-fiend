@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Flex, PseudoBox } from "@chakra-ui/core";
+import { Box, Flex, PseudoBox, Link } from "@chakra-ui/core";
 
 import { Macros } from "Model";
 import { MacrosInfo } from "Widget";
@@ -14,6 +14,7 @@ interface Props {
     macros: Macros;
     quantity: number;
     onQuantityChange: (newQuantity: string) => void;
+    onRemoveEntry: () => void;
 }
 
 export const StyledDataRow: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const StyledDataRow: React.FC<Props> = ({
     macros,
     quantity,
     onQuantityChange,
+    onRemoveEntry,
 }) => {
     const [showRightExtension, setShowRightExtension] = useState(false);
     const mouseEntersRow = () => setShowRightExtension(true);
@@ -100,7 +102,12 @@ export const StyledDataRow: React.FC<Props> = ({
                         width={currentRightExtensionSize}
                         textAlign="center"
                     >
-                        REMOVE
+                        <Link
+                            color="rgba(200, 50, 50, 1)"
+                            onClick={onRemoveEntry}
+                        >
+                            remove
+                        </Link>
                     </Box>
                 </Flex>
             </PseudoBox>
