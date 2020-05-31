@@ -3,9 +3,9 @@ import { Box, Flex, PseudoBox, Link } from "@chakra-ui/core";
 
 import { Macros } from "Model";
 import { MacrosInfo } from "Widget";
-import { QuantityEditor } from "UI";
+import { EditableText } from "UI";
 
-import "./style.css";
+import "./styled-data-row.css";
 
 
 // FIX: style of a row is tied to the style of the header (which is defined in IngredientsList)
@@ -30,17 +30,8 @@ export const StyledDataRow: React.FC<Props> = ({
     const mouseEntersRow = () => setShowRightExtension(true);
     const mouseLeavesRow = () => setShowRightExtension(false);
 
-    const [editMode, setEditMode] = useState(false);
-    const userClicksQuantityValue = () => {
-        setEditMode(true);
-    };
-
     const userAcceptsQuantityChange = (newQuantity: string) => {
         onQuantityChange(newQuantity);
-        setEditMode(false);
-    };
-    const userAbandonsEditing = () => {
-        setEditMode(false);
     };
 
     const currentRightExtensionSize = showRightExtension ? "6em" : "0";
@@ -52,6 +43,7 @@ export const StyledDataRow: React.FC<Props> = ({
             <PseudoBox
                 gridColumn="1 / -1"
                 width="100%"
+                className="styled-data-row"
             >
                 <Flex
                     style={showRightExtension
@@ -81,20 +73,13 @@ export const StyledDataRow: React.FC<Props> = ({
                     <Box
                         flexBasis="5em"
                         textAlign="center"
-                        onClick={userClicksQuantityValue}
                         alignSelf="center"
                     >
-                        {
-                            /* eslint-disable no-mixed-operators */
-                            editMode
-                            && <QuantityEditor
-                                quantity={quantity}
-                                userAbandonsEditing={userAbandonsEditing}
-                                userAcceptsQuantityChange={userAcceptsQuantityChange}
-                            />
-                            || quantity
-                            /* eslint-enable no-mixed-operators */
-                        }
+                        <EditableText
+                            text={String(quantity)}
+                            userAcceptsChange={userAcceptsQuantityChange}
+                            pattern="\d+(\.\d+)?"
+                        />
                         <span>g</span>
                     </Box>
                     <Box

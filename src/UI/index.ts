@@ -1,1 +1,1 @@
-export { QuantityEditor } from "./QuantityEditor";
+export { EditableText } from "./EditableText";
