@@ -8,7 +8,7 @@ import {
     replaceIngredient, setCurrentDay,
     Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
-     SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction
+     SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction, ChangeFoodNameAction
 } from './ActionCreators';
 
 
@@ -80,6 +80,9 @@ function routeAction(state: State, action: Action): State {
                     break;
                 case "REMOVE INGREDIENT":
                     newSyntheticActions = reducer_removeIngredient(currentAction, mutableState);
+                    break;
+                case "CHANGE FOOD NAME":
+                    newSyntheticActions = reducer_changeFoodName(currentAction, mutableState);
                     break;
                 default:
                     // make an exception for initialisation done by Redux itself
@@ -234,6 +237,23 @@ const reducer_removeIngredient = (
     // TODO: update ingredient food's 'usedBy'
 };
 
+const reducer_changeFoodName = (
+    { newName, context }: ChangeFoodNameAction,
+    mutableState: State,
+): Action[] => {
+    const [layer1, remainingContext] = context.peelOneLayer();
+    const foodRef = (layer1 as RefLayer).ref;
+
+    const food = mutableState.findFood(foodRef);
+    const updatedFood = applyFunctionsTo(food, [
+        doChangeName(newName),
+    ]);
+
+    putFoodIntoMutableState(mutableState, updatedFood);
+
+    return [replaceIngredient(updatedFood.ref.ver, remainingContext)];
+};
+
 
 // helper to be used with 'applyFunctionsTo'
 const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: number) => (meal: Food): Food => {
@@ -319,6 +339,10 @@ const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): Foo
     return Immer_produce(parentFood, f => {
         f.ingredientsRefs = f.ingredientsRefs.filter(x => x.position != positionToRemove);
     });
+};
+
+const doChangeName = (newName: string) => (food: Food): Food => {
+    return Immer_produce(food, f => void (f.name = newName));
 };
 
 // helper to be used with 'applyFunctionsTo'

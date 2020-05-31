@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { ThemeProvider } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals, setCurrentDay, AppStateProvider } from 'Store'
+import { State, storeReducer, importData, changeIngredientQuantity, getAllMeals, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
 import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -52,6 +52,7 @@ function DisplayDay() {
     store.dispatch(importData([obiad]));
     store.dispatch(importData([tempDay]));
     store.dispatch(setCurrentDay(new Ref(666, -14)));
+    store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
 
     const mapState = (state: State) => ({
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null

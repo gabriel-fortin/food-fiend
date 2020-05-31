@@ -50,6 +50,12 @@ export interface RemoveIngredientAction {
     context: Onion,
 }
 
+export interface ChangeFoodNameAction {
+    type: "CHANGE FOOD NAME",
+    newName: string,
+    context: Onion,
+}
+
 export type Action =
     | ImportDataAction
     | ChangeIngredientQuantityAction
@@ -58,6 +64,7 @@ export type Action =
     | SetCurrentDayAction
     | AppendIngredientAction
     | RemoveIngredientAction
+    | ChangeFoodNameAction
     ;
 
 
@@ -91,6 +98,7 @@ export function addSimpleFood(
     macrosUncertainty: MacrosUncertainty = false,
     extra: any = {},
 ): AddSimpleFoodAction {
+    // TODO: this sction seems not to be used at all
     return {
         type: "ADD_SIMPLE_FOOD",
         name,
@@ -134,6 +142,15 @@ export function appendIngredient(ingredientRef: Ref, context: Onion): AppendIngr
 export function removeIngredient(context: Onion): RemoveIngredientAction {
     return {
         type: "REMOVE INGREDIENT",
+        context,
+    };
+}
+
+/** Action creator */
+export function changeFoodName(newName: string, context: Onion): ChangeFoodNameAction {
+    return {
+        type: "CHANGE FOOD NAME",
+        newName,
         context,
     };
 }
