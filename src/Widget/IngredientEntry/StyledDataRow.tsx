@@ -26,6 +26,9 @@ export const StyledDataRow: React.FC<Props> = ({
     const userClicksQuantityValue = () => {
         setEditMode(true);
     };
+
+    const [hoveredOver, setHoveredOver] = useState(false);
+
     const userAcceptsQuantityChange = (newQuantity: string) => {
         onQuantityChange(newQuantity);
         setEditMode(false);
@@ -34,6 +37,8 @@ export const StyledDataRow: React.FC<Props> = ({
         setEditMode(false);
     };
 
+    const rightExtension = "6em";
+
     return (
         <>
             <Box className="divider" />
@@ -41,10 +46,16 @@ export const StyledDataRow: React.FC<Props> = ({
             <PseudoBox
                 gridColumn="1 / -1"
                 width="100%"
-                _hover={{ boxShadow: "1px 1px 13px 1px grey" }}
             >
                 <Flex
                     justify="space-between"
+                    position="relative"
+                    style={hoveredOver && {
+                        boxShadow: "1px 1px 13px 1px grey"
+                    } || {}}
+                    marginRight={`-${rightExtension}`}
+                    onMouseEnter={e => setHoveredOver(true)}
+                    onMouseLeave={e => setHoveredOver(false)}
                 >
                     <Box
                         className="name"
@@ -78,6 +89,13 @@ export const StyledDataRow: React.FC<Props> = ({
                             /* eslint-enable no-mixed-operators */
                         }
                         <span>g</span>
+                    </Box>
+                    <Box
+                        marginY="auto"
+                        width={rightExtension}
+                        textAlign="center"
+                    >
+                        REMOVE
                     </Box>
                 </Flex>
             </PseudoBox>
