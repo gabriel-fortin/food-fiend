@@ -19,10 +19,6 @@
     align-items: center;
 }
 
-.meal-title {
-    padding-left: 0.5em;
-}
-
 .meal-macros {
     width: var(--mealMacrosSize);
 }

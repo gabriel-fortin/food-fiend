@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { State } from "Store";
+import { State, changeFoodName } from "Store";
 import { Ref } from "Model";
-import { FoodLayerProvider } from "Onion";
+import Onion, { FoodLayerProvider, useOnion } from "Onion";
 import { IngredientsList } from "Widget";
 
 import { InitiallyStyledMeal as MealUI } from "./InitiallyStyledMeal";
@@ -17,18 +17,9 @@ interface Props {
  * Connects Meal to the redux store
  */
 export const Connector: React.FC<Props> = ({ mealRef }) => {
-    const mapStateToProps = (state: State) => {
-        const meal = state.findFood(mealRef);
-        return {
-            name: meal.name,
-            totalMacros: meal.macros,
-        };
-    };
-    const ConnectedMeal = connect(mapStateToProps)(MealUI);
-
     return (
         <FoodLayerProvider food={mealRef}>
-            <ConnectedMeal>
+            <ConnectedMeal mealRef={mealRef}>
                 <IngredientsList
                     mealRef={mealRef}
                 />
@@ -36,3 +27,31 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
         </FoodLayerProvider>
     );
 }
+
+const ConnectedMeal: React.FC<{ mealRef: Ref }> = ({ mealRef }) => {
+    const onion = useOnion();
+
+    const mapState = (state: State) => {
+        const meal = state.findFood(mealRef);
+        return {
+            name: meal.name,
+            totalMacros: meal.macros,
+        };
+    };
+    const mapDispatch = ({
+        onNameChange: (newName: string) => {
+            console.log(`Connector: on Name Change; newName: ${newName}`);
+            
+            return changeFoodName(newName, onion);
+        },
+    });
+
+    const ConnectedMeal = connect(mapState, mapDispatch)(MealUI);
+    return (
+        <ConnectedMeal>
+            <IngredientsList
+                mealRef={mealRef}
+            />
+        </ConnectedMeal>
+    );
+};
