@@ -7,6 +7,7 @@ import {
     addSimpleFood,
     setCurrentDay,
     appendIngredient,
+    removeIngredient,
 } from './ActionCreators';
 import { rootReducer as storeReducer } from './Reducers';
 import { mutatePutFood, getAllMeals, State, NoFoodFoundError } from './Store';
@@ -24,6 +25,7 @@ export type ChangeIngredientQuantityAction = import('./ActionCreators').ChangeIn
 export type AddSimpleFoodAction = import('./ActionCreators').AddSimpleFoodAction;
 export type ReplaceIngredientAction = import('./ActionCreators').ReplaceIngredientAction;
 export type AppendIngredientAction = import('./ActionCreators').AppendIngredientAction;
+export type RemoveIngredientAction = import('./ActionCreators').RemoveIngredientAction;
 export type Action = import('./ActionCreators').Action;
 
 export {
@@ -34,6 +36,7 @@ export {
     addSimpleFood,
     setCurrentDay,
     appendIngredient,
+    removeIngredient,
 
     /* main reducer */
     storeReducer,
