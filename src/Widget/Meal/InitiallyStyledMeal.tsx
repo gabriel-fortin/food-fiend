@@ -21,7 +21,7 @@ export const InitiallyStyledMeal: React.FC<Props> = ({ name, totalMacros, onName
                 <h2>
                     <EditableText
                         text={name}
-                        userAcceptsChange={onNameChange}
+                        onNewTextAccepted={onNameChange}
                     />
                 </h2>
                 <div className="meal-macros">

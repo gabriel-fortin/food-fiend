@@ -2,19 +2,19 @@ import React, { useState } from "react";
 
 
 // TODO: use pattern
-//          - don't fire userAcceptsChange if pattern not matched
+//          - don't fire onNewTextAccepted if pattern not matched
 //          - visually show when input doesn't match the pattern
 
 
 interface Props {
     text: string;
-    userAcceptsChange?: (q: string) => void;
+    onNewTextAccepted?: (newValue: string) => void;
     pattern?: string;
 }
 
 export const EditableText: React.FC<Props> = ({
     text,
-    userAcceptsChange = () => {},
+    onNewTextAccepted = () => {},
     pattern = ".*",
 }) => {
     const [editMode, setEditMode] = useState(false);
@@ -39,9 +39,9 @@ export const EditableText: React.FC<Props> = ({
                     e.target.select();
                 }}
                 onBlur={e => userAbandonsEditing()}
-                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                onKeyUp={e => {
                     if (e.key === 'Escape') userAbandonsEditing();
-                    if (e.key === 'Enter') userAcceptsChange(e.currentTarget.value);
+                    if (e.key === 'Enter') onNewTextAccepted(e.currentTarget.value);
                 }}
             />
         </span>

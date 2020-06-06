@@ -77,7 +77,7 @@ export const StyledDataRow: React.FC<Props> = ({
                     >
                         <EditableText
                             text={String(quantity)}
-                            userAcceptsChange={userAcceptsQuantityChange}
+                            onNewTextAccepted={userAcceptsQuantityChange}
                             pattern="\d+(\.\d+)?"
                         />
                         <span>g</span>
