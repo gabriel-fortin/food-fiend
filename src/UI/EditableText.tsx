@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Editable, EditablePreview, EditableInput, EditableProps } from "@chakra-ui/core";
 
 
 // TODO: use pattern
@@ -12,44 +13,23 @@ interface Props {
     pattern?: string;
 }
 
-export const EditableText: React.FC<Props> = ({
+export const EditableText: React.FC<Props & Omit<EditableProps, "children">> = ({
     text,
     onNewTextAccepted = () => {},
     pattern = ".*",
+    ...props
 }) => {
-    const [editMode, setEditMode] = useState(false);
-    const userClicksQuantityValue = () => {
-        setEditMode(true);
-    };
-    const userAbandonsEditing = () => {
-        setEditMode(false);
-    };
+    const [currrentValue, setCurrentValue] = useState(text);
 
     return (
-        editMode
-        &&
-        <span className="editable-text">
-            <input
-                pattern={pattern}
-                autoFocus
-                onFocus={e => {
-                    // when editing starts, put the current value in and select it
-                    // so the user can enter a new value more easily
-                    e.target.value = text;
-                    e.target.select();
-                }}
-                onBlur={e => userAbandonsEditing()}
-                onKeyUp={e => {
-                    if (e.key === 'Escape') userAbandonsEditing();
-                    if (e.key === 'Enter') onNewTextAccepted(e.currentTarget.value);
-                }}
-            />
-        </span>
-        ||
-        <span
-            onClick={e => userClicksQuantityValue()}
+        <Editable
+            {...props}
+            value={currrentValue}
+            onChange={setCurrentValue}
+            onSubmit={() => onNewTextAccepted(currrentValue)}
         >
-            {text}
-        </span>
+            <EditablePreview />
+            <EditableInput />
+        </Editable>
     );
 }

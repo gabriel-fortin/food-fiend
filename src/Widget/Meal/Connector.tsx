@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { State, changeFoodName } from "Store";
 import { Ref } from "Model";
-import Onion, { FoodLayerProvider, useOnion } from "Onion";
+import { FoodLayerProvider, useOnion } from "Onion";
 import { IngredientsList } from "Widget";
 
 import { InitiallyStyledMeal as MealUI } from "./InitiallyStyledMeal";

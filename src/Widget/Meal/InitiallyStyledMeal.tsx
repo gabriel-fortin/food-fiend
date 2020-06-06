@@ -20,6 +20,7 @@ export const InitiallyStyledMeal: React.FC<Props> = ({ name, totalMacros, onName
             <div className="meal-header">
                 <h2>
                     <EditableText
+                        marginLeft={3}
                         text={name}
                         onNewTextAccepted={onNameChange}
                     />

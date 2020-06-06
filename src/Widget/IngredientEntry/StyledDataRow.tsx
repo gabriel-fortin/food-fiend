@@ -76,6 +76,9 @@ export const StyledDataRow: React.FC<Props> = ({
                         alignSelf="center"
                     >
                         <EditableText
+                            as="span"
+                            maxWidth="3em"
+                            
                             text={String(quantity)}
                             onNewTextAccepted={userAcceptsQuantityChange}
                             pattern="\d+(\.\d+)?"
