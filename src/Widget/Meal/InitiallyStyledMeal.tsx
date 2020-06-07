@@ -1,8 +1,8 @@
 import React from "react";
+import { EditableInput, EditablePreview, Editable } from "@chakra-ui/core";
 
 import { MacrosInfo } from "Widget";
 import { Macros } from "Model";
-import { EditableText } from "UI";
 
 import { FoodAdder } from "./FoodAdder";
 import "./meal-widget.css";
@@ -19,11 +19,14 @@ export const InitiallyStyledMeal: React.FC<Props> = ({ name, totalMacros, onName
         <div className="meal">
             <div className="meal-header">
                 <h2>
-                    <EditableText
+                    <Editable
                         marginLeft={3}
-                        text={name}
-                        onNewTextAccepted={onNameChange}
-                    />
+                        defaultValue={name}
+                        onSubmit={onNameChange}
+                    >
+                        <EditablePreview />
+                        <EditableInput />
+                    </Editable>
                 </h2>
                 <div className="meal-macros">
                 {/* TODO: maybe, make Macros Info read its own data */}

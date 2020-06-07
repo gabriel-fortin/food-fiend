@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Box, Flex, PseudoBox, Link } from "@chakra-ui/core";
+import { Box, Flex, PseudoBox, Link, Editable, EditablePreview, EditableInput } from "@chakra-ui/core";
 
 import { Macros } from "Model";
 import { MacrosInfo } from "Widget";
-import { EditableText } from "UI";
 
 import "./styled-data-row.css";
 
@@ -75,14 +74,14 @@ export const StyledDataRow: React.FC<Props> = ({
                         textAlign="center"
                         alignSelf="center"
                     >
-                        <EditableText
+                        <Editable
                             as="span"
-                            maxWidth="3em"
-                            
-                            text={String(quantity)}
-                            onNewTextAccepted={userAcceptsQuantityChange}
-                            pattern="\d+(\.\d+)?"
-                        />
+                            defaultValue={String(quantity)}
+                            onSubmit={userAcceptsQuantityChange}
+                        >
+                            <EditablePreview />
+                            <EditableInput />
+                        </Editable>
                         <span>g</span>
                     </Box>
                     <Box
