@@ -14,13 +14,13 @@ interface Props {
 }
 
 export const Connector: React.FC<Props> = ({ dayRef }) => {
-    const state = useAppState();
-    const ingredients = state.findFood(dayRef).ingredientsRefs;
-    
+    const food = useAppState().findFood(dayRef);
+    const ingredients = food.ingredientsRefs;
+
     const ConnectedMealList = connect()(MealListUI);
     return (
         <FoodLayerProvider food={dayRef}>
-            <ConnectedMealList>
+            <ConnectedMealList title={food.name}>
                 {ingredients.map((ingredient) =>
                     <PositionLayerProvider key={ingredient.key} position={ingredient.position}>
                         <Meal mealRef={ingredient.ref} />
