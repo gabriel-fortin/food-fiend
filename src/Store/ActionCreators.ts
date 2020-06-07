@@ -19,13 +19,14 @@ export interface ChangeIngredientQuantityAction {
     context: Onion,
 }
 
-export interface AddSimpleFoodAction {
-    type: "ADD_SIMPLE_FOOD",
+export interface AddFoodAction {
+    type: "ADD_FOOD",
     name: string,
     unit: string,
     macros: Macros,
     macrosUncertainty: MacrosUncertainty,
     extra: any,
+    context: Onion,
 }
 
 export interface ReplaceIngredientAction {
@@ -59,7 +60,7 @@ export interface ChangeFoodNameAction {
 export type Action =
     | ImportDataAction
     | ChangeIngredientQuantityAction
-    | AddSimpleFoodAction
+    | AddFoodAction
     | ReplaceIngredientAction
     | SetCurrentDayAction
     | AppendIngredientAction
@@ -96,16 +97,37 @@ export function addSimpleFood(
     unit: string,
     macros: Macros,
     macrosUncertainty: MacrosUncertainty = false,
-    extra: any = {},
-): AddSimpleFoodAction {
+    extra: any = null,
+): AddFoodAction {
     // TODO: this sction seems not to be used at all
     return {
-        type: "ADD_SIMPLE_FOOD",
+        type: "ADD_FOOD",
         name,
         unit,
         macros,
         macrosUncertainty,
         extra,
+        context: Onion.create(),  // empty context
+    };
+}
+
+/**
+ * Add composite food to a parent food
+ */
+export function addCompositeFood(
+    context: Onion,
+    name: string,
+    unit: string,
+    extra: any = null,
+): AddFoodAction {
+    return {
+        type: "ADD_FOOD",
+        name,
+        unit,
+        macros: new Macros(0, 0, 0),
+        macrosUncertainty: false,
+        extra,
+        context,
     };
 }
 

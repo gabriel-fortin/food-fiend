@@ -42,7 +42,7 @@ export class Food {
         unitName: string = "g",
         portionSize: number = 1,
         portions: number = 1,
-        extra: any = {},
+        extra: any = null,
     ) {
         this.ref = ref;
         this.name = name;
