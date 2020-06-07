@@ -96,24 +96,24 @@ export class StateImpl extends State {
     }
 }
 
-export function getAllMeals(state: State): Food[] {
-    const mealsGroupedById: Map<number, Food[]> = state.foodData
-        .filter(food => food.type === FoodType.Meal)
-        .reduce((groupedMeals, food) => {
-            const group = groupedMeals.get(food.ref.id) || [];
+export function getAllFoodOfType(state: State, soughtType: FoodType): Food[] {
+    const foodsGroupedById: Map<number, Food[]> = state.foodData
+        .filter(food => food.type === soughtType)
+        .reduce((groupedFoods, food) => {
+            const group = groupedFoods.get(food.ref.id) || [];
             group.push(food);
-            groupedMeals.set(food.ref.id, group);
-            return groupedMeals;
+            groupedFoods.set(food.ref.id, group);
+            return groupedFoods;
         }, new Map<number, Food[]>());
 
-    const latestVersionOfEachMeal: Food[] = [];
+    const latestVersionOfEachFood: Food[] = [];
 
-    mealsGroupedById.forEach((mealVersions: Food[], _key: number) => {
-        const mealLatestVersion = mealVersions.reduce(chooseFoodWithHigherVersion);
-        latestVersionOfEachMeal.push(mealLatestVersion);
+    foodsGroupedById.forEach((foodVersions: Food[], _key: number) => {
+        const foodLatestVersion = foodVersions.reduce(chooseFoodWithHigherVersion);
+        latestVersionOfEachFood.push(foodLatestVersion);
     })
 
-    return latestVersionOfEachMeal;
+    return latestVersionOfEachFood;
 }
 
 /**
