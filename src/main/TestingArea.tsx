@@ -175,7 +175,7 @@ const createMeal = (
             ver: mealVersion,
         },
         title,
-        FoodType.Compound,
+        FoodType.Meal,
         {  // 30g of each product
             fat: mealIngredients.reduce((acc, x) => acc + x.macros.fat * 30/100, 0),
             protein: mealIngredients.reduce((acc, x) => acc + x.macros.protein * 30/100, 0),

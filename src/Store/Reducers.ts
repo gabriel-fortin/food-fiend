@@ -283,7 +283,7 @@ const doUpdateIngredientVersionAtPos = (ingredientPosition: number, newVersion: 
 
 // helper to be used with 'applyFunctionsTo'
 const doCalculateMacros = (state: State) => (meal: Food): Food => {
-    const handledTypes = [FoodType.Compound, FoodType.Day];
+    const handledTypes = [FoodType.Meal, FoodType.Day, FoodType.Week];
 
     if (!handledTypes.includes(meal.type)) {
         throw new Error(`${doCalculateMacros.name} should only be used for meals; ` + 

@@ -1,10 +1,13 @@
 export enum FoodType {
-    /** Simple food ingredient */
-    Simple = "SiMpLe",
+    /** Simple food, which doesn't have ingrdients */
+    BaseIngredient = "BaSe iNgrEdiEnt",
 
-    /** Food that is composed of some ingredients */
-    Compound = "CoMPouNd",
+    /** Composed food (having ingredients), that represents a meal */
+    Meal = "mEaL",
 
-    /** Single-versioned (thus not immutable) food that represents a day */
-    Day = "DaY",
-}
+    /** Composed food (having ingredients), that represents a day */
+    Day = "dAy",
+
+    /** Composed food (having ingredients), that represents a week */
+    Week = "WeEk",
+};

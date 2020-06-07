@@ -26,7 +26,7 @@ function reshapeIntoExpectedForm(item: any): Food {
             ver: 1,
         },
         item.name,
-        FoodType.Simple,
+        FoodType.BaseIngredient,
         {  // quantities per 100g of product
             fat: item.fat,
             protein: item.protein,

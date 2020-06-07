@@ -98,7 +98,7 @@ export class StateImpl extends State {
 
 export function getAllMeals(state: State): Food[] {
     const mealsGroupedById: Map<number, Food[]> = state.foodData
-        .filter(food => food.type === FoodType.Compound)
+        .filter(food => food.type === FoodType.Meal)
         .reduce((groupedMeals, food) => {
             const group = groupedMeals.get(food.ref.id) || [];
             group.push(food);
