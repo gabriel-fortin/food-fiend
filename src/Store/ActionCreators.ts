@@ -1,6 +1,6 @@
 import Onion from 'Onion';
 
-import { Food, Macros, MacrosUncertainty, Ref } from 'Model';
+import { Food, Macros, MacrosUncertainty, Ref, FoodType } from 'Model';
 
 
 // /*
@@ -22,6 +22,7 @@ export interface ChangeIngredientQuantityAction {
 export interface AddFoodAction {
     type: "ADD_FOOD",
     name: string,
+    foodType: FoodType,
     unit: string,
     macros: Macros,
     macrosUncertainty: MacrosUncertainty,
@@ -103,6 +104,7 @@ export function addSimpleFood(
     return {
         type: "ADD_FOOD",
         name,
+        foodType: FoodType.BaseIngredient,
         unit,
         macros,
         macrosUncertainty,
@@ -116,6 +118,7 @@ export function addSimpleFood(
  */
 export function addCompositeFood(
     context: Onion,
+    foodType: FoodType,
     name: string,
     unit: string,
     extra: any = null,
@@ -123,6 +126,7 @@ export function addCompositeFood(
     return {
         type: "ADD_FOOD",
         name,
+        foodType,
         unit,
         macros: new Macros(0, 0, 0),
         macrosUncertainty: false,
