@@ -32,7 +32,7 @@ export interface AddFoodAction {
 
 export interface ReplaceIngredientAction {
     type: "REPLACE INGREDIENT",
-    newVersion: number,
+    replacement: Ref,
     context: Onion,
 }
 
@@ -137,12 +137,12 @@ export function addCompositeFood(
 
 /** Action creator */
 export function replaceIngredient(
-    newVersion: number,
+    replacement: Ref,
     context: Onion,
 ): ReplaceIngredientAction {
     return {
         type: "REPLACE INGREDIENT",
-        newVersion,
+        replacement,
         context,
     };
 }

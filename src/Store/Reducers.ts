@@ -160,7 +160,7 @@ const reducer_changeIngredientQuantity =
         ]);
         putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
 
-        const followUpAction = replaceIngredient(updatedMeal.ref.ver, remainingContext);
+        const followUpAction = replaceIngredient(updatedMeal.ref, remainingContext);
             // no check for remainingContext being empty; will it be a bug some day?
         return [followUpAction];
 
@@ -169,7 +169,7 @@ const reducer_changeIngredientQuantity =
     };
 
 const reducer_replaceIngredient =
-    ({ newVersion, context }: ReplaceIngredientAction, mutableState: State): Action[] => {
+    ({ replacement, context }: ReplaceIngredientAction, mutableState: State): Action[] => {
         const [layer1, layer2, remainingContext] = context.peelTwoLayers();
         const ingredientPosition = (layer1 as PositionLayer).pos;
         const parentRef = (layer2 as RefLayer).ref;
@@ -177,7 +177,7 @@ const reducer_replaceIngredient =
         const parentFood = mutableState.findFood(parentRef);
         const updatedParentFood = applyFunctionsTo(parentFood, [
             doUpdateVersion(mutableState),
-            doUpdateIngredientVersionAtPos(ingredientPosition, newVersion),
+            doUpdateIngredientAtPos(ingredientPosition, replacement),
             doCalculateMacros(mutableState),
         ]);
         
@@ -185,7 +185,7 @@ const reducer_replaceIngredient =
         putFoodIntoMutableState(mutableState, updatedParentFood);
 
         if (remainingContext.layersLeft() > 0) {
-            return [replaceIngredient(updatedParentFood.ref.ver, remainingContext)];
+            return [replaceIngredient(updatedParentFood.ref, remainingContext)];
         } else {
             return [setCurrentDay(updatedParentFood.ref)];
         }
@@ -212,7 +212,7 @@ const reducer_appendIngredient =
 
         putFoodIntoMutableState(mutableState, updatedParentFood);
 
-        return [replaceIngredient(updatedParentFood.ref.ver, remainingContext)];
+        return [replaceIngredient(updatedParentFood.ref, remainingContext)];
     };
 
 const reducer_removeIngredient = (
@@ -232,7 +232,7 @@ const reducer_removeIngredient = (
 
     putFoodIntoMutableState(mutableState, updateParentFood);
 
-    return [replaceIngredient(updateParentFood.ref.ver, remainingContext)];
+    return [replaceIngredient(updateParentFood.ref, remainingContext)];
     
     // TODO: update ingredient food's 'usedBy'
 };
@@ -251,7 +251,7 @@ const reducer_changeFoodName = (
 
     putFoodIntoMutableState(mutableState, updatedFood);
 
-    return [replaceIngredient(updatedFood.ref.ver, remainingContext)];
+    return [replaceIngredient(updatedFood.ref, remainingContext)];
 };
 
 
@@ -274,10 +274,10 @@ const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: numbe
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateIngredientVersionAtPos = (ingredientPosition: number, newVersion: number) => (meal: Food): Food => 
+const doUpdateIngredientAtPos = (ingredientPosition: number, replacement: Ref) => (meal: Food): Food => 
     Immer_produce(meal, m => {
         const ingredient = filterOne(m.ingredientsRefs, x => x.position === ingredientPosition);
-        ingredient.ref.ver = newVersion;
+        ingredient.ref = replacement;
     });
 
 
