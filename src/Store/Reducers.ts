@@ -170,6 +170,10 @@ const reducer_changeIngredientQuantity =
 
 const reducer_replaceIngredient =
     ({ replacement, context }: ReplaceIngredientAction, mutableState: State): Action[] => {
+        if (context.layersLeft() === 0) {
+            return [setCurrentDay(replacement)];
+        }
+
         const [layer1, layer2, remainingContext] = context.peelTwoLayers();
         const ingredientPosition = (layer1 as PositionLayer).pos;
         const parentRef = (layer2 as RefLayer).ref;
@@ -184,11 +188,7 @@ const reducer_replaceIngredient =
         // XXX: if days are mutable, this is always an insert
         putFoodIntoMutableState(mutableState, updatedParentFood);
 
-        if (remainingContext.layersLeft() > 0) {
-            return [replaceIngredient(updatedParentFood.ref, remainingContext)];
-        } else {
-            return [setCurrentDay(updatedParentFood.ref)];
-        }
+        return [replaceIngredient(updatedParentFood.ref, remainingContext)];
 
         // TODO: update each ingredients' 'usedBy'
 };
