@@ -8,6 +8,9 @@ export abstract class State {
 
     history: any = null;
 
+    // for generating new IDs
+    protected lastId: number = 1;
+
     protected constructor() {
         this.foodData = [];
         this.day = null;
@@ -29,6 +32,8 @@ export abstract class State {
     abstract getCurrentDay(): Ref | null;
 
     abstract getAllLatestFoods(): Food[];
+
+    abstract getNewRef(): Ref;
 }
 
 
@@ -93,6 +98,14 @@ export class StateImpl extends State {
 
         const mapOfAllLatestFoods = this.foodData.reduce(takeHigherVersion, new Map<Id, Food>());
         return Array.from(mapOfAllLatestFoods.values());
+    }
+
+    getNewRef(): Ref {
+        do {
+            this.lastId++;
+        } while(this.foodData.some(f => f.ref.id === this.lastId))
+
+        return new Ref(this.lastId, 1);
     }
 }
 
