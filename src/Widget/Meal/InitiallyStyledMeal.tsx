@@ -22,6 +22,7 @@ export const InitiallyStyledMeal: React.FC<Props> = ({ name, totalMacros, onName
                     <Editable
                         marginLeft={3}
                         defaultValue={name}
+                        startWithEditView={name === ""}
                         onSubmit={onNameChange}
                     >
                         <EditablePreview />
