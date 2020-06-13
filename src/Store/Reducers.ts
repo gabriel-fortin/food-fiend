@@ -5,10 +5,11 @@ import { PositionLayer, RefLayer } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
-    replaceIngredient, setCurrentDay,
+    replaceIngredient, setCurrentDay, appendIngredient,
     Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
-     SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction, ChangeFoodNameAction
+     SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction,
+     ChangeFoodNameAction, AddFoodAction,
 } from './ActionCreators';
 
 
@@ -84,12 +85,18 @@ function routeAction(state: State, action: Action): State {
                 case "CHANGE FOOD NAME":
                     newSyntheticActions = reducer_changeFoodName(currentAction, mutableState);
                     break;
+                case "ADD_FOOD":
+                    newSyntheticActions = reducer_addFood(currentAction, mutableState);
+                    break;
                 default:
-                    // make an exception for initialisation done by Redux itself
-                    if (currentAction.type.startsWith("@@redux/INIT")) break;
+                    // needs casting because, for TypeScript, all values of 'type' were already handled above
+                    const actionType = (currentAction as any).type;
 
-                    console.error(`@Reducer: unhandled action: ${currentAction.type}`);
-                    throw new Error(`Unhandled action: ${currentAction.type}`);
+                    // make an exception for initialisation done by Redux itself
+                    if (actionType.startsWith("@@redux/INIT")) break;
+
+                    console.error(`@Reducer: unhandled action: ${actionType}`);
+                    throw new Error(`Unhandled action: ${actionType}`);
             }
 
             console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: \n`,
@@ -252,6 +259,27 @@ const reducer_changeFoodName = (
     putFoodIntoMutableState(mutableState, updatedFood);
 
     return [replaceIngredient(updatedFood.ref, remainingContext)];
+};
+
+const reducer_addFood = (
+    { context, foodType, name, unit, extra }: AddFoodAction,
+    mutableState: State
+): Action[] => {
+    const food = new Food(
+        mutableState.getNewRef(),
+        name,
+        foodType,
+        new Macros(0, 0, 0),
+        unit,
+        /* portion size: */ 1,
+        /* portions: */ 1,
+        extra,
+    );
+
+    putFoodIntoMutableState(mutableState, food);
+
+    if (context.layersLeft() === 0) return [];
+    return [appendIngredient(food.ref, context)];
 };
 
 
