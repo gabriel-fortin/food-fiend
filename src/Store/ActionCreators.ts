@@ -26,7 +26,7 @@ export interface AddFoodAction {
     unit: string,
     macros: Macros,
     macrosUncertainty: MacrosUncertainty,
-    extra: any,
+    extra: object,
     context: Onion,
 }
 
@@ -98,7 +98,7 @@ export function addSimpleFood(
     unit: string,
     macros: Macros,
     macrosUncertainty: MacrosUncertainty = false,
-    extra: any = null,
+    extra: any = {},
 ): AddFoodAction {
     // TODO: this sction seems not to be used at all
     return {
@@ -121,7 +121,7 @@ export function addCompositeFood(
     foodType: FoodType,
     name: string,
     unit: string,
-    extra: any = null,
+    extra: any = {},
 ): AddFoodAction {
     return {
         type: "ADD_FOOD",

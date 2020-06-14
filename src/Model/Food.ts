@@ -16,7 +16,7 @@ export class Food {
     uncertainty: MacrosUncertainty;
     // TODO: start using uncertainty
 
-    extra: any;
+    extra: object;
 
     type: FoodType;
 
@@ -42,7 +42,7 @@ export class Food {
         unitName: string = "g",
         portionSize: number = 1,
         portions: number = 1,
-        extra: any = null,
+        extra: object = {},
     ) {
         this.ref = ref;
         this.name = name;
