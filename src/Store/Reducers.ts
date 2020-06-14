@@ -354,8 +354,7 @@ const doUpdateVersion = (state: State) => (food: Food): Food => {
 
 const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): Food => {
     const maxPos = parentFood.ingredientsRefs
-        .reduce((r1, r2) => r1.position > r2.position ? r1 : r2)
-        .position;
+        .reduce((acc, r2) => Math.max(acc, r2.position), 0);
     const newIngredient = new Ingredient(ingredientRef, maxPos + 1, /*quantity:*/ 0, null);
 
     return Immer_produce(parentFood, f => void
