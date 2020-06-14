@@ -25,15 +25,16 @@ export const StyledDataRow: React.FC<Props> = ({
     onQuantityChange,
     onRemoveEntry,
 }) => {
-    const [showRightExtension, setShowRightExtension] = useState(false);
-    const mouseEntersRow = () => setShowRightExtension(true);
-    const mouseLeavesRow = () => setShowRightExtension(false);
+    const [showSideExtensions, setShowSideExtension] = useState(false);
+    const mouseEntersRow = () => setShowSideExtension(true);
+    const mouseLeavesRow = () => setShowSideExtension(false);
 
     const userAcceptsQuantityChange = (newQuantity: string) => {
         onQuantityChange(newQuantity);
     };
 
-    const currentRightExtensionSize = showRightExtension ? "6em" : "0";
+    const currentRightExtensionSize = showSideExtensions ? "6em" : "0";
+    const currentLeftExtensionSize = showSideExtensions ? "0.4em" : "0";
 
     return (
         <>
@@ -44,18 +45,34 @@ export const StyledDataRow: React.FC<Props> = ({
                 width="100%"
                 className="styled-data-row"
             >
+
+                {/* the thing that is visible on hover */}
                 <Flex
-                    style={showRightExtension
+                    style={showSideExtensions
                         ? {
                             boxShadow: "1px 1px 13px 1px grey",
+                            borderRadius: "3px",
                             paddingRight: currentRightExtensionSize,
+                            paddingLeft: currentLeftExtensionSize,
+                            backgroundColor: "rgba(255, 255, 255, 0.3)",
                         }
                         : {}
                     }
                     marginRight={`-${currentRightExtensionSize}`}
+                    marginLeft={`-${currentLeftExtensionSize}`}
                     onMouseEnter={mouseEntersRow}
                     onMouseLeave={mouseLeavesRow}
                 >
+
+                    {/* left extension */}
+                    <Box
+                        display={showSideExtensions ? "unset" : "none"}
+                        marginLeft={`-${currentLeftExtensionSize}`}
+                        width={currentLeftExtensionSize}
+                    >
+                    </Box>
+
+                    {/* name */}
                     <Box
                         flexBasis="40%"
                         flexGrow={5}
@@ -63,12 +80,16 @@ export const StyledDataRow: React.FC<Props> = ({
                     >
                         {name}
                     </Box>
+
+                    {/* macros */}
                     <Box
                         flexBasis="9em"
                         flexGrow={1}
                     >
                         <MacrosInfo macros={macros} />
                     </Box>
+
+                    {/* quantity */}
                     <Box
                         flexBasis="5em"
                         textAlign="center"
@@ -84,8 +105,10 @@ export const StyledDataRow: React.FC<Props> = ({
                         </Editable>
                         <span>g</span>
                     </Box>
+
+                    {/* remove button (right extension) */}
                     <Box
-                        display={showRightExtension ? "unset" : "none"}
+                        display={showSideExtensions ? "unset" : "none"}
                         marginY="auto"
                         marginRight={`-${currentRightExtensionSize}`}
                         width={currentRightExtensionSize}
@@ -98,6 +121,7 @@ export const StyledDataRow: React.FC<Props> = ({
                             remove
                         </Link>
                     </Box>
+
                 </Flex>
             </PseudoBox>
         </>
