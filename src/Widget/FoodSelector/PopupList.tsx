@@ -10,7 +10,7 @@ interface PopupListProps {
 
 export const PopupList: React.FC<PopupListProps> = ({dataToDisplay, onSelection}) => {
     return (
-        <div id="popup">
+        <div className="popup">
             {dataToDisplay.map(x => (
                 <div
                     key={x.ref.id}

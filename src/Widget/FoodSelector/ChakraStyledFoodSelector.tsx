@@ -33,7 +33,7 @@ export const ChakraStyledFoodSelector: React.FC<Props> = ({data, onFoodSelected}
     };
 
     return (
-        <div id="food-selector">
+        <div className="food-selector">
             <TheInputField
                 onTextChange={onTextChange}
                 onEscape={onEscape} />
