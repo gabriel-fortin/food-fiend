@@ -2,7 +2,7 @@
     position: relative; /* to position popup relative to the input field */
 }
 
-.popup {
+.food-selector .popup {
     /* positioning: */
     position: absolute; /* to put popup outside of page flow */
     top: 30px;
@@ -12,16 +12,25 @@
     overflow: auto;
     min-width: 30em;
     /* details: */
+    background: rgb(245, 245, 245);
     padding: 3px;
+    padding-left: 1.2em;
+    list-style-type: "→ ";
+    list-style-position: outside;
     border: 1px solid rgba(0, 0, 0, 0.6);
     border-radius: 3px;
     box-shadow: 5px 4px 5px rgba(0, 0, 0, 0.3), -1px -1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.popup > *::before {
-    content: "> ";
+.food-selector .popup > *:hover {
+    background-color: rgba(60, 183, 221, 0.4);
 }
-.popup > *:hover {
-    background-color: rgba(0, 255, 255, 0.1);
-    color: rgba(0, 0, 0, 0.8);
+
+.food-selector .popup li {
+    padding: 2px;
+    padding-right: 0.3em;
+}
+
+.food-selector .popup li:not(:first-child) {
+    border-top: lightgrey 1px solid;
 }

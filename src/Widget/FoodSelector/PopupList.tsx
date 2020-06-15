@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react";
+import { Box } from "@chakra-ui/core";
 
-import { Ref, Food } from 'Model';
+import { Ref, Food } from "Model";
 
 
 interface PopupListProps {
@@ -8,18 +9,31 @@ interface PopupListProps {
     onSelection: (ref: Ref) => void,
 }
 
-export const PopupList: React.FC<PopupListProps> = ({dataToDisplay, onSelection}) => {
+export const PopupList: React.FC<PopupListProps> = ({ dataToDisplay, onSelection }) => {
     return (
-        <div className="popup">
-            {dataToDisplay.map(x => (
-                <div
-                    key={x.ref.id}
-                    // value={x.id}  // was there but doesn't compile in typescript
-                    onClick={e => onSelection(x.ref)}
-                    >
-                        {x.name}
-                </div>
+        <ul className="popup">
+            {dataToDisplay.map(item => (
+                <li
+                    key={item.ref.id}
+                    onClick={e => onSelection(item.ref)}
+                >
+                    <Item item={item} />
+                </li>
             ))}
-        </div>
+        </ul>
     );
-}
+};
+
+const Item: React.FC<{ item: Food }> = ({ item }) =>
+    <Box display="flex" justifyContent="space-between">
+        <Box flexGrow={1}>
+            {item.name}
+        </Box>
+        <Box alignSelf="center" flexShrink={0} color="grey" fontSize="sm">
+            <small>v</small>
+        </Box>
+        <Box alignSelf="center">
+            {item.ref.ver}
+        </Box>
+    </Box>
+    ;
