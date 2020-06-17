@@ -34,6 +34,7 @@ const value = (x: number) => {
     return (
         <div className="value">
             {Math.round(x * precisionParam) / precisionParam}
+            <small className="percent-sign">%</small>
         </div>
     );
 }
