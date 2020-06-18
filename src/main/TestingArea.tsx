@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { ThemeProvider } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, changeIngredientQuantity, getAllFoodOfType, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
+import { State, storeReducer, importData, changeIngredientQuantity, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
 import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 

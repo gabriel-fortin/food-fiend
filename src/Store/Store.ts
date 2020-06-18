@@ -34,6 +34,8 @@ export abstract class State {
     abstract getAllLatestFoods(): Food[];
 
     abstract getNewRef(): Ref;
+
+    abstract getAllFoodOfType(soughtType: FoodType): Food[];
 }
 
 
@@ -107,26 +109,26 @@ export class StateImpl extends State {
 
         return new Ref(this.lastId, 1);
     }
-}
 
-export function getAllFoodOfType(state: State, soughtType: FoodType): Food[] {
-    const foodsGroupedById: Map<number, Food[]> = state.foodData
-        .filter(food => food.type === soughtType)
-        .reduce((groupedFoods, food) => {
-            const group = groupedFoods.get(food.ref.id) || [];
-            group.push(food);
-            groupedFoods.set(food.ref.id, group);
-            return groupedFoods;
-        }, new Map<number, Food[]>());
-
-    const latestVersionOfEachFood: Food[] = [];
-
-    foodsGroupedById.forEach((foodVersions: Food[], _key: number) => {
-        const foodLatestVersion = foodVersions.reduce(chooseFoodWithHigherVersion);
-        latestVersionOfEachFood.push(foodLatestVersion);
-    })
-
-    return latestVersionOfEachFood;
+    getAllFoodOfType(soughtType: FoodType): Food[] {
+        const foodsGroupedById: Map<number, Food[]> = this.foodData
+            .filter(food => food.type === soughtType)
+            .reduce((groupedFoods, food) => {
+                const group = groupedFoods.get(food.ref.id) || [];
+                group.push(food);
+                groupedFoods.set(food.ref.id, group);
+                return groupedFoods;
+            }, new Map<number, Food[]>());
+    
+        const latestVersionOfEachFood: Food[] = [];
+    
+        foodsGroupedById.forEach((foodVersions: Food[], _key: number) => {
+            const foodLatestVersion = foodVersions.reduce(chooseFoodWithHigherVersion);
+            latestVersionOfEachFood.push(foodLatestVersion);
+        })
+    
+        return latestVersionOfEachFood;
+    }
 }
 
 /**

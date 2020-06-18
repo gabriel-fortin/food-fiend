@@ -1,7 +1,7 @@
 import { immerable } from 'immer';
 
 import { rootReducer as storeReducer } from './Reducers';
-import { mutatePutFood, getAllFoodOfType, State, NoFoodFoundError } from './Store';
+import { mutatePutFood, State, NoFoodFoundError } from './Store';
 import { AppStateProvider, useAppState } from './Hooks';
 
 
@@ -22,7 +22,6 @@ export {
     AppStateProvider,
     useAppState,
     mutatePutFood,
-    getAllFoodOfType,
 
     /* classes */
     State,
