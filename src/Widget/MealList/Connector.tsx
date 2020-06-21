@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { Ref, FoodType } from "Model";
 import { useAppState, State, addCompositeFood } from "Store";
 import { Meal } from "Widget";
+import { FoodLayerProvider, PositionLayerProvider, useOnion } from "Onion";
 
 import { UnstyledMealList as MealListUI } from "./UnstyledMealList";
-import { FoodLayerProvider, PositionLayerProvider, useOnion } from "Onion";
 
 
 interface Props {
@@ -19,18 +19,18 @@ export const Connector: React.FC<Props> = ({ dayRef }) => {
 
     return (
         <FoodLayerProvider food={dayRef}>
-            <ConnectedMealList dayRef={dayRef}>
+            <ConnectedUI dayRef={dayRef}>
                 {ingredients.map((ingredient) =>
                     <PositionLayerProvider key={ingredient.key} position={ingredient.position}>
                         <Meal mealRef={ingredient.ref} />
                     </PositionLayerProvider>
                 )}
-            </ConnectedMealList>
+            </ConnectedUI>
         </FoodLayerProvider>
     );
 };
 
-const ConnectedMealList: React.FC<{ dayRef: Ref, children: ReactNode[] }> = ({ dayRef, children }) => {
+const ConnectedUI: React.FC<{ dayRef: Ref, children: ReactNode[] }> = ({ dayRef, children }) => {
     const onion = useOnion();
 
     const mapState = (state: State) => ({
@@ -45,10 +45,10 @@ const ConnectedMealList: React.FC<{ dayRef: Ref, children: ReactNode[] }> = ({ d
         ),
     };
     
-    const ConnectedMealList = connect(mapState, mapDispatch)(MealListUI);
+    const ConnectedUI = connect(mapState, mapDispatch)(MealListUI);
     return (
-        <ConnectedMealList>
+        <ConnectedUI>
             {children}
-        </ConnectedMealList>
+        </ConnectedUI>
     );
 };

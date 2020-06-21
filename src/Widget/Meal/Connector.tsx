@@ -19,16 +19,16 @@ interface Props {
  */
 export const Connector: React.FC<Props> = ({ mealRef }) =>
     <FoodLayerProvider food={mealRef}>
-        <ConnectedMeal mealRef={mealRef}>
+        <ConnectedUI mealRef={mealRef}>
             <IngredientsList
                 mealRef={mealRef}
             />
             <FoodAdder />
-        </ConnectedMeal>
+        </ConnectedUI>
     </FoodLayerProvider>
     ;
 
-const ConnectedMeal: React.FC<{ mealRef: Ref }> = ({
+const ConnectedUI: React.FC<{ mealRef: Ref }> = ({
     mealRef,
     children,
 }) => {
@@ -49,10 +49,10 @@ const ConnectedMeal: React.FC<{ mealRef: Ref }> = ({
         },
     });
 
-    const ConnectedMeal = connect(mapState, mapDispatch)(MealUI);
+    const ConnectedUI = connect(mapState, mapDispatch)(MealUI);
     return (
-        <ConnectedMeal>
+        <ConnectedUI>
             {children}
-        </ConnectedMeal>
+        </ConnectedUI>
     );
 };
