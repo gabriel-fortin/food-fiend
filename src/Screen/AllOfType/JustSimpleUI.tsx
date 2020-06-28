@@ -13,7 +13,7 @@ export const JustSimpleUI: React.FC<Props> = ({ getAllOfType }) => {
 
     const selectTypeOfItemsToShow = setShowType;
 
-    let ThingToShow: React.ReactElement[];
+    let ThingToShow: React.ReactNode[];
     switch (showType) {
         case FoodType.Week:
             ThingToShow = [];
@@ -22,25 +22,25 @@ export const JustSimpleUI: React.FC<Props> = ({ getAllOfType }) => {
         case FoodType.Day:
             const allDays = getAllOfType(FoodType.Day);
             ThingToShow = allDays.map(ref => (
-                <>
+                <React.Fragment key={ref.id}>
                     <Divider />
                     <MealList dayRef={ref} />
-                </>
+                </React.Fragment>
             ));
             break;
     
         case FoodType.Meal:
             const allMeals = getAllOfType(FoodType.Meal);
             ThingToShow = allMeals.map(ref => (
-                <>
+                <React.Fragment key={ref.id}>
                     <Divider />
                     <Meal mealRef={ref} />
-                </>
+                </React.Fragment>
             ));
 
             break;
         default:
-            ThingToShow = [<Text>Nothing selected</Text>];
+            ThingToShow = [<Text key="nothing">Nothing selected</Text>];
             break;
     }
 
@@ -68,9 +68,12 @@ export const JustSimpleUI: React.FC<Props> = ({ getAllOfType }) => {
                     <Input placeholder="(doesn't work yet)" />
                 </InputGroup>
             </Flex>
-            {ThingToShow.length > 0
+            {
+                /* eslint-disable no-mixed-operators */
+                ThingToShow.length > 0
                 && ThingToShow
                 || <Text>There are no items of this type to show</Text>
+                /* eslint-enable no-mixed-operators */
             }
         </>
     );
