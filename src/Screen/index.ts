@@ -1,0 +1,1 @@
+export { AllOfType } from "./AllOfType";

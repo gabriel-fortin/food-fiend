@@ -14,6 +14,7 @@ import { Meal } from 'Widget';
 import { MealList } from 'Widget';
 import Onion, { PlantOnionGarden } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
+import { AllOfType } from "Screen";
 
 
 function createEmptyStore() {
@@ -64,7 +65,8 @@ function DisplayDay() {
             <AppStateProvider _debug__injectStore={store}>
                 <PlantOnionGarden>
                     <TestingFrame>
-                        <DoubleConnectedMealListWidget />
+                        {/* <DoubleConnectedMealListWidget /> */}
+                        <AllOfType />
                     </TestingFrame>
                 </PlantOnionGarden>
             </AppStateProvider>
