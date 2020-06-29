@@ -35,11 +35,8 @@ export class Onion {
     }
 
     withFoodLayer(ref: Ref): Onion {
-        const lastAddedLayer = this.layers[0];
-
-        if (lastAddedLayer && lastAddedLayer.kind !== LayerKind.POS) {
-            console.error(`@Onion: @withFoodLayer: expected last added layer to be non-existing or of ${LayerKind.POS} kind`, this);
-        }
+        const allowedPreviousLayers = [LayerKind.POS];
+        this.checkPreviousLayer(allowedPreviousLayers, this.withFoodLayer.name)
 
         const newLayer: RefLayer = {
             kind: LayerKind.REF,
@@ -49,11 +46,8 @@ export class Onion {
     }
 
     withPositionLayer(position: number): Onion {
-        const lastAddedLayer = this.layers[0];
-
-        if (lastAddedLayer && lastAddedLayer.kind !== LayerKind.REF) {
-            console.error(`@Onion: @withPositionLayer: expected last added layer to be non-existing or of ${LayerKind.REF} kind`, this);
-        }
+        const allowedPreviousLayers = [LayerKind.REF];
+        this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name)
 
         const newLayer: PositionLayer = {
             kind: LayerKind.POS,
@@ -88,6 +82,20 @@ export class Onion {
         const remainingOnion = this.layers.slice(2);
 
         return [peeledLayers[0], peeledLayers[1], new Onion(remainingOnion)];
+    }
+
+    private checkPreviousLayer(allowedPreviousLayers: LayerKind[], tag: string = "<some method>") {
+        const hasUnexpectedKind =
+            (layer: Layer) =>
+                layer && !allowedPreviousLayers.includes(layer.kind);
+
+        const lastAddedLayer = this.layers[0];
+
+        if (hasUnexpectedKind(lastAddedLayer)) {
+            console.error(`@Onion: @${tag}: expected last added layer's kind to ` +
+                `be non-existing or one of ${JSON.stringify(allowedPreviousLayers)}.` +
+                ` Current layers:`, this.layers);
+        }
     }
 
 }
