@@ -1,7 +1,7 @@
 import { Ref } from "Model";
 
-import { Onion, Layer } from "./Onion";
-import { PlantOnionGarden } from "./Hooks";
+import { Onion } from "./Onion";
+import { Layer, PlantOnionGarden } from "..";
 
 
 const errorMessage = () => `The onion was not initialised. ` + 

@@ -1,11 +1,9 @@
 /** Onion **/
 
-import { Onion } from './Onion';
-import { useOnion, FoodLayerProvider, PositionLayerProvider, PlantOnionGarden } from "./Hooks";
+export { useOnion } from "./Hooks";
+export { Onion } from "./model/Onion";
+export { FoodLayerProvider, PositionLayerProvider, PlantOnionGarden } from "./Components";
 
-export type Layer = import('./Onion').Layer;
-export type RefLayer = import('./Onion').RefLayer;
-export type PositionLayer = import('./Onion').PositionLayer;
-
-export default Onion;
-export { Onion, useOnion, FoodLayerProvider, PositionLayerProvider, PlantOnionGarden };
+export type Layer = import("./model/Layer").Layer;
+export type RefLayer = import("./model/Layer").RefLayer;
+export type PositionLayer = import("./model/Layer").PositionLayer;

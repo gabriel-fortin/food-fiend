@@ -1,4 +1,4 @@
-import Onion from 'Onion';
+import { Onion } from 'Onion';
 
 import { Food, Macros, MacrosUncertainty, Ref, FoodType } from 'Model';
 
