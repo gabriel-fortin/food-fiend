@@ -1,13 +1,14 @@
 import { Ref } from "Model";
 
-import { Onion, Layer, PlantOnionGarden } from "..";
+import { Onion } from "./Onion";
+import { Layer, PlantOnionGarden } from "..";
 
 
 const errorMessage = () => `The onion was not initialised. ` + 
     `Did you forget to '${PlantOnionGarden.name}'?`;
 
 
-export class NonInitialisedOnion extends Onion {
+export class NonFunctionalOnion extends Onion {
     constructor() {
         super([]);
     }

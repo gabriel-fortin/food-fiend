@@ -1,6 +1,6 @@
 /** Onion **/
 
-export { useOnion } from "./Hooks";
+export { useOnion } from "./Context";
 export { Onion } from "./model/Onion";
 export {
     FoodLayerProvider,

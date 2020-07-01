@@ -1,6 +1,10 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
-import { NonInitialisedOnion } from "./model/NonInitilisedOnion";
+import { Onion } from "./model/Onion";
+import { NonFunctionalOnion } from "./model/NonFunctionalOnion";
 
 
-export const OnionReactContext = createContext(new NonInitialisedOnion());
+export const OnionReactContext = createContext(new NonFunctionalOnion());
+
+export const useOnion: () => Onion =
+    () => useContext(OnionReactContext);
