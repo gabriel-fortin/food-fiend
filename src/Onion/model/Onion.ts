@@ -1,6 +1,6 @@
 import { Ref } from "Model";
 
-import { Layer, LayerKind, RefLayer, PositionLayer } from "./Layer";
+import { Layer, LayerKind, RefLayer, PositionLayer, CurrentDayLayer } from "./Layer";
 
 
 /**
@@ -22,8 +22,8 @@ export class Onion {
     }
 
     withFoodLayer(ref: Ref): Onion {
-        const allowedPreviousLayers = [LayerKind.POS];
-        this.checkPreviousLayer(allowedPreviousLayers, this.withFoodLayer.name)
+        const allowedPreviousLayers = [LayerKind.POS, LayerKind.CDAY];
+        this.checkPreviousLayer(allowedPreviousLayers, this.withFoodLayer.name);
 
         const newLayer: RefLayer = {
             kind: LayerKind.REF,
@@ -34,11 +34,23 @@ export class Onion {
 
     withPositionLayer(position: number): Onion {
         const allowedPreviousLayers = [LayerKind.REF];
-        this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name)
+        this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name);
 
         const newLayer: PositionLayer = {
             kind: LayerKind.POS,
             pos: position,
+        };
+
+        return new Onion([newLayer, ...this.layers]);
+    }
+
+    withCurrentDayLayer(dayRef: Ref): Onion {
+        const allowedPreviousLayers = [] as LayerKind[];
+        this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name);
+
+        const newLayer: CurrentDayLayer = {
+            kind: LayerKind.CDAY,
+            dayRef,
         };
 
         return new Onion([newLayer, ...this.layers]);

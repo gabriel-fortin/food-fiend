@@ -1,7 +1,6 @@
 import { Ref } from "Model";
 
-import { Onion } from "./Onion";
-import { Layer, PlantOnionGarden } from "..";
+import { Onion, Layer, PlantOnionGarden } from "..";
 
 
 const errorMessage = () => `The onion was not initialised. ` + 
@@ -18,6 +17,10 @@ export class NonInitialisedOnion extends Onion {
     }
 
     withPositionLayer(position: number): Onion {
+        throw new Error(errorMessage());
+    }
+
+    withCurrentDayLayer(dayRef: Ref): Onion {
         throw new Error(errorMessage());
     }
 

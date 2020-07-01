@@ -4,6 +4,7 @@ import { Ref } from "Model";
 export enum LayerKind {
     REF = "REF LAYER",
     POS = "POSITION LAYER",
+    CDAY = "CURRENT DAY",
 }
 
 export interface RefLayer {
@@ -16,7 +17,13 @@ export interface PositionLayer {
     pos: number;
 }
 
+export interface CurrentDayLayer {
+    kind: LayerKind.CDAY;
+    dayRef: Ref;
+}
+
 export type Layer =
     | RefLayer
     | PositionLayer
+    | CurrentDayLayer
     ;
