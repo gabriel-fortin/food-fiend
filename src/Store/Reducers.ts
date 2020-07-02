@@ -346,10 +346,12 @@ const doCalculateMacros = (state: State) => (meal: Food): Food => {
         return partialSum + macroResultValue;
     };
 
+    const sumQuantity = mealIngredients.reduce((acc, x) => acc + x.ingredient.quantity, 0);
+
     const newMacros = new Macros(
-        mealIngredients.reduce(sumMacro('fat'), 0),
-        mealIngredients.reduce(sumMacro('protein'), 0),
-        mealIngredients.reduce(sumMacro('carbs'), 0),
+        mealIngredients.reduce(sumMacro('fat'), 0) * 100 / sumQuantity,
+        mealIngredients.reduce(sumMacro('protein'), 0) * 100 / sumQuantity,
+        mealIngredients.reduce(sumMacro('carbs'), 0) * 100 / sumQuantity,
     );
 
     return Immer_produce(meal, x => void (x.macros = newMacros));
