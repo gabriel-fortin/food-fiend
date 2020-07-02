@@ -44,13 +44,12 @@ export class Onion {
         return new Onion([newLayer, ...this.layers]);
     }
 
-    withCurrentDayLayer(dayRef: Ref | null): Onion {
+    withCurrentDayLayer(): Onion {
         const allowedPreviousLayers = [] as LayerKind[];
         this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name);
 
         const newLayer: CurrentDayLayer = {
             kind: LayerKind.CDAY,
-            dayRef,
         };
 
         return new Onion([newLayer, ...this.layers]);

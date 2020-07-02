@@ -2,6 +2,7 @@
 
 export { useOnion } from "./Context";
 export { Onion } from "./model/Onion";
+export { LayerKind } from "./model/Layer";
 export {
     FoodLayerProvider,
     PositionLayerProvider,
