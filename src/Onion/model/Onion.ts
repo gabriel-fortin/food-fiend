@@ -44,7 +44,7 @@ export class Onion {
         return new Onion([newLayer, ...this.layers]);
     }
 
-    withCurrentDayLayer(dayRef: Ref): Onion {
+    withCurrentDayLayer(dayRef: Ref | null): Onion {
         const allowedPreviousLayers = [] as LayerKind[];
         this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name);
 

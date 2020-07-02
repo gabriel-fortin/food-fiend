@@ -28,7 +28,7 @@ export const FoodLayerProvider: React.FC<{ food: Ref }> = ({ food, children }) =
     );
 };
 
-export const CurrentDayLayerProvider: React.FC<{ dayRef: Ref }> =
+export const CurrentDayLayerProvider: React.FC<{ dayRef: Ref | null }> =
     ({ dayRef, children }) => {
         // add one more layer to the onion
         const glazedOnion = useOnion().withCurrentDayLayer(dayRef);

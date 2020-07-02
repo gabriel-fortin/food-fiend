@@ -19,7 +19,7 @@ export interface PositionLayer {
 
 export interface CurrentDayLayer {
     kind: LayerKind.CDAY;
-    dayRef: Ref;
+    dayRef: Ref | null;
 }
 
 export type Layer =
