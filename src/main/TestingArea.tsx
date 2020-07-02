@@ -12,7 +12,7 @@ import { MacrosBar, MacrosInfo } from 'Widget';
 import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
 import { MealList } from 'Widget';
-import { Onion, PlantOnionGarden } from 'Onion';
+import { Onion, PlantOnionGarden, CurrentDayLayerProvider } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 
@@ -64,10 +64,12 @@ function DisplayDay() {
         <ThemeProvider>
             <AppStateProvider _debug__injectStore={store}>
                 <PlantOnionGarden>
-                    <TestingFrame>
-                        <DoubleConnectedMealListWidget />
-                        {/* <AllOfType /> */}
-                    </TestingFrame>
+                    <CurrentDayLayerProvider>
+                        <TestingFrame>
+                            <DoubleConnectedMealListWidget />
+                            {/* <AllOfType /> */}
+                        </TestingFrame>
+                    </CurrentDayLayerProvider>
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
