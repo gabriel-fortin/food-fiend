@@ -1,7 +1,7 @@
 import Immer_produce from 'immer';
 
 import { Food, Ref, Ingredient, FoodType, Macros } from 'Model';
-import { PositionLayer, RefLayer } from 'Onion';
+import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
@@ -175,27 +175,40 @@ const reducer_changeIngredientQuantity =
         // addRefToArrayIfNotThere(ingredient.usedBy, updatedMeal.id, updatedMeal.version);
     };
 
-const reducer_replaceIngredient =
-    ({ replacement, context }: ReplaceIngredientAction, mutableState: State): Action[] => {
-        if (context.layersLeft() === 0) {
-            return [setCurrentDay(replacement)];
+const reducer_replaceIngredient = (
+    { replacement, context }: ReplaceIngredientAction,
+    mutableState: State
+): Action[] => {
+    if (context.layersLeft() === 0) {
+        return [];  // nothing more to process
+    }
+
+    if (context.layersLeft() === 1) {
+        const [onlyLayer] = context.peelOneLayer();
+        switch (onlyLayer.kind) {
+            case LayerKind.CDAY:
+                return [setCurrentDay(replacement)];
+            default:
+                throw new Error(`Didn't know what to do with a single layer` +
+                    ` of kind '${onlyLayer.kind}' left in Onion`)
         }
+    }
 
-        const [layer1, layer2, remainingContext] = context.peelTwoLayers();
-        const ingredientPosition = (layer1 as PositionLayer).pos;
-        const parentRef = (layer2 as RefLayer).ref;
+    const [layer1, layer2, remainingContext] = context.peelTwoLayers();
+    const ingredientPosition = (layer1 as PositionLayer).pos;
+    const parentRef = (layer2 as RefLayer).ref;
 
-        const parentFood = mutableState.findFood(parentRef);
-        const updatedParentFood = applyFunctionsTo(parentFood, [
-            doUpdateVersion(mutableState),
-            doUpdateIngredientAtPos(ingredientPosition, replacement),
-            doCalculateMacros(mutableState),
-        ]);
-        
-        // XXX: if days are mutable, this is always an insert
-        putFoodIntoMutableState(mutableState, updatedParentFood);
+    const parentFood = mutableState.findFood(parentRef);
+    const updatedParentFood = applyFunctionsTo(parentFood, [
+        doUpdateVersion(mutableState),
+        doUpdateIngredientAtPos(ingredientPosition, replacement),
+        doCalculateMacros(mutableState),
+    ]);
 
-        return [replaceIngredient(updatedParentFood.ref, remainingContext)];
+    // XXX: if days are mutable, this is always an insert
+    putFoodIntoMutableState(mutableState, updatedParentFood);
+
+    return [replaceIngredient(updatedParentFood.ref, remainingContext)];
 
         // TODO: update each ingredients' 'usedBy'
 };
