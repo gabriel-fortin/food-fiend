@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { State, changeFoodName } from "Store";
+import { State, changeFoodName, setErrorMessage } from "Store";
 import { Ref } from "Model";
 import { FoodLayerProvider, useOnion } from "Onion";
 import { IngredientsList } from "Widget";
@@ -46,6 +46,9 @@ const ConnectedUI: React.FC<{ mealRef: Ref }> = ({
             console.log(`Connector: on Name Change; newName: ${newName}`);
             
             return changeFoodName(newName, onion);
+        },
+        onRemoveMeal: () => {
+            return setErrorMessage(`@Meal.ConnectedUI: 'onRemoveMeal' NOT IMPLEMENTED`);
         },
     });
 

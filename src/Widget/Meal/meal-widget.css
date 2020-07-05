@@ -1,22 +1,29 @@
 .meal {
     --mealMacrosSize: 300px;
     --headerBackgroundColor: white;
-    padding-top: 3em;
+    --headerShadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+    --headerBorderRadius: 5px;
+    
+    padding-top: 1em;
+}
+
+.meal-extension {
+    background-color: var(--headerBackgroundColor);
+    box-shadow: var(--headerShadow);
+    border-radius: var(--headerBorderRadius);
 }
 
 .meal-header {
-    margin-bottom: 0.5em;
-    margin-top: -2em;
-    background-color: var(--headerBackgroundColor);
-
-    /* TODO: extract - make a styling component?; this looks like a standard box */
-    border: solid 1px rgba(0, 0, 0, 0.4);
-    border-radius: 5px;
-    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
-
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    
+    /* TODO: extract - make a styling component?; this looks like a standard box */
+    border: solid 1px rgba(0, 0, 0, 0.4);
+    border-radius: var(--headerBorderRadius);
+    background-color: var(--headerBackgroundColor);
+    box-shadow: var(--headerShadow);
 }
 
 .meal-macros {
