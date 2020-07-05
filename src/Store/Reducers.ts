@@ -9,7 +9,7 @@ import {
     Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
      SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction,
-     ChangeFoodNameAction, AddFoodAction,
+     ChangeFoodNameAction, AddFoodAction, SetErrorMessageAction, setErrorMessage,
 } from './ActionCreators';
 
 
@@ -87,6 +87,9 @@ function routeAction(state: State, action: Action): State {
                     break;
                 case "ADD_FOOD":
                     newSyntheticActions = reducer_addFood(currentAction, mutableState);
+                    break;
+                case "SET ERROR MESSAGE":
+                    newSyntheticActions = reducer_setErrorMessage(currentAction, mutableState);
                     break;
                 default:
                     // needs casting because, for TypeScript, all values of 'type' were already handled above
@@ -293,6 +296,14 @@ const reducer_addFood = (
 
     if (context.layersLeft() === 0) return [];
     return [appendIngredient(food.ref, context)];
+};
+
+const reducer_setErrorMessage = (
+    { message }: SetErrorMessageAction,
+    mutableState: State
+): Action[] => {
+    mutableState.errorMessage = message;
+    return [];
 };
 
 

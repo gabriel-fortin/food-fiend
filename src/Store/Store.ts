@@ -5,6 +5,7 @@ export abstract class State {
     
     foodData: Food[];
     day: Ref | null;
+    errorMessage: string | null;
 
     history: any = null;
 
@@ -14,6 +15,7 @@ export abstract class State {
     protected constructor() {
         this.foodData = [];
         this.day = null;
+        this.errorMessage = null;
     }
 
     static create(): State {
@@ -36,6 +38,10 @@ export abstract class State {
     abstract getNewRef(): Ref;
 
     abstract getAllFoodOfType(soughtType: FoodType): Food[];
+
+    abstract getErrorMessage(): string | null;
+
+    abstract setErrorMessage(message: string | null): void;
 }
 
 
@@ -128,6 +134,16 @@ export class StateImpl extends State {
         })
     
         return latestVersionOfEachFood;
+    }
+
+    getErrorMessage(): string | null {
+        return this.errorMessage;
+    }
+
+    setErrorMessage(message: string | null): void {
+        console.error(`@Store: SET ERROR MESSAGE`, message);
+        
+        this.errorMessage = message;
     }
 }
 

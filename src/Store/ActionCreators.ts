@@ -58,6 +58,11 @@ export interface ChangeFoodNameAction {
     context: Onion,
 }
 
+export interface SetErrorMessageAction {
+    type: "SET ERROR MESSAGE",
+    message: string | null,
+}
+
 export type Action =
     | ImportDataAction
     | ChangeIngredientQuantityAction
@@ -67,6 +72,7 @@ export type Action =
     | AppendIngredientAction
     | RemoveIngredientAction
     | ChangeFoodNameAction
+    | SetErrorMessageAction
     ;
 
 
@@ -178,5 +184,13 @@ export function changeFoodName(newName: string, context: Onion): ChangeFoodNameA
         type: "CHANGE FOOD NAME",
         newName,
         context,
+    };
+}
+
+/** Action creator */
+export function setErrorMessage(message: string | null): SetErrorMessageAction {
+    return {
+        type: "SET ERROR MESSAGE",
+        message,
     };
 }
