@@ -15,6 +15,7 @@ import { MealList } from 'Widget';
 import { Onion, PlantOnionGarden, CurrentDayLayerProvider } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
+import { ShowToasts } from 'UI';
 
 
 function createEmptyStore() {
@@ -63,13 +64,14 @@ function DisplayDay() {
     return (
         <ThemeProvider>
             <AppStateProvider _debug__injectStore={store}>
+                <ShowToasts />
                 <PlantOnionGarden>
-                    <CurrentDayLayerProvider>
+                    {/* <CurrentDayLayerProvider> */}
                         <TestingFrame>
-                            <DoubleConnectedMealListWidget />
-                            {/* <AllOfType /> */}
+                            {/* <DoubleConnectedMealListWidget /> */}
+                            <AllOfType />
                         </TestingFrame>
-                    </CurrentDayLayerProvider>
+                    {/* </CurrentDayLayerProvider> */}
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
