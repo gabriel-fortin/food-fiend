@@ -282,6 +282,8 @@ const reducer_changeFoodName = (
 
     const food = mutableState.findFood(foodRef);
     const updatedFood = applyFunctionsTo(food, [
+        doUpdateVersion(mutableState),
+        doUpdateStorageInfo(),
         doChangeName(newName),
     ]);
 
