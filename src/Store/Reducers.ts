@@ -1,6 +1,6 @@
 import Immer_produce from 'immer';
 
-import { Food, Ref, Ingredient, FoodType, Macros } from 'Model';
+import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo } from 'Model';
 import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
@@ -165,10 +165,11 @@ const reducer_changeIngredientQuantity =
         const meal = mutableState.findFood(mealRef);
         const updatedMeal = applyFunctionsTo(meal, [
             doUpdateVersion(mutableState),
+            doUpdateStorageInfo(),
             doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
             doCalculateMacros(mutableState),
         ]);
-        putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will either replace (if version unchaged) or add the food
+        putFoodIntoMutableState(mutableState, updatedMeal); // upsert; this will add the food (because version changed)
 
         const followUpAction = replaceIngredient(updatedMeal.ref, remainingContext);
             // no check for remainingContext being empty; will it be a bug some day?
@@ -204,6 +205,7 @@ const reducer_replaceIngredient = (
     const parentFood = mutableState.findFood(parentRef);
     const updatedParentFood = applyFunctionsTo(parentFood, [
         doUpdateVersion(mutableState),
+        doUpdateStorageInfo(),
         doUpdateIngredientAtPos(ingredientPosition, replacement),
         doCalculateMacros(mutableState),
     ]);
@@ -229,6 +231,7 @@ const reducer_appendIngredient =
         const parentFood = mutableState.findFood(parentFoodRef);
         const updatedParentFood = applyFunctionsTo(parentFood, [
             doUpdateVersion(mutableState),
+            doUpdateStorageInfo(),
             doAddIngredient(ingredientRef),
             // maybe someday: update macros if the quantity is non-zero
         ]);
@@ -255,6 +258,7 @@ const reducer_removeIngredient = (
 
     const updateParentFood = applyFunctionsTo(parentFood, [
         doUpdateVersion(mutableState),
+        doUpdateStorageInfo(),
         doRemoveIngredient(ingredientPosition),
         doCalculateMacros(mutableState),
     ]);
@@ -278,7 +282,7 @@ const reducer_changeFoodName = (
         doChangeName(newName),
     ]);
 
-    putFoodIntoMutableState(mutableState, updatedFood);
+    putFoodIntoMutableState(mutableState, updatedFood); // this usage replaces food as ref didn't change (doUpdateVersion was not called)
 
     return [replaceIngredient(updatedFood.ref, remainingContext)];
 };
@@ -384,6 +388,7 @@ const doUpdateVersion = (state: State) => (food: Food): Food => {
     return Immer_produce(food, f => void (f.ref.ver = newVersion));
 };
 
+// helper to be used with 'applyFunctionsTo'
 const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): Food => {
     const maxPos = parentFood.ingredientsRefs
         .reduce((acc, r2) => Math.max(acc, r2.position), 0);
@@ -394,12 +399,14 @@ const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): Food => {
     );
 };
 
+// helper to be used with 'applyFunctionsTo'
 const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): Food => {
     return Immer_produce(parentFood, f => {
         f.ingredientsRefs = f.ingredientsRefs.filter(x => x.position != positionToRemove);
     });
 };
 
+// helper to be used with 'applyFunctionsTo'
 const doChangeName = (newName: string) => (food: Food): Food => {
     return Immer_produce(food, f => void (f.name = newName));
 };
@@ -408,6 +415,14 @@ const doChangeName = (newName: string) => (food: Food): Food => {
 const doClearDependingMeals = () => (food: Food): Food => {
     return Immer_produce(food, f => void (f.usedBy = []));
 };
+
+// helper to be used with 'applyFunctionsTo'
+const doUpdateStorageInfo = () => (food: Food): Food => {
+    return Immer_produce(food, f => void (f.extra = {
+        ...f.extra,
+        ...new StorageInfo(new Date(), /*isInitialItem:*/ false),
+    }));
+}
 
 
 const addRefToArrayIfNotThere = (someArray: any[], id: number, version: number): void => {
