@@ -1,7 +1,10 @@
 import fullRawData from './full-data';
 
-import { Food, FoodType } from 'Model';
+import { Food, FoodType, StorageInfo } from 'Model';
 
+
+// let the base app data have the same date of addition
+const initialImportDate = new Date("2019-10-20");
 
 const initialStructuredData = fullRawData
     .map(reshapeIntoExpectedForm)
@@ -15,7 +18,7 @@ function reshapeIntoExpectedForm(item: any): Food {
         for (let i = 0; i < argString.length; i++) {
             let char = argString.charCodeAt(i);
             hash = ((hash<<5)-hash)+char;
-            hash = hash & hash; // Convert to 32bit integer
+            hash = hash & hash; // Convert to 32-bit integer
         }
         return hash;
     };
@@ -35,7 +38,10 @@ function reshapeIntoExpectedForm(item: any): Food {
         "g",  // unitName: for quantity display only
         1,  // portionSize: grams per portion
         1,  // portions
-        item.extra,
+        {  // extra
+            ...item.extra,
+            ...new StorageInfo(initialImportDate, /*isInitialItem:*/ true),  // imported from McCance
+        },
 
         // to be used, maybe, in the future
         // portionStep: 5,  // in grams
