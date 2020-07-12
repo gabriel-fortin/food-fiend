@@ -1,4 +1,4 @@
-import Immer_produce from 'immer';
+import Immer_produce, { Draft } from 'immer';
 
 import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo } from 'Model';
 import { PositionLayer, RefLayer, LayerKind } from 'Onion';
@@ -18,9 +18,12 @@ import {
  * @param {*} initialObject object to be transformed by the functions
  * @param {*} functions functions tha will transform the object
  */
-function applyFunctionsTo<T>(initialObject: T, functions: ((o: T) => T)[]): T {
-    return functions
-        .reduce((obj, fun) => fun(obj), initialObject);
+function applyFunctionsTo<T>(initialObject: T, functions: ((o: T) => void)[]): T {
+    return Immer_produce(initialObject,
+        (draftObj: Draft<T>) => {
+            functions.forEach(fun => fun(draftObj as T));
+        }
+    );
 }
 
 /**
@@ -318,7 +321,7 @@ const reducer_setErrorMessage = (
 
 
 // helper to be used with 'applyFunctionsTo'
-const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: number) => (meal: Food): Food => {
+const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: number) => (meal: Food): void => {
     // PERF: do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
 
@@ -328,23 +331,19 @@ const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: numbe
     if (!Number.isFinite(quantityAsNumber))
         throw new Error(`The new quantity '${newQuantity}' is not a number`);
 
-    return Immer_produce(meal, m => {
-        const ingredient = filterOne(m.ingredientsRefs, x => x.position === posToUpdate);
-        ingredient.quantity = newQuantity;
-    });
-
+    const ingredient = filterOne(meal.ingredientsRefs, x => x.position === posToUpdate);
+    ingredient.quantity = newQuantity;
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateIngredientAtPos = (ingredientPosition: number, replacement: Ref) => (meal: Food): Food => 
-    Immer_produce(meal, m => {
-        const ingredient = filterOne(m.ingredientsRefs, x => x.position === ingredientPosition);
-        ingredient.ref = replacement;
-    });
+const doUpdateIngredientAtPos = (ingredientPosition: number, replacement: Ref) => (meal: Food): void => {
+    const ingredient = filterOne(meal.ingredientsRefs, x => x.position === ingredientPosition);
+    ingredient.ref = replacement;
+};
 
 
 // helper to be used with 'applyFunctionsTo'
-const doCalculateMacros = (state: State) => (meal: Food): Food => {
+const doCalculateMacros = (state: State) => (meal: Food): void => {
     const handledTypes = [FoodType.Meal, FoodType.Day, FoodType.Week];
 
     if (!handledTypes.includes(meal.type)) {
@@ -369,59 +368,53 @@ const doCalculateMacros = (state: State) => (meal: Food): Food => {
 
     const sumQuantity = mealIngredients.reduce((acc, x) => acc + x.ingredient.quantity, 0);
 
-    const newMacros = new Macros(
+    meal.macros = new Macros(
         mealIngredients.reduce(sumMacro('fat'), 0) * 100 / sumQuantity,
         mealIngredients.reduce(sumMacro('protein'), 0) * 100 / sumQuantity,
         mealIngredients.reduce(sumMacro('carbs'), 0) * 100 / sumQuantity,
     );
-
-    return Immer_produce(meal, x => void (x.macros = newMacros));
     
     // TODO: calculate also uncertainty
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateVersion = (state: State) => (food: Food): Food => {
+const doUpdateVersion = (state: State) => (food: Food): void => {
     const latestVersionOfFood = state.findFoodLatest(food.ref.id);
     const newVersion = latestVersionOfFood.ref.ver + 1;
 
-    return Immer_produce(food, f => void (f.ref.ver = newVersion));
+    food.ref.ver = newVersion;
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): Food => {
+const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): void => {
     const maxPos = parentFood.ingredientsRefs
         .reduce((acc, r2) => Math.max(acc, r2.position), 0);
     const newIngredient = new Ingredient(ingredientRef, maxPos + 1, /*quantity:*/ 0, null);
 
-    return Immer_produce(parentFood, f => void
-        f.ingredientsRefs.push(newIngredient)
-    );
+    parentFood.ingredientsRefs.push(newIngredient);
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): Food => {
-    return Immer_produce(parentFood, f => {
-        f.ingredientsRefs = f.ingredientsRefs.filter(x => x.position != positionToRemove);
-    });
+const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): void => {
+    parentFood.ingredientsRefs = parentFood.ingredientsRefs.filter(x => x.position != positionToRemove);
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doChangeName = (newName: string) => (food: Food): Food => {
-    return Immer_produce(food, f => void (f.name = newName));
+const doChangeName = (newName: string) => (food: Food): void => {
+    food.name = newName;
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doClearDependingMeals = () => (food: Food): Food => {
-    return Immer_produce(food, f => void (f.usedBy = []));
+const doClearDependingMeals = () => (food: Food): void => {
+    food.usedBy = [];
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doUpdateStorageInfo = () => (food: Food): Food => {
-    return Immer_produce(food, f => void (f.extra = {
-        ...f.extra,
+const doUpdateStorageInfo = () => (food: Food): void => {
+    food.extra = {
+        ...food.extra,
         ...new StorageInfo(new Date(), /*isInitialItem:*/ false),
-    }));
+    };
 }
 
 
