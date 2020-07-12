@@ -398,7 +398,7 @@ const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): void => {
 
 // helper to be used with 'applyFunctionsTo'
 const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): void => {
-    parentFood.ingredientsRefs = parentFood.ingredientsRefs.filter(x => x.position != positionToRemove);
+    parentFood.ingredientsRefs = parentFood.ingredientsRefs.filter(x => x.position !== positionToRemove);
 };
 
 // helper to be used with 'applyFunctionsTo'
