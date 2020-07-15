@@ -5,11 +5,11 @@ import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
-    replaceIngredient, setCurrentDay, appendIngredient,
+    replaceIngredient, setCurrentDay, appendIngredient, setErrorMessage,
     Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
      SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction,
-     ChangeFoodNameAction, AddFoodAction, SetErrorMessageAction, setErrorMessage,
+     ChangeFoodNameAction, AddFoodAction, SetMessageAction,
 } from './ActionCreators';
 
 
@@ -91,8 +91,8 @@ function routeAction(state: State, action: Action): State {
                 case "ADD_FOOD":
                     newSyntheticActions = reducer_addFood(currentAction, mutableState);
                     break;
-                case "SET ERROR MESSAGE":
-                    newSyntheticActions = reducer_setErrorMessage(currentAction, mutableState);
+                case "SET MESSAGE":
+                    newSyntheticActions = reducer_setMessage(currentAction, mutableState);
                     break;
                 default:
                     // needs casting because, for TypeScript, all values of 'type' were already handled above
@@ -313,11 +313,11 @@ const reducer_addFood = (
     return [appendIngredient(food.ref, context)];
 };
 
-const reducer_setErrorMessage = (
-    { message }: SetErrorMessageAction,
+const reducer_setMessage = (
+    { messagePayload }: SetMessageAction,
     mutableState: State
 ): Action[] => {
-    mutableState.errorMessage = message;
+    mutableState.message = messagePayload;
     return [];
 };
 

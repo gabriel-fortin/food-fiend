@@ -19,5 +19,6 @@ immeriseModels();
 
 
 export type MacrosUncertainty = import ('./Macros').MacrosUncertainty;
+export type Message = import('./Message').Message;
 
 export { Ref, Macros, FoodType, Ingredient, Food, StorageInfo };

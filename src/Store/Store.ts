@@ -1,11 +1,11 @@
-import { Food, FoodType, Ref } from 'Model';
+import { Food, FoodType, Ref, Message } from 'Model';
 
 
 export abstract class State {
     
     foodData: Food[];
     day: Ref | null;
-    errorMessage: string | null;
+    message: Message | null;
 
     history: any = null;
 
@@ -15,7 +15,7 @@ export abstract class State {
     protected constructor() {
         this.foodData = [];
         this.day = null;
-        this.errorMessage = null;
+        this.message = null;
     }
 
     static create(): State {
@@ -39,9 +39,9 @@ export abstract class State {
 
     abstract getAllFoodOfType(soughtType: FoodType): Food[];
 
-    abstract getErrorMessage(): string | null;
+    abstract getMessage(): Message | null;
 
-    abstract setErrorMessage(message: string | null): void;
+    abstract setMessage(message: Message | null): void;
 }
 
 
@@ -136,14 +136,12 @@ export class StateImpl extends State {
         return latestVersionOfEachFood;
     }
 
-    getErrorMessage(): string | null {
-        return this.errorMessage;
+    getMessage(): Message | null {
+        return this.message;
     }
 
-    setErrorMessage(message: string | null): void {
-        console.error(`@Store: SET ERROR MESSAGE`, message);
-        
-        this.errorMessage = message;
+    setMessage(message: Message | null): void {
+        this.message = message;
     }
 }
 

@@ -1,22 +1,24 @@
 import React from "react";
 import { useToast } from "@chakra-ui/core";
 import { connect, useDispatch } from "react-redux";
+
 import { State, setErrorMessage } from "Store";
+import { Message } from "Model";
 
 interface Props {
-    errorMessage: string | null;
+    message: Message | null;
 }
 
-const ShowToasts: React.FC<Props> = ({ errorMessage }) => {
+const ShowToasts: React.FC<Props> = ({ message }) => {
     const toast = useToast();
     useDispatch()(setErrorMessage(null));
 
-    if (errorMessage != null) {
+    if (message != null) {
         setTimeout(() => {
             toast({
                 position: "bottom-right",
-                description: errorMessage,
-                status: "error",
+                description: message.text,
+                status: message.status,
                 duration: 5000,
                 isClosable: true,
             });
@@ -27,7 +29,7 @@ const ShowToasts: React.FC<Props> = ({ errorMessage }) => {
 };
 
 const mapState = (state: State) => ({
-    errorMessage: state.getErrorMessage(),
+    message: state.getMessage(),
 });
 
 export const ConnectedShowToasts = connect(mapState)(ShowToasts);

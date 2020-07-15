@@ -1,6 +1,6 @@
 import { Onion } from 'Onion';
 
-import { Food, Macros, MacrosUncertainty, Ref, FoodType } from 'Model';
+import { Food, Macros, MacrosUncertainty, Ref, FoodType, StorageInfo, Message } from "Model";
 
 
 // /*
@@ -58,9 +58,9 @@ export interface ChangeFoodNameAction {
     context: Onion,
 }
 
-export interface SetErrorMessageAction {
-    type: "SET ERROR MESSAGE",
-    message: string | null,
+export interface SetMessageAction {
+    type: "SET MESSAGE",
+    messagePayload: Message | null,
 }
 
 export type Action =
@@ -72,7 +72,7 @@ export type Action =
     | AppendIngredientAction
     | RemoveIngredientAction
     | ChangeFoodNameAction
-    | SetErrorMessageAction
+    | SetMessageAction
     ;
 
 
@@ -188,9 +188,49 @@ export function changeFoodName(newName: string, context: Onion): ChangeFoodNameA
 }
 
 /** Action creator */
-export function setErrorMessage(message: string | null): SetErrorMessageAction {
+export function setErrorMessage(message: string | null): SetMessageAction {
     return {
-        type: "SET ERROR MESSAGE",
-        message,
+        type: "SET MESSAGE",
+        messagePayload: (message === null) ? null
+            : {
+                status: "error",
+                text: message,
+            }
+    };
+}
+
+/** Action creator */
+export function setSuccessMessage(message: string | null): SetMessageAction {
+    return {
+        type: "SET MESSAGE",
+        messagePayload: (message === null) ? null
+            : {
+                status: "success",
+                text: message,
+            }
+    };
+}
+
+/** Action creator */
+export function setInfoMessage(message: string | null): SetMessageAction {
+    return {
+        type: "SET MESSAGE",
+        messagePayload: (message === null) ? null
+            : {
+                status: "info",
+                text: message,
+            }
+    };
+}
+
+/** Action creator */
+export function setWarningMessage(message: string | null): SetMessageAction {
+    return {
+        type: "SET MESSAGE",
+        messagePayload: (message === null) ? null
+            : {
+                status: "warning",
+                text: message,
+            }
     };
 }
