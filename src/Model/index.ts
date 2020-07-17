@@ -1,11 +1,11 @@
-import { immerable } from 'immer';
+import { immerable } from "immer";
 
-import { Ref } from './Ref';
-import { Macros } from './Macros';
-import { FoodType } from './FoodType';
-import { Ingredient } from './Ingredient';
-import { Food } from './Food';
-import { StorageInfo } from './StorageInfo';
+import { Ref } from "./Ref";
+import { Macros } from "./Macros";
+import { FoodType } from "./FoodType";
+import { Ingredient } from "./Ingredient";
+import { Food } from "./Food";
+import { StorageInfo } from "./StorageInfo";
 
 
 const immeriseModels = () => {
@@ -18,7 +18,8 @@ const immeriseModels = () => {
 immeriseModels();
 
 
-export type MacrosUncertainty = import ('./Macros').MacrosUncertainty;
-export type Message = import('./Message').Message;
+export { eqRef } from "./tools";
+export type MacrosUncertainty = import ("./Macros").MacrosUncertainty;
+export type Message = import("./Message").Message;
 
 export { Ref, Macros, FoodType, Ingredient, Food, StorageInfo };
