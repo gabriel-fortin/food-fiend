@@ -1,6 +1,6 @@
 import Immer_produce, { Draft } from 'immer';
 
-import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo } from 'Model';
+import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo, eqRef } from 'Model';
 import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
@@ -131,7 +131,7 @@ const reducer_importData = (action: ImportDataAction, mutableState: State): Acti
     };
     const discoverNeighbouringDuplicates = (acc: Acc, item: Food) => {
         // assuming that collection is sorted: first by id, then by version
-        if (acc.lastElRef === item.ref) {
+        if (eqRef(acc.lastElRef, item.ref)) {
             throw Error(`repeated item in imported data; id: ${item.ref.id}; name: ${item.name}`);
         }
         
