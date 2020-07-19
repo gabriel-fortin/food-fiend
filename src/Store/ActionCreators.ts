@@ -1,6 +1,10 @@
-import { Onion } from 'Onion';
+import { ThunkAction } from "redux-thunk";
+import localforage from "localforage";
 
+import { Onion } from "Onion";
 import { Food, Macros, MacrosUncertainty, Ref, FoodType, StorageInfo, Message } from "Model";
+
+import { State } from ".";
 
 
 // /*
@@ -233,4 +237,51 @@ export function setWarningMessage(message: string | null): SetMessageAction {
                 text: message,
             }
     };
+}
+
+/** Action creator */
+export function saveToBrowserStorage(): ThunkAction<void, State, any, Action> {
+    return (dispatch, getState) => {
+        const t0 = performance.now();
+
+        const storeCriterium = (f: Food) => !(f.extra as StorageInfo).isInitialItem;
+        const dataToSave: Food[] = getState().foodData.filter(storeCriterium);
+
+        localforage
+            .setItem("user data", dataToSave)
+            .then(() => {
+                const t1 = performance.now();
+                dispatch(setInfoMessage(`saved ${dataToSave.length} items!  it took ${t1 - t0}ms`));
+            })
+            .catch(err => void dispatch(setErrorMessage(`Failed!  ${err}`)));
+    };
+}
+
+/** Action creator */
+export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> {
+    return (dispatch, getState) => {
+        const t0 = performance.now();
+
+        localforage
+            .getItem<Food[]>("user data")
+            .then((data) => {
+                dispatch(importData(data));
+                const t1 = performance.now();
+                dispatch(setInfoMessage(`loaded ${data.length} items!  it took ${t1 - t0}ms`));
+                return data;
+            })
+            .catch(err => {
+                dispatch(setErrorMessage(`Failed!  ${err}`));
+            });
+    };
+}
+
+/** Action creator */
+export function clearBrowserStorage(): ThunkAction<Promise<void>, State, any, Action> {
+    return (dispatch, getState) =>
+        localforage
+            .removeItem("user data")
+            .then(() => {
+                dispatch(setInfoMessage(`removed user data`));
+            });
 }

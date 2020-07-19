@@ -1,6 +1,7 @@
 import React, { /* useState */ } from 'react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
 import { ThemeProvider } from '@chakra-ui/core';
 
 import { State, storeReducer, importData, changeIngredientQuantity, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
@@ -21,7 +22,7 @@ import { BrowserStorage } from 'Widget/BrowserStorage';
 
 function createEmptyStore() {
     // return createStore<State, Action, any, any>(storeReducer, new State());
-    return createStore(storeReducer, State.create());
+    return createStore(storeReducer, State.create(), applyMiddleware(thunkMiddleware));
 }
 
 export default function TestingArea() {
@@ -51,11 +52,11 @@ function DisplayDay() {
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    store.dispatch(importData([lunch]));
-    store.dispatch(importData([obiad]));
-    store.dispatch(importData([tempDay]));
-    store.dispatch(setCurrentDay(new Ref(666, -14)));
-    store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
+    // store.dispatch(importData([lunch]));
+    // store.dispatch(importData([obiad]));
+    // store.dispatch(importData([tempDay]));
+    // store.dispatch(setCurrentDay(new Ref(666, -14)));
+    // store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
 
     const mapState = (state: State) => ({
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
