@@ -5,7 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import { ThemeProvider } from '@chakra-ui/core';
 
 import { State, storeReducer, importData, changeIngredientQuantity, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
-import OldFoodType from '../data/FoodType';
+// import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
 import { MacrosBar, MacrosInfo } from 'Widget';
