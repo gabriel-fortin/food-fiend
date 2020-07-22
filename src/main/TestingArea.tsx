@@ -12,7 +12,7 @@ import { MacrosBar, MacrosInfo } from 'Widget';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
-import { MealList } from 'Widget';
+import { Day } from 'Widget';
 import { Onion, PlantOnionGarden, CurrentDayLayerProvider } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
@@ -61,7 +61,7 @@ function DisplayDay() {
     const mapState = (state: State) => ({
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
     });
-    const DoubleConnectedMealListWidget = connect(mapState)(MealList);
+    const DoubleConnectedDayWidget = connect(mapState)(Day);
 
     return (
         <ThemeProvider>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Select, Divider, Text, Flex, Input, InputGroup, InputLeftAddon } from "@chakra-ui/core";
 
 import { FoodType, Ref } from "Model";
-import { MealList, Meal } from "Widget";
+import { Day, Meal } from "Widget";
 
 
 interface Props {
@@ -24,7 +24,7 @@ export const JustSimpleUI: React.FC<Props> = ({ getAllOfType }) => {
             ThingToShow = allDays.map(ref => (
                 <React.Fragment key={ref.id}>
                     <Divider />
-                    <MealList dayRef={ref} />
+                    <Day dayRef={ref} />
                 </React.Fragment>
             ));
             break;

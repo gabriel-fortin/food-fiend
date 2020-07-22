@@ -3,12 +3,12 @@
 import IngredientsList from "./IngredientsList";
 import FoodSelector from "./FoodSelector";
 import Meal from "./Meal";
-import MealList from "./MealList";
+import Day from "./Day";
 
 export { IngredientsList };
 export { FoodSelector };
 export { Meal };
-export { MealList };
+export { Day };
 
 export { IngredientEntry } from "./IngredientEntry";
 export { MacrosBar, MacrosInfo } from "./MacrosDisplay";
