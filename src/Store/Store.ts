@@ -70,7 +70,7 @@ export class StateImpl extends State {
         const allVersionsOfSelectedFood = this.findFoodAllVersions(foodRef.id);
     
         if (allVersionsOfSelectedFood.length === 0) {
-            console.error(`Store: find food -- no entries for food with id '${foodRef.id}'`);
+            console.debug(`Store: find food -- no entries for food with id '${foodRef.id}'`);
             throw new NoFoodFoundError(`No food found with id: ${foodRef.id}`);
         }
     
