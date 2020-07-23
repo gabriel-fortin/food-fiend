@@ -82,6 +82,19 @@ export class Onion {
         return [peeledLayers[0], peeledLayers[1], new Onion(remainingOnion)];
     }
 
+    toString(): string {
+        return this.layers.reduce((acc, layer) => {
+            switch (layer.kind) {
+                case LayerKind.REF:
+                    return `${acc}> REF(${layer.ref.id},${layer.ref.ver}) `;
+                case LayerKind.POS:
+                    return `${acc}> POS(${layer.pos}) `;
+                case LayerKind.CDAY:
+                    return `${acc}> CDAY `;
+            }
+        }, "");
+    }
+
     private checkPreviousLayer(allowedPreviousLayers: LayerKind[], tag: string = "<some method>") {
         const hasUnexpectedKind =
             (layer: Layer) =>
