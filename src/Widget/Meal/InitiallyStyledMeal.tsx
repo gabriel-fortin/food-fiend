@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { EditableInput, EditablePreview, Editable, Flex, Box, Link, Heading } from "@chakra-ui/core";
+import { EditableInput, EditablePreview, Editable, Flex, Box, Link } from "@chakra-ui/core";
 
 import { MacrosInfo } from "Widget";
 import { Macros } from "Model";

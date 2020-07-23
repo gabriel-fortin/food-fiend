@@ -83,6 +83,7 @@ export class Onion {
     }
 
     toString(): string {
+        /* eslint-disable array-callback-return */
         return this.layers.reduce((acc, layer) => {
             switch (layer.kind) {
                 case LayerKind.REF:
@@ -93,6 +94,7 @@ export class Onion {
                     return `${acc}> CDAY `;
             }
         }, "");
+        /* eslint-enable array-callback-return */
     }
 
     private checkPreviousLayer(allowedPreviousLayers: LayerKind[], tag: string = "<some method>") {

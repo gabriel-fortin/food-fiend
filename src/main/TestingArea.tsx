@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { /* useState */ } from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
@@ -465,3 +466,5 @@ function showOfMacrosBar() {
         </>
     );
 }
+
+/* eslint-enable */
