@@ -407,23 +407,10 @@ const doChangeName = (newName: string) => (food: Food): void => {
 };
 
 // helper to be used with 'applyFunctionsTo'
-const doClearDependingMeals = () => (food: Food): void => {
-    food.usedBy = [];
-};
-
-// helper to be used with 'applyFunctionsTo'
 const doUpdateStorageInfo = () => (food: Food): void => {
     food.extra = {
         ...food.extra,
         ...new StorageInfo(new Date(), /*isInitialItem:*/ false),
     };
 }
-
-
-const addRefToArrayIfNotThere = (someArray: any[], id: number, version: number): void => {
-    for (let item of someArray) {
-        if (item.id === id && item.version === version) return;
-    }
-    someArray.push({id, version});
-};
 
