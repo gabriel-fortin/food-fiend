@@ -8,20 +8,12 @@ import "./food-selector.css";
 
 
 export interface Props {
-    data: Food[],
+    getFilteredData: (partialName: string) => Food[],
     onFoodSelected: (ref: Ref) => void,
 }
-export const ChakraStyledFoodSelector: React.FC<Props> = ({data, onFoodSelected}) => {
+export const ChakraStyledFoodSelector: React.FC<Props> = ({ getFilteredData, onFoodSelected }) => {
     let [currentText, setCurrentText] = useState("");
     let [popupVisible, setPopupVisibility] = useState(false);
-
-    // data processing
-    const foodMatching = (input: string) => {
-        const sanitisedInput = input.replace(/[^-'%/a-zA-Z]/g, "");
-        const regex = new RegExp(sanitisedInput, "i");
-        return data.filter(x => regex.test(x.name));
-    };
-    const filteredSuggestions = foodMatching(currentText);
 
     // reactions to user actions
     const onTextChange = (text : string) => {
@@ -38,7 +30,7 @@ export const ChakraStyledFoodSelector: React.FC<Props> = ({data, onFoodSelected}
                 onTextChange={onTextChange}
                 onEscape={onEscape} />
             {popupVisible && <PopupList
-                                dataToDisplay={filteredSuggestions}
+                                dataToDisplay={getFilteredData(currentText)}
                                 onSelection={onFoodSelected} />}
         </div>
     );

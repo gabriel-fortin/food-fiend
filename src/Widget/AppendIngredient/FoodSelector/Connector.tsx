@@ -12,7 +12,11 @@ export const Connector: React.FC<{}> = () => {
     const onion = useOnion();
 
     const mapState = (state: State) => ({
-        data: state.getAllLatestFoods(),
+        getFilteredData: (input: string) => {
+            const sanitisedInput = input.replace(/[^-'%/a-zA-Z]/g, "");
+            const regex = new RegExp(sanitisedInput, "i");
+            return state.getAllLatestFoods().filter(x => regex.test(x.name));
+        },
     });
 
     const mapDispatch = {

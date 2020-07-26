@@ -11,7 +11,7 @@ import initialData from '../data/initialData';
 
 import { MacrosBar, MacrosInfo } from 'Widget';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
-import { FoodSelector } from 'Widget';
+// import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
 import { Day } from 'Widget';
 import { Onion, PlantOnionGarden, CurrentDayLayerProvider } from 'Onion';

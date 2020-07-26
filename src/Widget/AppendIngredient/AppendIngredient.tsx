@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Box, Button, Collapse, Flex, IconButton } from "@chakra-ui/core";
 
-import { FoodSelector } from "Widget";
+import { FoodSelector } from "./FoodSelector";
 
 
-export const FoodAdder: React.FC = () => {
+export const AppendIngredient: React.FC = () => {
     const [showFoodSelector, setShowFoodSelector] = useState(false);
 
     return (
@@ -17,7 +17,7 @@ export const FoodAdder: React.FC = () => {
                     borderStyle="solid 1px black"
                     onClick={() => setShowFoodSelector(true)}
                 >
-                    + Add food
+                    + Add ingredient
                 </Button>
             </Collapse>
             <Collapse isOpen={showFoodSelector}>

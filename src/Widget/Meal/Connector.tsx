@@ -4,8 +4,7 @@ import { connect, useDispatch } from "react-redux";
 import { State, changeFoodName, removeIngredient, setErrorMessage } from "Store";
 import { Ref } from "Model";
 import { FoodLayerProvider, useOnion } from "Onion";
-import { IngredientsList } from "Widget";
-import { FoodAdder } from "./FoodAdder";
+import { IngredientsList, AppendIngredient } from "Widget";
 
 import { InitiallyStyledMeal as MealUI } from "./InitiallyStyledMeal";
 import { Button, Stack, Modal, useDisclosure, ModalContent, ModalOverlay, ModalBody, ModalCloseButton } from "@chakra-ui/core";
@@ -43,7 +42,7 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
                     alignItems="center"
                 >
                     <MealAdder />
-                    <FoodAdder />
+                    <AppendIngredient />
                 </Stack>
             </ConnectedUI>
         </FoodLayerProvider>
@@ -107,7 +106,7 @@ const MealAdder: React.FC = () => {
                 variant="outline"
                 variantColor="pink"
             >
-                + Create and add new meal
+                + Create complex ingredient
             </Button>
             <Modal
                 isOpen={isOpen}
