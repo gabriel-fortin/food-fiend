@@ -1,5 +1,6 @@
 import React from "react";
 import { connect, useDispatch } from "react-redux";
+import { Button, Stack, Modal, useDisclosure, ModalContent, ModalOverlay, ModalBody, ModalCloseButton } from "@chakra-ui/core";
 
 import { State, changeFoodName, removeIngredient, setErrorMessage } from "Store";
 import { Ref } from "Model";
@@ -7,7 +8,6 @@ import { FoodLayerProvider, useOnion } from "Onion";
 import { IngredientsList, AppendIngredient } from "Widget";
 
 import { InitiallyStyledMeal as MealUI } from "./InitiallyStyledMeal";
-import { Button, Stack, Modal, useDisclosure, ModalContent, ModalOverlay, ModalBody, ModalCloseButton } from "@chakra-ui/core";
 
 
 interface Props {
@@ -18,18 +18,9 @@ interface Props {
  * Connects Meal to the redux store
  */
 export const Connector: React.FC<Props> = ({ mealRef }) => {
-    const onion = useOnion();
-    
-    const dispatch = useDispatch();
-    const removeMeal = () => {
-        console.log(`Onion: ${JSON.stringify((onion as any).layers, null, 2)}`);
-        dispatch(removeIngredient(onion));
-    };
 
-    // const onCreateMeal = () => {
-    //     // create dialog with Meal
-    // };
-
+    // TODO: this component should not do visual work (Stack, alignment, ...)
+    // it should provide the children elements to the UI component to place/render
     return (
     <>
         <FoodLayerProvider food={mealRef}>
@@ -71,7 +62,7 @@ const ConnectedUI: React.FC<{ mealRef: Ref }> = ({
             return changeFoodName(newName, onion);
         },
         onRemoveMeal: () => {
-            return setErrorMessage(`@Meal.ConnectedUI: 'onRemoveMeal' NOT IMPLEMENTED`);
+            return removeIngredient(onion);
         },
     });
 

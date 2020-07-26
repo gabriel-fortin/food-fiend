@@ -248,13 +248,19 @@ const reducer_removeIngredient = (
     { context }: RemoveIngredientAction,
     mutableState: State,
 ): Action[] => {
-    if (context.layersLeft() === 0) {
+    const [layer0, outerContext] = context.peelOneLayer();
+
+    // TODO: update 'usedBy' of the food being removed
+        // const foodRef = (layer0 as RefLayer).ref;
+        // mutableState.findFood(foodRef).usedBy = ...
+
+    if (outerContext.layersLeft() === 0) {
         const message = `Nothing to remove the item from; Onion (context) is empty`;
         console.error(message);
         return [setErrorMessage(message)];
     }
 
-    const [layer1, layer2, remainingContext] = context.peelTwoLayers();
+    const [layer1, layer2, remainingContext] = outerContext.peelTwoLayers();
     const ingredientPosition = (layer1 as PositionLayer).pos;
     const parentFoodRef = (layer2 as RefLayer).ref;
     const parentFood = mutableState.findFood(parentFoodRef);
