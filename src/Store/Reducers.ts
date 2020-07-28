@@ -248,6 +248,7 @@ const reducer_removeIngredient = (
     { context }: RemoveIngredientAction,
     mutableState: State,
 ): Action[] => {
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     const [layer0, outerContext] = context.peelOneLayer();
 
     // TODO: update 'usedBy' of the food being removed
