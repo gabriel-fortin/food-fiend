@@ -17,7 +17,7 @@ import { Day } from 'Widget';
 import { Onion, PlantOnionGarden, CurrentDayLayerProvider } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
-import { ShowToasts } from 'UI';
+import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Widget/BrowserStorage';
 
 
@@ -68,6 +68,7 @@ function DisplayDay() {
         <ThemeProvider>
             <AppStateProvider _debug__injectStore={store}>
                 <ShowToasts />
+                <ShowModals />
                 <BrowserStorage />
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
