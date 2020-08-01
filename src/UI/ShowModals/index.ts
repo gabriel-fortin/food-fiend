@@ -1,1 +1,1 @@
-export { ShowModals } from "./ShowModals";
+export { Connector as ShowModals } from "./Connector";

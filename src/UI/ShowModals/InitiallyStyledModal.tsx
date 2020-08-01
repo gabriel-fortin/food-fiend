@@ -1,17 +1,26 @@
 import React from "react";
 import { Modal, useDisclosure, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, Box } from "@chakra-ui/core";
 
-export const ShowModals: React.FC = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure(true);
+
+interface Props {
+    onModalClosing: () => void;
+}
+
+export const InitiallyStyledModal: React.FC<Props> = ({ onModalClosing }) => {
+    const { isOpen: isModalOpen, onClose: closeModal } = useDisclosure(true);
+
+    const onCloseButtonClick = () => {
+        closeModal();
+        onModalClosing();
+    };
 
     return (
         <Modal
-            isOpen={isOpen}
-            onClose={onClose}
+            isOpen={isModalOpen}
         >
             <ModalOverlay />
             <ModalContent>
-                <ModalCloseButton />
+                <ModalCloseButton onClick={onCloseButtonClick} />
                 <ModalBody>
                     Hello
                     <Box>
