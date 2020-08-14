@@ -1,10 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { Ingredient } from "Model";
-import { changeIngredientQuantity, State } from "Store";
+import { Ingredient, FoodType } from "Model";
+import { changeIngredientQuantity, State, removeIngredient, setWarningMessage } from "Store";
 import { useOnion } from "Onion";
-import { removeIngredient } from "Store";
 
 import { StyledDataRow } from "./StyledDataRow";
 
@@ -19,13 +18,16 @@ export const Connector: React.FC<Props> = ({ ingredient }) => {
     const mapState = (state: State) => {
         const food = state.findFood(ingredient.ref);
         return {
-            name: food.name,
+            name: (food.type===FoodType.Meal && "<meal>" || "") + food.name,
             macros: food.macros,
             quantity: ingredient.quantity,
         };
     };
 
     const mapDispatch = ({
+        onNameClick: () => {
+            return setWarningMessage(`ingredient clicked`);
+        },
         onQuantityChange: (newQuantity: string) => {
             // Replace any comma with a dot
             const quantityAsNumber = Number.parseFloat(newQuantity.replace(/,/, "."));

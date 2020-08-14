@@ -14,6 +14,7 @@ interface Props {
     name: string;
     macros: Macros;
     quantity: number;
+    onNameClick: () => void;
     onQuantityChange: (newQuantity: string) => void;
     onRemoveEntry: () => void;
 }
@@ -22,6 +23,7 @@ export const StyledDataRow: React.FC<Props> = ({
     name,
     macros,
     quantity,
+    onNameClick,
     onQuantityChange,
     onRemoveEntry,
 }) => {
@@ -77,6 +79,7 @@ export const StyledDataRow: React.FC<Props> = ({
                         flexBasis="40%"
                         flexGrow={5}
                         alignSelf="center"
+                        onClick={onNameClick}
                     >
                         {name}
                     </Box>
