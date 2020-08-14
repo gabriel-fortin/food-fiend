@@ -228,6 +228,11 @@ const reducer_setCurrentDay = ({ dayRef }: SetCurrentDayAction, mutableState: St
 
 const reducer_appendIngredient =
     ({ ingredientRef, context}: AppendIngredientAction, mutableState: State): Action[] => {
+        if (context.layersLeft() === 0) {
+            console.error(`Cannot append ingredient when context is empty`);
+            return [];
+        }
+
         const [layer1, remainingContext] = context.peelOneLayer();
         const parentFoodRef = (layer1 as RefLayer).ref;
 
@@ -316,7 +321,6 @@ const reducer_addFood = (
 
     putFoodIntoMutableState(mutableState, food);
 
-    if (context.layersLeft() === 0) return [];
     return [appendIngredient(food.ref, context)];
 };
 
