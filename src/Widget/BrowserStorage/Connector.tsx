@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect, useDispatch } from "react-redux";
 
 import { saveToBrowserStorage, loadFromBrowserStorage, clearBrowserStorage } from "Store";
-import { connect } from "react-redux";
 
 import { AsHorizontalButtons as UI } from "./AsHorizontalButtons";
 
 
-export const Connector: React.FC = () => {
+interface Props {
+    loadOnMount?: boolean;
+}
+
+export const Connector: React.FC<Props> = ({
+    loadOnMount = false,
+}) => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (loadOnMount) {
+            dispatch(loadFromBrowserStorage());
+        }
+    }, []);
 
     const mapDispatch = {
         onSave: saveToBrowserStorage,

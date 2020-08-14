@@ -68,6 +68,7 @@ function DisplayDay() {
         <ThemeProvider>
             <AppStateProvider _debug__injectStore={store}>
                 <ShowToasts />
+                <BrowserStorage loadOnMount />
                 <ShowModals />
                 <BrowserStorage />
                 <PlantOnionGarden>
