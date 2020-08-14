@@ -1,6 +1,6 @@
 import React from "react";
 import { createStore, Store as ReduxStore } from "redux";
-import { useStore, Provider } from "react-redux";
+import { useStore, Provider, TypedUseSelectorHook, useSelector } from "react-redux";
 
 import { State } from "./Store";
 import { Action } from "./ActionCreators";
@@ -10,6 +10,8 @@ import { rootReducer } from "./Reducers";
 // hides details of what the actual store is and how it's implemented
 export const useAppState: () => State =
     () => useStore<State, Action>().getState();
+
+export const useTypedSelector: TypedUseSelectorHook<State> = useSelector;
 
 
 interface Props {

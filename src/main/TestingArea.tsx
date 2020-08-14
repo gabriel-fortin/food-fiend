@@ -70,7 +70,6 @@ function DisplayDay() {
                 <ShowToasts />
                 <BrowserStorage loadOnMount />
                 <ShowModals />
-                <BrowserStorage />
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
                         <TestingFrame>
