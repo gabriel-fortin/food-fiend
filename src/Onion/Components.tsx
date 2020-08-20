@@ -14,16 +14,17 @@ export interface HasOnion {
     onion: Onion;
 }
 
-export const PositionLayerProvider: React.FC<{ position: number }> = ({ position, children }) => {
-    // add one more layer to the onion
-    const glazedOnion = useOnion().withPositionLayer(position);
+export const PositionLayerProvider: React.FC<{ position: number }> =
+    ({ position, children }) => {
+        // add one more layer to the onion
+        const biggerOnion = useOnion().withPositionLayer(position);
 
-    return (
-        <OnionReactContext.Provider value={glazedOnion}>
-            {children}
-        </OnionReactContext.Provider>
-    );
-};
+        return (
+            <OnionReactContext.Provider value={biggerOnion}>
+                {children}
+            </OnionReactContext.Provider>
+        );
+    };
 
 export const FoodLayerProvider: React.FC<{ food: Ref, withOnion?: OnionReceiver }> =
     ({ food, withOnion, children }) => {
@@ -50,7 +51,8 @@ export const CurrentDayLayerProvider: React.FC =
         );
     };
 
-export const PlantOnionGarden: React.FC<{ onion?: Onion }> = ({ onion, children }) =>
-    <OnionReactContext.Provider value={onion || Onion.create()}>
-        {children}
-    </OnionReactContext.Provider>;
+export const PlantOnionGarden: React.FC<{ onion?: Onion }> =
+    ({ onion, children }) =>
+        <OnionReactContext.Provider value={onion || Onion.create()}>
+            {children}
+        </OnionReactContext.Provider>;

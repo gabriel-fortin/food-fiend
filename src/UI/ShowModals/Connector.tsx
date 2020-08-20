@@ -6,7 +6,7 @@ import { State, setWarningMessage } from "Store";
 import { InitiallyStyledModal as ModalUI } from "./InitiallyStyledModal";
 
 
-export const Connector: React.ComponentType = () => {
+export const Connector: React.FC = () => {
 
     const mapState = (state: State) => {
         return {
