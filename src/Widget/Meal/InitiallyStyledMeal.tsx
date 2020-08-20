@@ -7,12 +7,15 @@ import { Macros } from "Model";
 import "./meal-widget.css";
 
 
-interface Props {
-    name: string;
-    totalMacros: Macros;
-    onNameChange: (newName: string) => void;
-    onRemoveMeal: () => void;
+export interface StateProps {
+        name: string;
+        totalMacros: Macros;
 }
+export interface DispatchProps {
+        onNameChange: (newName: string) => void;
+        onRemoveMeal: () => void;
+}
+export type Props = StateProps & DispatchProps;
 
 export const InitiallyStyledMeal: React.FC<Props> = ({
     name,
