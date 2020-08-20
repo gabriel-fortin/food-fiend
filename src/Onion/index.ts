@@ -14,3 +14,4 @@ export type Layer = import("./model/Layer").Layer;
 export type RefLayer = import("./model/Layer").RefLayer;
 export type PositionLayer = import("./model/Layer").PositionLayer;
 export type CurrentDayLayer = import("./model/Layer").CurrentDayLayer;
+export type HasOnion = import("./Components").HasOnion;

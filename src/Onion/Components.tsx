@@ -6,6 +6,14 @@ import { Onion, useOnion } from ".";
 import { OnionReactContext } from "./Context";
 
 
+interface OnionReceiver {
+    (onion: Onion): React.ReactNode
+}
+
+export interface HasOnion {
+    onion: Onion;
+}
+
 export const PositionLayerProvider: React.FC<{ position: number }> = ({ position, children }) => {
     // add one more layer to the onion
     const glazedOnion = useOnion().withPositionLayer(position);
@@ -17,24 +25,26 @@ export const PositionLayerProvider: React.FC<{ position: number }> = ({ position
     );
 };
 
-export const FoodLayerProvider: React.FC<{ food: Ref }> = ({ food, children }) => {
-    // add one more layer to the onion
-    const glazedOnion = useOnion().withFoodLayer(food);
+export const FoodLayerProvider: React.FC<{ food: Ref, withOnion?: OnionReceiver }> =
+    ({ food, withOnion, children }) => {
+        // add one more layer to the onion
+        const biggerOnion = useOnion().withFoodLayer(food);
 
-    return (
-        <OnionReactContext.Provider value={glazedOnion}>
-            {children}
-        </OnionReactContext.Provider>
-    );
-};
+        return (
+            <OnionReactContext.Provider value={biggerOnion}>
+                {withOnion && withOnion(biggerOnion)}
+                {children}
+            </OnionReactContext.Provider>
+        );
+    };
 
 export const CurrentDayLayerProvider: React.FC =
     ({ children }) => {
         // add one more layer to the onion
-        const glazedOnion = useOnion().withCurrentDayLayer();
+        const biggerOnion = useOnion().withCurrentDayLayer();
         
         return (
-            <OnionReactContext.Provider value={glazedOnion}>
+            <OnionReactContext.Provider value={biggerOnion}>
                 {children}
             </OnionReactContext.Provider>
         );
