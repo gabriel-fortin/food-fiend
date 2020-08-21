@@ -25,12 +25,12 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
             totalMacros: meal.macros,
         };
     };
-    const mapDispatch: MapDispatchToProps<DispatchProps, HasOnion> = (_dispatch, { onion }) => ({
+    const mapDispatch: MapDispatchToProps<DispatchProps, HasOnion> = (dispatch, { onion }) => ({
         onNameChange: (newName: string) => {
-            return changeFoodName(newName, onion);
+            dispatch(changeFoodName(newName, onion));
         },
         onRemoveMeal: () => {
-            return removeIngredient(onion);
+            dispatch(removeIngredient(onion));
         },
     });
     const ConnectedUI: React.FC<Props & HasOnion> = connect(mapState, mapDispatch)(MealUI);
