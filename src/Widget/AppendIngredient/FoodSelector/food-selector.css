@@ -5,20 +5,21 @@
 .food-selector .popup {
     /* positioning: */
     position: absolute; /* to put popup outside of page flow */
-    top: 30px;
+    top: 20px;
     left: 5px;
+    z-index: 40;
     /* sizing: */
-    max-height: 7em;
-    overflow: auto;
-    min-width: 30em;
-    /* details: */
-    background: rgb(245, 245, 245);
+    height: 15em;
+    width: 30em;
+    overflow: auto;  /* keeps all items inside the box */
+    resize: both;
+    /* spacing: */
     padding: 3px;
     padding-left: 1.2em;
+    /* details: */
+    background: rgb(245, 245, 245);
     list-style-type: "→ ";
     list-style-position: outside;
-    border: 1px solid rgba(0, 0, 0, 0.6);
-    border-radius: 3px;
     box-shadow: 5px 4px 5px rgba(0, 0, 0, 0.3), -1px -1px 2px rgba(0, 0, 0, 0.2);
 }
 
