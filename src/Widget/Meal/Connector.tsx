@@ -39,7 +39,7 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
     // TODO: this component should not do visual work (Stack, alignment, ...)
     // it should provide the children elements to the UI component to place/render
     return (
-        <FoodLayerProvider food={mealRef} withOnion={onion =>
+        <FoodLayerProvider food={mealRef} renderWithOnion={onion =>
             <ConnectedUI mealRef={mealRef} onion={onion}>
                 <IngredientsList
                     mealRef={mealRef}

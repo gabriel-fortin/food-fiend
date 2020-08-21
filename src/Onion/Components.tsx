@@ -26,14 +26,14 @@ export const PositionLayerProvider: React.FC<{ position: number }> =
         );
     };
 
-export const FoodLayerProvider: React.FC<{ food: Ref, withOnion?: OnionReceiver }> =
-    ({ food, withOnion, children }) => {
+export const FoodLayerProvider: React.FC<{ food: Ref, renderWithOnion?: OnionReceiver }> =
+    ({ food, renderWithOnion, children }) => {
         // add one more layer to the onion
         const biggerOnion = useOnion().withFoodLayer(food);
 
         return (
             <OnionReactContext.Provider value={biggerOnion}>
-                {withOnion && withOnion(biggerOnion)}
+                {renderWithOnion && renderWithOnion(biggerOnion)}
                 {children}
             </OnionReactContext.Provider>
         );
