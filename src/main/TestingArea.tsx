@@ -3,7 +3,7 @@ import React, { /* useState */ } from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { ThemeProvider } from '@chakra-ui/core';
+import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 
 import { State, storeReducer, importData, changeIngredientQuantity, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
 // import OldFoodType from '../data/FoodType';
@@ -66,6 +66,7 @@ function DisplayDay() {
 
     return (
         <ThemeProvider>
+            <CSSReset />
             <AppStateProvider _debug__injectStore={store}>
                 <ShowToasts />
                 <BrowserStorage loadOnMount />
