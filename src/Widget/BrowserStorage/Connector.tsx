@@ -18,7 +18,7 @@ export const Connector: React.FC<Props> = ({
         if (loadOnMount) {
             dispatch(loadFromBrowserStorage());
         }
-    }, []);
+    });
 
     const mapDispatch = {
         onSave: saveToBrowserStorage,

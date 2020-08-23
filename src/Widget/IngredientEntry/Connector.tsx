@@ -18,6 +18,7 @@ export const Connector: React.FC<Props> = ({ ingredient }) => {
     const mapState = (state: State) => {
         const food = state.findFood(ingredient.ref);
         return {
+            /* eslint-disable-next-line no-mixed-operators */
             name: (food.type===FoodType.Meal && "<meal>" || "") + food.name,
             macros: food.macros,
             quantity: ingredient.quantity,
