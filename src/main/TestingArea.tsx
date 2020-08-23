@@ -69,7 +69,7 @@ function DisplayDay() {
             <AppStateProvider _debug__injectStore={store}>
                 <ShowToasts />
                 <BrowserStorage loadOnMount />
-                <ShowModals />
+                {/* <ShowModals /> */}
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
                         <TestingFrame>
