@@ -7,7 +7,8 @@ export {
     FoodLayerProvider,
     PositionLayerProvider,
     CurrentDayLayerProvider,
-    PlantOnionGarden
+    PlantOnionGarden,
+    withOnion,
 } from "./Components";
 
 export type Layer = import("./model/Layer").Layer;

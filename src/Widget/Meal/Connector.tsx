@@ -4,7 +4,7 @@ import { Stack } from "@chakra-ui/core";
 
 import { State, changeFoodName, removeIngredient } from "Store";
 import { Ref } from "Model";
-import { FoodLayerProvider, HasOnion } from "Onion";
+import { FoodLayerProvider, HasOnion, withOnion } from "Onion";
 import { IngredientsList, AppendIngredient } from "Widget";
 
 import { InitiallyStyledMeal as MealUI, DispatchProps } from "./InitiallyStyledMeal";
@@ -33,14 +33,14 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
             dispatch(removeIngredient(onion));
         },
     });
-    const ConnectedUI: React.FC<Props & HasOnion> = connect(mapState, mapDispatch)(MealUI);
 
+    const ConnectedUI = withOnion(connect(mapState, mapDispatch)(MealUI));
 
     // TODO: this component should not do visual work (Stack, alignment, ...)
     // it should provide the children elements to the UI component to place/render
     return (
-        <FoodLayerProvider food={mealRef} renderWithOnion={onion =>
-            <ConnectedUI mealRef={mealRef} onion={onion}>
+        <FoodLayerProvider food={mealRef}>
+            <ConnectedUI>
                 <IngredientsList
                     mealRef={mealRef}
                 />
@@ -51,6 +51,6 @@ export const Connector: React.FC<Props> = ({ mealRef }) => {
                     <AppendIngredient />
                 </Stack>
             </ConnectedUI>
-        }/>
+        </FoodLayerProvider>
     );
 };
