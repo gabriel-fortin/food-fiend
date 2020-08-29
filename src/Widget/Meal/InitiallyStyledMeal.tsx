@@ -79,17 +79,16 @@ export const InitiallyStyledMeal: React.FC<Props> = ({
                 position="relative"  // fixes z-order w.r.t. the on-hover extension
                 borderRadius={headerBorderRadius}
             >
-                <h2>
-                    <Editable
-                        marginLeft={3}
-                        defaultValue={name}
-                        startWithEditView={name === ""}
-                        onSubmit={onNameChange}
-                    >
-                        <EditablePreview />
-                        <EditableInput />
-                    </Editable>
-                </h2>
+                <Editable
+                    marginLeft={4}
+                    fontSize="2xl"
+                    defaultValue={name}
+                    startWithEditView={name === ""}
+                    onSubmit={onNameChange}
+                >
+                    <EditablePreview />
+                    <EditableInput />
+                </Editable>
                 <div className="meal-macros">
                     {/* TODO: maybe, make Macros Info read its own data */}
                     <MacrosInfo macros={totalMacros} />

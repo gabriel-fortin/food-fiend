@@ -17,6 +17,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 2px;
 
     
     /* TODO: extract - make a styling component?; this looks like a standard box */
