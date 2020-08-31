@@ -9,7 +9,8 @@ interface Props {
     getAllOfType: (ft: FoodType) => Ref[];
 }
 export const JustSimpleUI: React.FC<Props> = ({ getAllOfType }) => {
-    const [showType, setShowType] = useState<FoodType | null>(null);
+    const defaultFoodType = FoodType.Day;
+    const [showType, setShowType] = useState<FoodType | null>(defaultFoodType);
 
     const selectTypeOfItemsToShow = setShowType;
 
@@ -57,6 +58,7 @@ export const JustSimpleUI: React.FC<Props> = ({ getAllOfType }) => {
                     size="sm"
                     marginX="1.5em"
                     placeholder="what to show?"
+                    defaultValue={defaultFoodType}
                     onChange={e => selectTypeOfItemsToShow(e.currentTarget.value as FoodType)}
                 >
                     <option value={FoodType.Week}>Weeks</option>
