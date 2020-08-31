@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Flex, PseudoBox, Link, Editable, EditablePreview, EditableInput } from "@chakra-ui/core";
 
 import { Macros } from "Model";
-import { MacrosInfo } from "Widget";
+import { MacrosInfo, Version } from "Widget";
 
 import "./styled-data-row.css";
 
@@ -83,6 +83,8 @@ export const StyledDataRow: React.FC<Props> = ({
                     >
                         {name}
                     </Box>
+
+                    <Version />
 
                     {/* macros */}
                     <Box

@@ -11,3 +11,4 @@ export { Day };
 export { IngredientEntry } from "./IngredientEntry";
 export { MacrosBar, MacrosInfo } from "./MacrosDisplay";
 export { AppendIngredient } from "./AppendIngredient";
+export { Version } from "./Version";
