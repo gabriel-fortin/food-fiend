@@ -8,7 +8,9 @@ interface Props {
 }
 
 export const Connector: React.FC<Props> = () => {
+
     // TODO: connect, ...???
+    
     return (
         <VersionUI />
     );

@@ -12,25 +12,26 @@ export const BadgeMenu: React.FC<Props> = () => {
 
     // TODO: implement callbacks to notify about change
 
+    const currentText = "v9";
+    const itemsTexts = ["v1", "v2"];
 
     return (
         <Menu>
-            {/* TODO: maybe "as={Badge}" would work well in here? */}
             <MenuButton
                 as={Button}
                 marginY="auto"  // to keep vertically centered
                 //@ts-ignore
                 rightIcon="chevron-down"
-                variant="ghost"  // bigger clicking area but visually less intrusive
+                variant="ghost"  // requires 'as={Button}'; provides bigger clicking area while visually being less intrusive
             >
                 <Badge
                     variantColor="purple"
                     variant="solid"
                     paddingLeft={2}
-                    paddingRight={5}  // lots of space for the arrow icon
+                    paddingRight={5}  // lots of space for the chevron
                     marginRight={-6}  // let the down arrow visually fall inside the badge
                 >
-                    v9
+                    {currentText}
                 </Badge>
             </MenuButton>
 
@@ -38,18 +39,14 @@ export const BadgeMenu: React.FC<Props> = () => {
                 width="3em"
                 minW="0.1em"
             >
-                <MenuItem
-                    minW="1em"
-                    minH="10px"
-                >
-                    v1
-                </MenuItem>
-                <MenuItem
-                    minW="1em"
-                    minH="10px"
-                >
-                    v2
-                </MenuItem>
+                {itemsTexts.map(item =>
+                    <MenuItem
+                        minW="1em"
+                        minH="10px"
+                    >
+                        {item}
+                    </MenuItem>
+                )}
             </MenuList>
         </Menu>
     );
