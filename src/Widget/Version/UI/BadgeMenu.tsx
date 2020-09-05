@@ -2,19 +2,17 @@ import React from "react";
 import { Menu, MenuButton, Button, Badge, MenuList, MenuItem } from "@chakra-ui/core";
 
 
-interface Props {
-    // TODO
+interface Item {
+    text: string;
+    onSelected: () => void;
 }
 
-export const BadgeMenu: React.FC<Props> = () => {
+interface Props {
+    current: Item;
+    options: Item[];
+}
 
-    // TODO: use real data coming from props
-
-    // TODO: implement callbacks to notify about change
-
-    const currentText = "v9";
-    const itemsTexts = ["v1", "v2"];
-
+export const BadgeMenu: React.FC<Props> = ({ current, options }) => {
     return (
         <Menu>
             <MenuButton
@@ -31,7 +29,7 @@ export const BadgeMenu: React.FC<Props> = () => {
                     paddingRight={5}  // lots of space for the chevron
                     marginRight={-6}  // let the down arrow visually fall inside the badge
                 >
-                    {currentText}
+                    {current.text}
                 </Badge>
             </MenuButton>
 
@@ -39,12 +37,13 @@ export const BadgeMenu: React.FC<Props> = () => {
                 width="3em"
                 minW="0.1em"
             >
-                {itemsTexts.map(item =>
+                {options.map(item =>
                     <MenuItem
                         minW="1em"
                         minH="10px"
+                        onClick={item.onSelected}
                     >
-                        {item}
+                        {item.text}
                     </MenuItem>
                 )}
             </MenuList>
