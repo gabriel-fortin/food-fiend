@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { Ingredient, FoodType } from "Model";
 import { changeIngredientQuantity, State, removeIngredient, setWarningMessage } from "Store";
-import { useOnion } from "Onion";
+import { useOnion, FoodLayerProvider } from "Onion";
 
 import { StyledDataRow } from "./StyledDataRow";
 
@@ -20,6 +20,7 @@ export const Connector: React.FC<Props> = ({ ingredient }) => {
         return {
             /* eslint-disable-next-line no-mixed-operators */
             name: (food.type===FoodType.Meal && "<meal>" || "") + food.name,
+            entryRef: ingredient.ref,
             macros: food.macros,
             quantity: ingredient.quantity,
         };
@@ -41,5 +42,9 @@ export const Connector: React.FC<Props> = ({ ingredient }) => {
     });
 
     const ConnectedUI = connect(mapState, mapDispatch)(StyledDataRow);
-    return (<ConnectedUI/>);
+    return (
+        <FoodLayerProvider food={ingredient.ref}>
+            <ConnectedUI/>
+        </FoodLayerProvider>
+    );
 };

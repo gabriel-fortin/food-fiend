@@ -6,8 +6,7 @@ import { BadgeMenu as VersionUI } from "./UI/BadgeMenu";
 
 
 interface Props {
-    // TODO
-    // itemRef: Ref
+    foodRef: Ref
 }
 
 export const Connector: React.FC<Props> = (itemRef) => {

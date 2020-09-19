@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Flex, PseudoBox, Link, Editable, EditablePreview, EditableInput } from "@chakra-ui/core";
 
-import { Macros } from "Model";
+import { Macros, Ref } from "Model";
 import { MacrosInfo, Version } from "Widget";
 
 import "./styled-data-row.css";
@@ -12,6 +12,7 @@ import "./styled-data-row.css";
 
 interface Props {
     name: string;
+    entryRef: Ref;
     macros: Macros;
     quantity: number;
     onNameClick: () => void;
@@ -21,6 +22,7 @@ interface Props {
 
 export const StyledDataRow: React.FC<Props> = ({
     name,
+    entryRef,
     macros,
     quantity,
     onNameClick,
@@ -84,7 +86,9 @@ export const StyledDataRow: React.FC<Props> = ({
                         {name}
                     </Box>
 
-                    <Version />
+                    <Version
+                        foodRef={entryRef}
+                    />
 
                     {/* macros */}
                     <Box
