@@ -62,6 +62,12 @@ export interface ChangeFoodNameAction {
     context: Onion,
 }
 
+export interface ChangeFoodVersionAction {
+    type: "CHANGE FOOD VERSION",
+    newVersion: typeof Ref.prototype.ver,
+    context: Onion,
+}
+
 export interface SetMessageAction {
     type: "SET MESSAGE",
     messagePayload: Message | null,
@@ -76,6 +82,7 @@ export type Action =
     | AppendIngredientAction
     | RemoveIngredientAction
     | ChangeFoodNameAction
+    | ChangeFoodVersionAction
     | SetMessageAction
     ;
 
@@ -187,6 +194,15 @@ export function changeFoodName(newName: string, context: Onion): ChangeFoodNameA
     return {
         type: "CHANGE FOOD NAME",
         newName,
+        context,
+    };
+}
+
+/** Action creator */
+export function changeFoodVersion(newVersion: number, context: Onion): ChangeFoodVersionAction {
+    return {
+        type: "CHANGE FOOD VERSION",
+        newVersion,
         context,
     };
 }
