@@ -1,35 +1,40 @@
 import React, { useState } from "react";
 
-import { Ref } from "Model";
+import { Ref, Food } from "Model";
 
 import { BadgeMenu as VersionUI } from "./UI/BadgeMenu";
+import { connect, useDispatch } from "react-redux";
+import { State, changeFoodVersion } from "Store";
+import { useOnion } from "Onion";
 
 
 interface Props {
     foodRef: Ref
 }
 
-export const Connector: React.FC<Props> = (itemRef) => {
+export const Connector: React.FC<Props> = ({ foodRef }) => {
+    const dispatch = useDispatch();
+    const onion = useOnion();
 
-    // TODO: connect, ...???
+    const mapState = (state: State) => {
+        const allVersions = state.findFoodAllVersions(foodRef.id);
+        return {
+            currentVersionText: String(foodRef.ver),
+            options: allVersions.map(food => {
+                // versionText, onSelected
 
-    // TODO: get current version from itemRef
-    // TODO: get all available versions from store
-    // TODO: on version selection, dispatch an action to update the item (as a food? as an ingredient?)
-    
-    const [current, setCurrent] = useState(4);
+                return {
+                    versionText: versionTextFromFood(food),
+                    onSelected: () => 
+                        dispatch(changeFoodVersion(food.ref.ver, onion)),
+                };
+            }),
+        };
+    };
+    const ConnectedUI = connect(mapState)(VersionUI);
 
-    const options = [0, 1, 2, 3, 4, 5].map(n => ({
-        text: `v${n}`,
-        onSelected: () => setCurrent(n)
-    }));
-
-    const currentSelection = options[current];
-
-    return (
-        <VersionUI
-            current={currentSelection}
-            options={options}
-        />
-    );
+    return (<ConnectedUI />);
 };
+
+const versionTextFromFood: (f: Food) => string =
+    (food: Food) => `v${food.ref.ver}`;

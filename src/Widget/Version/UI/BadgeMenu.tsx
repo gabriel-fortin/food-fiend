@@ -2,17 +2,19 @@ import React from "react";
 import { Menu, MenuButton, Button, Badge, MenuList, MenuItem } from "@chakra-ui/core";
 
 
-interface Item {
-    text: string;
+// TODO: show details of a version on hover
+
+interface Option {
+    versionText: string;
     onSelected: () => void;
 }
 
 interface Props {
-    current: Item;
-    options: Item[];
+    currentVersionText: string;
+    options: Option[];
 }
 
-export const BadgeMenu: React.FC<Props> = ({ current, options }) => {
+export const BadgeMenu: React.FC<Props> = ({ currentVersionText, options }) => {
     return (
         <Menu>
             <MenuButton
@@ -29,11 +31,12 @@ export const BadgeMenu: React.FC<Props> = ({ current, options }) => {
                     paddingRight={5}  // lots of space for the chevron
                     marginRight={-6}  // let the down arrow visually fall inside the badge
                 >
-                    {current.text}
+                    {currentVersionText}
                 </Badge>
             </MenuButton>
 
             <MenuList
+                placement="right"
                 width="3em"
                 minW="0.1em"
             >
@@ -43,7 +46,7 @@ export const BadgeMenu: React.FC<Props> = ({ current, options }) => {
                         minH="10px"
                         onClick={item.onSelected}
                     >
-                        {item.text}
+                        {item.versionText}
                     </MenuItem>
                 )}
             </MenuList>
