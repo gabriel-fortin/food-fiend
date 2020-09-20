@@ -146,25 +146,19 @@ export class StateImpl extends State {
 }
 
 /**
- * Either adds food to state or updates (if a food with same id and version already exists)
+ * Adds food to state. Fails if a food with same Ref is already present
  * @param {*} mutableState state that is allowed to be changed
- * @param {*} food 
+ * @param {*} food
  */
 export function mutatePutFood(mutableState: State, food: Food): void {
-    function updateExistingFoodInState(existsingFood: Food) {
-        for (var prop in food) {
-            // cast to 'any' to access properties via indexing
-            (existsingFood as any)[prop] = (food as any)[prop];
-        }
-    }
     function addNewFoodToState() {
         mutableState.foodData.push(food);
     }
 
     try {
-        const existsingFood = mutableState.findFood(food.ref);
-        // food exists in store => update
-        updateExistingFoodInState(existsingFood);
+        mutableState.findFood(food.ref);
+        throw new Error(`Food with ref '${food.ref.id}/${food.ref.ver}' `
+            + `already exists in state`);
     } catch (ex) {
         if (ex instanceof NoFoodFoundError) {
             // the requested version doesn't exist => add
