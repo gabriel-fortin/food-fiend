@@ -42,6 +42,7 @@ export const BadgeMenu: React.FC<Props> = ({ currentVersionText, options }) => {
             >
                 {options.map(item =>
                     <MenuItem
+                        key={item.versionText}
                         minW="1em"
                         minH="10px"
                         onClick={item.onSelected}

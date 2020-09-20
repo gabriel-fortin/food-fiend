@@ -9,7 +9,7 @@ import {
     Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
      SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction,
-     ChangeFoodNameAction, AddFoodAction, SetMessageAction,
+     ChangeFoodNameAction, AddFoodAction, SetMessageAction, ChangeFoodVersionAction,
 } from './ActionCreators';
 
 
@@ -87,6 +87,9 @@ function routeAction(state: State, action: Action): State {
                     break;
                 case "CHANGE FOOD NAME":
                     newSyntheticActions = reducer_changeFoodName(currentAction, mutableState);
+                    break;
+                case "CHANGE FOOD VERSION":
+                    newSyntheticActions = reducer_changeFoodVersion(currentAction, mutableState);
                     break;
                 case "ADD_FOOD":
                     newSyntheticActions = reducer_addFood(currentAction, mutableState);
@@ -299,9 +302,24 @@ const reducer_changeFoodName = (
         doChangeName(newName),
     ]);
 
-    putFoodIntoMutableState(mutableState, updatedFood); // this usage replaces food as ref didn't change (doUpdateVersion was not called)
+    putFoodIntoMutableState(mutableState, updatedFood);
 
     return [replaceIngredient(updatedFood.ref, remainingContext)];
+};
+
+const reducer_changeFoodVersion = (
+    { newVersion, context }: ChangeFoodVersionAction,
+    mutableState: State,
+): Action[] => {
+    const [layer1, remainingContext] = context.peelOneLayer();
+    const foodRef = (layer1 as RefLayer).ref;
+
+    const updatedFoodRef = {
+        ...foodRef,
+        ver: newVersion,
+    };
+
+    return [replaceIngredient(updatedFoodRef, remainingContext)];
 };
 
 const reducer_addFood = (
