@@ -255,6 +255,8 @@ export function setWarningMessage(message: string | null): SetMessageAction {
     };
 }
 
+const USER_DATA = "user data";
+
 /** Action creator */
 export function saveToBrowserStorage(): ThunkAction<void, State, any, Action> {
     return (dispatch, getState) => {
@@ -264,7 +266,7 @@ export function saveToBrowserStorage(): ThunkAction<void, State, any, Action> {
         const dataToSave: Food[] = getState().foodData.filter(storeCriterium);
 
         localforage
-            .setItem("user data", dataToSave)
+            .setItem(USER_DATA, dataToSave)
             .then(() => {
                 const t1 = performance.now();
                 dispatch(setInfoMessage(`saved ${dataToSave.length} items!  it took ${t1 - t0}ms`));
@@ -280,7 +282,7 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
         // TODO: recognise that data was never saved (first run); otherwise, `.getItem` fails
 
         localforage
-            .getItem<Food[]>("user data")
+            .getItem<Food[]>(USER_DATA)
             .then((data) => {
                 dispatch(importData(data));
                 const t1 = performance.now();
@@ -298,7 +300,7 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
 export function clearBrowserStorage(): ThunkAction<Promise<void>, State, any, Action> {
     return (dispatch, getState) =>
         localforage
-            .removeItem("user data")
+            .removeItem(USER_DATA)
             .then(() => {
                 dispatch(setInfoMessage(`removed user data`));
             });
