@@ -126,6 +126,18 @@ const reducer_importData = (action: ImportDataAction, mutableState: State): Acti
     //       - compute what is a derived value (e.g. macros) and
     //       - assign the id ourselves
 
+    const importErrorCount = action.data.reduce((errCount, food, i) => {
+        if (!food) {
+            console.error(`reducer_importData: position ${i}: no food object, it's value is '${food}'`);
+            return errCount+1;
+        }
+        return errCount;
+    }, 0);
+
+    if (importErrorCount !== 0) {
+        return [setErrorMessage(`${importErrorCount} errors while importing data`)];
+    }
+
     // reducer and its initial value
     type Acc = { lastElRef: Ref, res: Food[] };
     const startValue: Acc = {

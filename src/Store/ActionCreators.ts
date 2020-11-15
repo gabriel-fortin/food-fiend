@@ -269,7 +269,7 @@ export function saveToBrowserStorage(): ThunkAction<void, State, any, Action> {
                 const t1 = performance.now();
                 dispatch(setInfoMessage(`saved ${dataToSave.length} items!  it took ${t1 - t0}ms`));
             })
-            .catch(err => void dispatch(setErrorMessage(`Failed!  ${err}`)));
+            .catch(err => void dispatch(setErrorMessage(`saving to browser storage - Failed!  ${err}`)));
     };
 }
 
@@ -277,6 +277,7 @@ export function saveToBrowserStorage(): ThunkAction<void, State, any, Action> {
 export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> {
     return (dispatch, getState) => {
         const t0 = performance.now();
+        // TODO: recognise that data was never saved (first run); otherwise, `.getItem` fails
 
         localforage
             .getItem<Food[]>("user data")
@@ -287,7 +288,8 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
                 return data;
             })
             .catch(err => {
-                dispatch(setErrorMessage(`Failed!  ${err}`));
+                console.log(`loading from browser storage - Failed!`, err);
+                dispatch(setErrorMessage(`loading from browser storage - Failed!  ${err}`));
             });
     };
 }
