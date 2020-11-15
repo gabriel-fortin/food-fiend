@@ -13,14 +13,14 @@ export const AsHorizontalButtons: React.FC<Props> = ({
     onLoad,
     onClear,
 }) =>
-    <Stack isInline>
-        <Button onClick={onSave}>
+    <Stack isInline padding={1}>
+        <Button onClick={onSave} variant="outline">
             Save to browser storage
         </Button>
-        <Button onClick={onLoad}>
+        <Button onClick={onLoad} variant="outline">
             Load from browser storage
         </Button>
-        <Button onClick={onClear}>
+        <Button onClick={onClear} variant="outline">
             Clear browser storage
         </Button>
     </Stack>
