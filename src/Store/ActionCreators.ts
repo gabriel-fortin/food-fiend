@@ -255,6 +255,7 @@ export function setWarningMessage(message: string | null): SetMessageAction {
     };
 }
 
+const LAST_SAVE = "last save";
 const USER_DATA = "user data";
 
 /** Action creator */
@@ -266,12 +267,17 @@ export function saveToBrowserStorage(): ThunkAction<void, State, any, Action> {
         const dataToSave: Food[] = getState().foodData.filter(storeCriterium);
 
         localforage
-            .setItem(USER_DATA, dataToSave)
+            .setItem(LAST_SAVE, new Date())
+            .then(() => localforage.setItem(USER_DATA, dataToSave))
             .then(() => {
                 const t1 = performance.now();
                 dispatch(setInfoMessage(`saved ${dataToSave.length} items!  it took ${t1 - t0}ms`));
             })
-            .catch(err => void dispatch(setErrorMessage(`saving to browser storage - Failed!  ${err}`)));
+            .catch(err => {
+                const msg = `saving to browser storage - Failed!  ${err}`;
+                console.error(msg);
+                return dispatch(setErrorMessage(msg));
+            });
     };
 }
 
@@ -282,16 +288,32 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
         // TODO: recognise that data was never saved (first run); otherwise, `.getItem` fails
 
         localforage
-            .getItem<Food[]>(USER_DATA)
-            .then((data) => {
-                dispatch(importData(data));
-                const t1 = performance.now();
-                dispatch(setInfoMessage(`loaded ${data.length} items!  it took ${t1 - t0}ms`));
-                return data;
-            })
+            .getItem<Date>(LAST_SAVE)
             .catch(err => {
-                console.log(`loading from browser storage - Failed!`, err);
-                dispatch(setErrorMessage(`loading from browser storage - Failed!  ${err}`));
+                dispatch(setWarningMessage(`Nothing to load, error: ${err}`));
+            })
+            .then(lastSaveDate => {
+                console.log(`E||  flag present: ${lastSaveDate}`);
+                if (lastSaveDate === null) {
+                    dispatch(setWarningMessage(`Nothing to load (no data in store)`));
+                    throw "no data in store";
+                }
+
+                localforage
+                    .getItem<Food[]>(USER_DATA)
+                    .then((data) => {
+                        if (data === null) throw "data is null";
+                        
+                        dispatch(importData(data));
+                        const t1 = performance.now();
+                        dispatch(setInfoMessage(`loaded ${data.length} items!  it took ${t1 - t0}ms`));
+                        return data;
+                    })
+                    .catch(err => {
+                        const msg = `loading from browser storage - Failed!  ${err}`;
+                        console.error(msg);
+                        dispatch(setErrorMessage(msg));
+                    });
             });
     };
 }
@@ -299,8 +321,8 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
 /** Action creator */
 export function clearBrowserStorage(): ThunkAction<Promise<void>, State, any, Action> {
     return (dispatch, getState) =>
-        localforage
-            .removeItem(USER_DATA)
+        localforage.removeItem(LAST_SAVE)
+            .then(() => localforage.removeItem(USER_DATA))
             .then(() => {
                 dispatch(setInfoMessage(`removed user data`));
             });
