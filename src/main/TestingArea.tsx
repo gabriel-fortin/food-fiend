@@ -9,7 +9,7 @@ import { State, storeReducer, importData, changeIngredientQuantity, setCurrentDa
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { MacrosBar, MacrosInfo } from 'Widget';
+import { MacrosBar, MacrosInfo, WeekAndDayControls } from 'Widget';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
@@ -53,9 +53,9 @@ function DisplayDay() {
     // prepare store
     const store = createEmptyStore();
     store.dispatch(importData(initialData));
-    // store.dispatch(importData([lunch]));
-    // store.dispatch(importData([obiad]));
-    // store.dispatch(importData([tempDay]));
+    store.dispatch(importData([lunch]));
+    store.dispatch(importData([obiad]));
+    store.dispatch(importData([tempDay]));
     // store.dispatch(setCurrentDay(new Ref(666, -14)));
     // store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
 
@@ -73,10 +73,11 @@ function DisplayDay() {
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
-                        <TestingFrame>
+                    <WeekAndDayControls />
+                        {/* <TestingFrame> */}
                             {/* <DoubleConnectedMealListWidget /> */}
-                            <AllOfType />
-                        </TestingFrame>
+                            {/* <AllOfType /> */}
+                        {/* </TestingFrame> */}
                     {/* </CurrentDayLayerProvider> */}
                 </PlantOnionGarden>
             </AppStateProvider>
