@@ -289,15 +289,9 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
 
         localforage
             .getItem<Date>(LAST_SAVE)
-            .catch(err => {
-                dispatch(setWarningMessage(`Nothing to load, error: ${err}`));
-            })
             .then(lastSaveDate => {
                 console.log(`E||  flag present: ${lastSaveDate}`);
-                if (lastSaveDate === null) {
-                    dispatch(setWarningMessage(`Nothing to load (no data in store)`));
-                    throw "no data in store";
-                }
+                if (lastSaveDate === null) throw "no data in store";
 
                 localforage
                     .getItem<Food[]>(USER_DATA)
@@ -314,6 +308,9 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, Action> 
                         console.error(msg);
                         dispatch(setErrorMessage(msg));
                     });
+            })
+            .catch(err => {
+                dispatch(setWarningMessage(`Nothing to load: ${err}`));
             });
     };
 }
