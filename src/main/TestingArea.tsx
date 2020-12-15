@@ -46,6 +46,7 @@ function DisplayDay() {
     const obiad = createMeal(6789, 1,
         [initialData[39], initialData[227], initialData[597]], "Obiad");
     const tempDay = createDay(666, [lunch, obiad], "test day");
+    const tempWeek = { ...createDay(111, [tempDay], "Week 61"), type: FoodType.Week as FoodType };
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
@@ -73,7 +74,7 @@ function DisplayDay() {
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
-                    <WeekAndDayControls />
+                    <WeekAndDayControls weekData={[tempWeek]} selectedWeek={tempWeek.ref} onWeekSelected={() => console.warn(`NOT IMPLEMENTED: on week selected`)} />
                         {/* <TestingFrame> */}
                             {/* <DoubleConnectedMealListWidget /> */}
                             {/* <AllOfType /> */}
