@@ -131,7 +131,10 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
             <Box display={showAdditionalWeekControls ? "flex" : "none"}
                     justifyContent="space-evenly" color="teal.800"
                     position="absolute" width="100%" bottom="-0.4em" paddingBottom="2.8em" paddingTop={2}
-                    borderRadius={4} boxShadow="0 0 4px 2px rgba(0, 0, 0, 0.1)">
+                    borderRadius="lg"
+                    // boxShadow="0 0 4px 2px rgba(0, 0, 0, 0.1)"
+                    shadow="sm"
+                    >
                 <Button variant="ghost" size="sm" aria-label="add week" leftIcon="add">
                     add week
                 </Button>
