@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Stack, Heading, Button, ButtonGroup, IButton, BoxProps, useDisclosure } from "@chakra-ui/core";
+import { Box, Stack, Heading, Button, ButtonGroup, IButton, BoxProps, useDisclosure, PseudoBox } from "@chakra-ui/core";
 
 import { FoodType, Food, Ref } from "Model";
 
@@ -12,7 +12,7 @@ interface Props {
 
 
 export const UI_1: React.FC<Props> = (props) => {
-    const { weekData, selectedWeek: selected, onWeekSelected } = props;
+    const { weekData, selectedWeek: selected } = props;
 
     weekData.forEach((food, i) => {
         if (food.type !== FoodType.Week)
@@ -56,8 +56,13 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
         setIsMouseWithinWeekArea(false);
     };
 
+    const onSelectedWeek = (weekRef: Ref) => () => {
+        onWeekSelected(weekRef);
+        onWeekDropdownClose();
+    };
+
     const noWeekSelected = selectedWeek === null;
-    const showAdditionalWeekControls = isMouseWithinWeekArea || noWeekSelected;
+    const showAdditionalWeekControls = isMouseWithinWeekArea || noWeekSelected || isWeekDropdownOpen;
     // const disablePrevArrow = noWeekSelected || it's the oldest week
     // const disbleNextArrow = noWeekSelected || it's the newest week
     const disablePrevArrow = false; // TEMPORARY
@@ -72,7 +77,7 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
                 marginLeft={2}>
             </Button>
 
-            {/* dropdown */}
+            {/* week selection popup */}
             <Box // 'relative' container for nested 'absolute' child
                 display={isWeekDropdownOpen ? "inline" : "none"}
                 position="relative"
@@ -90,14 +95,29 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
                 <Box
                     position="absolute"
                     left={4} // that's the padding of the button which triggers this
-                    paddingX={3} // that's the padding of a heading
-                    paddingY={2}
-                    backgroundColor="gray.100"
-                    border="solid 2px red"
+                    backgroundColor="gray.200"
                     borderRadius="md"
                     shadow="lg"
                 >
-                    Hello
+                    {weekData.map(food =>
+                        <PseudoBox
+                            key={food.ref.id}
+                            onClick={onSelectedWeek(food.ref)}
+                            width="max-content"
+                            fontSize="xl"
+                            marginY={1}
+                            paddingY={1}
+                            paddingX={5}
+                            color="teal.500"
+                            _hover={{
+                                color: "teal.600",
+                                backgroundColor: "orange.100",
+                            }}
+                            cursor="pointer"
+                        >
+                            {food.name}
+                        </PseudoBox>
+                    )}
                 </Box>
             </Box>
 
