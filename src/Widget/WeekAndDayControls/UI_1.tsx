@@ -7,7 +7,13 @@ import { FoodType, Food, Ref } from "Model";
 interface Props {
     weekData: Food[];
     selectedWeek: Ref | null;
+    isPrevWeekAvailable: boolean;
+    isNextWeekAvailable: boolean;
     onWeekSelected: (w: Ref | null) => void;
+    onPrevWeekSelected: () => void;
+    onNextWeekSelected: () => void;
+    onWeekAdd: () => void;
+    onWeekEdit: () => void;
 }
 
 
@@ -31,14 +37,20 @@ export const UI_1: React.FC<Props> = (props) => {
     );
 };
 
-export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSelected }) => {
+export const WeekControls: React.FC<Props> = ({
+    weekData,
+    selectedWeek,
+    isPrevWeekAvailable,
+    isNextWeekAvailable,
+    onWeekSelected,
+    onPrevWeekSelected,
+    onNextWeekSelected,
+    onWeekAdd,
+    onWeekEdit,
+}) => {
     const [isMouseWithinWeekArea, setIsMouseWithinWeekArea] = useState(false);
     const { isOpen: isWeekDropdownOpen, onOpen: onWeekDropdownOpen, onClose: onWeekDropdownClose } = useDisclosure();
 
-    const weekArrowClick = () => {
-        alert(`change to next/prev week`);
-    };
-    
     const mouseEntersWeekArea = () => {
         console.log(`mouse ENTERS week area`);
         console.log(`   set is mouse within week area -> true`);
@@ -50,29 +62,35 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
         setIsMouseWithinWeekArea(false);
     };
 
-    const cancelDropdown = () => {
+    const onDropdownGetsCancelled = () => {
         console.log(`back-drop: onclick`);
         onWeekDropdownClose();
         setIsMouseWithinWeekArea(false);
     };
 
-    const onSelectedWeek = (weekRef: Ref) => () => {
+    const onDropdownWeekGetsSelected = (weekRef: Ref) => {
         onWeekSelected(weekRef);
         onWeekDropdownClose();
     };
 
+    const onWeekGetsAdded = () => {
+        onWeekAdd();
+        // TODO
+    };
+
+    const onWeekGetsEdited = () => {
+        onWeekEdit();
+        // TODO
+    };
+
     const noWeekSelected = selectedWeek === null;
     const showAdditionalWeekControls = isMouseWithinWeekArea || noWeekSelected || isWeekDropdownOpen;
-    // const disablePrevArrow = noWeekSelected || it's the oldest week
-    // const disbleNextArrow = noWeekSelected || it's the newest week
-    const disablePrevArrow = false; // TEMPORARY
-    const disableNextArrow = false; // TEMPORARY
 
     const MainControls = () => (
         <>
             <Button variant="ghost" leftIcon="arrow-left"
-                isDisabled={disablePrevArrow}
-                onClick={weekArrowClick}
+                isDisabled={!isPrevWeekAvailable}
+                onClick={onPrevWeekSelected}
                 zIndex={15} // has to be 'higher' than expanded controls
                 marginLeft={2}>
             </Button>
@@ -86,7 +104,7 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
                 <Box
                     position="fixed"
                     backgroundColor="transparent"
-                    onClick={cancelDropdown}
+                    onClick={onDropdownGetsCancelled}
                     left={0}
                     right={0}
                     top={0}
@@ -102,7 +120,7 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
                     {weekData.map(food =>
                         <PseudoBox
                             key={food.ref.id}
-                            onClick={onSelectedWeek(food.ref)}
+                            onClick={() => onDropdownWeekGetsSelected(food.ref)}
                             width="max-content"
                             fontSize="xl"
                             marginY={1}
@@ -138,8 +156,8 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
             </Button>
 
             <Button variant="ghost" rightIcon="arrow-right"
-                isDisabled={disableNextArrow}
-                onClick={weekArrowClick}
+                isDisabled={!isNextWeekAvailable}
+                onClick={onNextWeekSelected}
                 zIndex={15} // has to be 'higher' than expanded controls
                 marginRight={2}>
             </Button>
@@ -155,10 +173,10 @@ export const WeekControls: React.FC<Props> = ({ weekData, selectedWeek, onWeekSe
                     // boxShadow="0 0 4px 2px rgba(0, 0, 0, 0.1)"
                     shadow="sm"
                     >
-                <Button variant="ghost" size="sm" aria-label="add week" leftIcon="add">
+                <Button variant="ghost" size="sm" aria-label="add week" leftIcon="add" onClick={onWeekGetsAdded}>
                     add week
                 </Button>
-                <Button variant="ghost" size="sm" aria-label="edit week" leftIcon="edit" isDisabled={noWeekSelected}>
+                <Button variant="ghost" size="sm" aria-label="edit week" leftIcon="edit" onClick={onWeekGetsEdited} isDisabled={noWeekSelected}>
                     edit week
                 </Button>
             </Box>
