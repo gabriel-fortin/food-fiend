@@ -13,7 +13,11 @@ immeriseModels();
 
 
 
-export * from './ActionCreators';
+// export * from './ActionCreators';
+export * from './DataActions';
+export * from './DataActionCreators';
+export * from './UncategorisedActions';
+export * from './UncategorisedActionCreators';
 export {
     /* main reducer */
     storeReducer,

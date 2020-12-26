@@ -5,12 +5,14 @@ import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
-    replaceIngredient, setCurrentDay, appendIngredient, setErrorMessage,
-    Action,
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
-     SetCurrentDayAction, AppendIngredientAction, RemoveIngredientAction,
-     ChangeFoodNameAction, AddFoodAction, SetMessageAction, ChangeFoodVersionAction,
-} from './ActionCreators';
+     AppendIngredientAction, RemoveIngredientAction,
+     ChangeFoodNameAction, AddFoodAction, ChangeFoodVersionAction,
+} from './DataActions';
+import { replaceIngredient,  appendIngredient } from './DataActionCreators';
+import { SetCurrentDayAction, SetMessageAction } from './UncategorisedActions';
+import { setCurrentDay, setErrorMessage } from './UncategorisedActionCreators';
+import { Action } from './ActionRegister';
 
 
 /**

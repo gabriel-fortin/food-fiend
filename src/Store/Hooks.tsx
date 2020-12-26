@@ -3,7 +3,7 @@ import { createStore, Store as ReduxStore } from "redux";
 import { useStore, Provider, TypedUseSelectorHook, useSelector } from "react-redux";
 
 import { State } from "./Store";
-import { Action } from "./ActionCreators";
+import { Action } from "./ActionRegister";
 import { rootReducer } from "./Reducers";
 
 
