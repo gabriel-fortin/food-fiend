@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Stack, Heading, Button, ButtonGroup, IButton, BoxProps, useDisclosure, PseudoBox } from "@chakra-ui/core";
+import { Box, Stack, Heading, Button, ButtonGroup, IButton, BoxProps, useDisclosure, PseudoBox, PseudoBoxProps } from "@chakra-ui/core";
 
 import { FoodType, Food, Ref } from "Model";
 
@@ -14,6 +14,9 @@ interface Props {
     onNextWeekSelected: () => void;
     onWeekAdd: () => void;
     onWeekEdit: () => void;
+    
+    selectedDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
+    underlinedDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
 }
 
 
@@ -31,11 +34,12 @@ export const UI_1: React.FC<Props> = (props) => {
         <Stack direction="row" alignItems="center" justifyContent="space-between" marginX={5} marginTop={10}>
 
             <WeekControls {...props} />
-            <DayControls />
+            <DayControls {...props} />
 
         </Stack>
     );
 };
+
 
 export const WeekControls: React.FC<Props> = ({
     weekData,
@@ -195,20 +199,47 @@ export const WeekControls: React.FC<Props> = ({
     );
 };
 
-export const DayControls: React.FC = () => {
-    const today = { borderBottomWidth: 4, borderTopWidth: 4 };
-    const selectedDay = { variant: "solid" as IButton["variant"] };
-    const dayButtonProps: Omit<IButton & BoxProps, "children"> = {};
+
+const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export const DayControls: React.FC<Props> = ({ selectedDay: selectedDaySundayBased, underlinedDay: underlinedDaySundayBased }) => {
+    const dayButtonProps: Omit<IButton & BoxProps, "children"> = {
+    };
+    const todayStyle: Omit<IButton & BoxProps & PseudoBoxProps, "children"> = {
+        // borderBottomWidth: 4,
+        // borderBottomColor: "yellow.600",
+        _after: {
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            content: `"TODAY"`,
+            fontSize: "50%",
+            color: "yellow.50",
+            backgroundColor: "yellow.600",
+            borderBottomLeftRadius: "md",
+            borderBottomRightRadius: "md",
+        }
+    };
+    const selectedDayStyle: Omit<IButton & BoxProps, "children"> = {
+        variant: "solid",
+    };
+
+    const adjustToMonday = (daysSinceSunday: number | null) =>
+        daysSinceSunday === null ? null : (daysSinceSunday - 1 + 7) % 7;
+    const selectedDay = adjustToMonday(selectedDaySundayBased);
+    const underlinedDay = adjustToMonday(underlinedDaySundayBased);
+    const today = adjustToMonday(new Date().getDay());
 
     return (
         <ButtonGroup d="flex" variant="outline" color="yellow.600" borderColor="grey.100" padding={1} borderRadius={4} size="md">
-            <Button {...dayButtonProps}>Mon</Button>
-            <Button {...dayButtonProps} {...selectedDay}>Tue</Button>
-            <Button {...dayButtonProps}>Wed</Button>
-            <Button {...dayButtonProps}>Thu</Button>
-            <Button {...dayButtonProps}>Fri</Button>
-            <Button {...dayButtonProps} {...today}>Sat</Button>
-            <Button {...dayButtonProps}>Sun</Button>
+            {dayNames.map((dayName, i) => {
+                const buttonProps = {
+                    ...dayButtonProps,
+                    ...(selectedDay === i) && selectedDayStyle,
+                    ...(underlinedDay === i) && todayStyle,
+                };
+                return <Button key={i} {...buttonProps}>{dayName}</Button>
+            })}
         </ButtonGroup>
     );
 };
