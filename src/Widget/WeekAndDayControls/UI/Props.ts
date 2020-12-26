@@ -12,6 +12,6 @@ export interface Props {
     onWeekAdd: () => void;
     onWeekEdit: () => void;
     
-    selectedDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
-    todayDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
+    selectedDay: number | null;
+    todayDay: number | null;
 }

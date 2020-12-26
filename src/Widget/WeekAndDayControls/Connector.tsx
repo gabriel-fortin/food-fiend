@@ -1,31 +1,35 @@
 import React from "react";
+import { connect } from "react-redux";
 
-import { Food, Ref } from "Model";
+import { FoodType, Ref } from "Model";
+import { State } from "Store";
 
-import { WeeksAndDaysHorizontally } from "./UI/WeeksAndDaysHorizontally";
+import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
 
 
 interface Props {
-    // weekRef: Ref;  // TODO: use this prop once debugging is finished
-    debug__weekData: Food[];  // TODO: remove this prop once debuggin is finished
+    weekRef: Ref;
+    onWeekSelected: (ref: Ref | null) => void;
 }
 
 
-export const Connector: React.FC<Props> = ({ debug__weekData }) => {
-    return (
-        <WeeksAndDaysHorizontally
-            weekData={debug__weekData}
-            selectedWeek={debug__weekData[0].ref}
-            isPrevWeekAvailable={false}
-            isNextWeekAvailable={true}
-            onPrevWeekSelected={() => console.warn(`NOT IMPLEMENTED: on prev week selected`)}
-            onNextWeekSelected={() => console.warn(`NOT IMPLEMENTED: on next week selected`)}
-            onWeekSelected={() => console.warn(`NOT IMPLEMENTED: on week selected`)}
-            onWeekAdd={() => console.warn(`NOT IMPLEMENTED: on week add`)}
-            onWeekEdit={() => console.warn(`NOT IMPLEMENTED: on week edit`)}
+export const Connector: React.FC<Props> = ({ weekRef, onWeekSelected }) => {
+    const mapState = (state: State) => ({
+        weekData: state.getAllFoodOfType(FoodType.Week),
+        selectedWeek: weekRef,
+        onWeekSelected,
+        isPrevWeekAvailable: false, // TODO
+        isNextWeekAvailable: false, // TODO
+        onPrevWeekSelected: () => console.warn(`NOT IMPLEMENTED: on prev week selected`),
+        onNextWeekSelected: () => console.warn(`NOT IMPLEMENTED: on next week selected`),
+        onWeekAdd: () => console.warn(`NOT IMPLEMENTED: on week add`),
+        onWeekEdit: () => console.warn(`NOT IMPLEMENTED: on week edit`),
+        selectedDay: 1, // TODO
+        todayDay: 0, // TODO
+    });
 
-            selectedDay={1}
-            todayDay={0}
-        />
+    const ConnectedUI = connect(mapState)(UI);
+    return (
+        <ConnectedUI/>
     );
 };

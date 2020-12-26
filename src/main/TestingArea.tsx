@@ -58,6 +58,8 @@ function DisplayDay() {
     store.dispatch(importData([lunch]));
     store.dispatch(importData([obiad]));
     store.dispatch(importData([tempDay]));
+    store.dispatch(importData([tempWeek1]));
+    store.dispatch(importData([tempWeek2]));
     // store.dispatch(setCurrentDay(new Ref(666, -14)));
     // store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
 
@@ -75,7 +77,10 @@ function DisplayDay() {
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
-                    <WeekAndDayControls debug__weekData={[tempWeek1, tempWeek2]} />
+                    <WeekAndDayControls
+                        weekRef={tempWeek1.ref}
+                        onWeekSelected={() => console.warn(`NOT IMPLEMENTED: on week selected`)}
+                    />
                         {/* <TestingFrame> */}
                             {/* <DoubleConnectedMealListWidget /> */}
                             {/* <AllOfType /> */}

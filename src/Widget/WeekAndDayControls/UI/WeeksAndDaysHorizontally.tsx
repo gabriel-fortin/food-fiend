@@ -13,12 +13,17 @@ export const WeeksAndDaysHorizontally: React.FC<Props> = (props) => {
 
     weekData.forEach((food, i) => {
         if (food.type !== FoodType.Week) {
-            throw new Error(`Expected "week data" to contain weeks but item ${i} has type '${food.type}'`);
+            throw new Error(`Expected "week data" to contain weeks but item ${i} has type ` +
+                `'${food.type}'`);
         }
     });
 
     if (selected !== null && weekData.every(f => f.ref !== selected)) {
-        throw new Error(`The "selected week" ref [${selected.id}/${selected.ver}] does not exist on the "week data" list`);
+        console.warn(`All available weeks (${weekData.length}): ` +
+            weekData.map(w => `[${selected.id}/${selected.ver}]`));
+
+        throw new Error(`The "selected week" ref [${selected.id}/${selected.ver}] ` +
+            `does not exist on the "week data" list`);
     }
 
     return (
