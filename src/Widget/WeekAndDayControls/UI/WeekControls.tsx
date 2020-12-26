@@ -1,44 +1,9 @@
 import React, { useState } from "react";
-import { Box, Stack, Heading, Button, ButtonGroup, IButton, BoxProps, useDisclosure, PseudoBox, PseudoBoxProps } from "@chakra-ui/core";
+import { Box, Button, Heading, PseudoBox, useDisclosure } from "@chakra-ui/core";
 
-import { FoodType, Food, Ref } from "Model";
+import { Ref } from "Model";
 
-
-interface Props {
-    weekData: Food[];
-    selectedWeek: Ref | null;
-    isPrevWeekAvailable: boolean;
-    isNextWeekAvailable: boolean;
-    onWeekSelected: (w: Ref | null) => void;
-    onPrevWeekSelected: () => void;
-    onNextWeekSelected: () => void;
-    onWeekAdd: () => void;
-    onWeekEdit: () => void;
-    
-    selectedDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
-    todayDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
-}
-
-
-export const UI_1: React.FC<Props> = (props) => {
-    const { weekData, selectedWeek: selected } = props;
-
-    weekData.forEach((food, i) => {
-        if (food.type !== FoodType.Week)
-            throw new Error(`Expected "week data" to contain weeks but item ${i} has type '${food.type}'`);
-    });
-    if (selected !== null && weekData.every(f => f.ref !== selected) )
-        throw new Error(`The "selected week" ref [${selected.id}/${selected.ver}] does not exist on the "week data" list`);
-
-    return (
-        <Stack direction="row" alignItems="center" justifyContent="space-between" marginX={5} marginTop={10}>
-
-            <WeekControls {...props} />
-            <DayControls {...props} />
-
-        </Stack>
-    );
-};
+import { Props } from "./Props";
 
 
 export const WeekControls: React.FC<Props> = ({
@@ -196,44 +161,5 @@ export const WeekControls: React.FC<Props> = ({
             <ExtendedControls />
 
         </Box>
-    );
-};
-
-
-const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-export const DayControls: React.FC<Props> = ({ selectedDay, todayDay }) => {
-    const dayButtonProps: Omit<IButton & BoxProps, "children"> = {
-    };
-    const todayStyle: Omit<IButton & BoxProps & PseudoBoxProps, "children"> = {
-        // borderBottomWidth: 4,
-        // borderBottomColor: "yellow.600",
-        _after: {
-            position: "absolute",
-            bottom: 0,
-            width: "100%",
-            background: "linear-gradient(0deg, rgba(183, 121, 31, 0.6), rgba(183, 121, 31, 0.3) 20%, transparent)",
-            borderBottomLeftRadius: "md",
-            borderBottomRightRadius: "md",
-            content: `"TODAY"`,
-            fontSize: "60%",
-            color: "yellow.800",
-        }
-    };
-    const selectedDayStyle: Omit<IButton & BoxProps, "children"> = {
-        variant: "solid",
-    };
-
-    return (
-        <ButtonGroup d="flex" variant="outline" color="yellow.600" borderColor="grey.100" padding={1} borderRadius={4} size="md">
-            {dayNames.map((dayName, i) => {
-                const buttonProps = {
-                    ...dayButtonProps,
-                    ...(selectedDay === i) && selectedDayStyle,
-                    ...(todayDay === i) && todayStyle,
-                };
-                return <Button key={i} {...buttonProps}>{dayName}</Button>
-            })}
-        </ButtonGroup>
     );
 };

@@ -2,18 +2,18 @@ import React from "react";
 
 import { Food, Ref } from "Model";
 
-import { UI_1 } from "./UI_1";
+import { WeeksAndDaysHorizontally } from "./UI/WeeksAndDaysHorizontally";
 
 
 interface Props {
-    // weekRef: Ref;
-    debug__weekData: Food[];
+    // weekRef: Ref;  // TODO: use this prop once debugging is finished
+    debug__weekData: Food[];  // TODO: remove this prop once debuggin is finished
 }
 
 
 export const Connector: React.FC<Props> = ({ debug__weekData }) => {
     return (
-        <UI_1
+        <WeeksAndDaysHorizontally
             weekData={debug__weekData}
             selectedWeek={debug__weekData[0].ref}
             isPrevWeekAvailable={false}
