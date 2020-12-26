@@ -24,8 +24,8 @@ export const Connector: React.FC<Props> = ({ debug__weekData }) => {
             onWeekAdd={() => console.warn(`NOT IMPLEMENTED: on week add`)}
             onWeekEdit={() => console.warn(`NOT IMPLEMENTED: on week edit`)}
 
-            selectedDay={3}
-            underlinedDay={4}
+            selectedDay={1}
+            todayDay={0}
         />
     );
 };

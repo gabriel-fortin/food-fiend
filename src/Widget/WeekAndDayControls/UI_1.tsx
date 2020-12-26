@@ -16,7 +16,7 @@ interface Props {
     onWeekEdit: () => void;
     
     selectedDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
-    underlinedDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
+    todayDay: 0 | 1 | 2 | 3 | 4 | 5 | 6 | null;
 }
 
 
@@ -202,7 +202,7 @@ export const WeekControls: React.FC<Props> = ({
 
 const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export const DayControls: React.FC<Props> = ({ selectedDay: selectedDaySundayBased, underlinedDay: underlinedDaySundayBased }) => {
+export const DayControls: React.FC<Props> = ({ selectedDay, todayDay }) => {
     const dayButtonProps: Omit<IButton & BoxProps, "children"> = {
     };
     const todayStyle: Omit<IButton & BoxProps & PseudoBoxProps, "children"> = {
@@ -212,23 +212,17 @@ export const DayControls: React.FC<Props> = ({ selectedDay: selectedDaySundayBas
             position: "absolute",
             bottom: 0,
             width: "100%",
-            content: `"TODAY"`,
-            fontSize: "50%",
-            color: "yellow.50",
-            backgroundColor: "yellow.600",
+            background: "linear-gradient(0deg, rgba(183, 121, 31, 0.6), rgba(183, 121, 31, 0.3) 20%, transparent)",
             borderBottomLeftRadius: "md",
             borderBottomRightRadius: "md",
+            content: `"TODAY"`,
+            fontSize: "60%",
+            color: "yellow.800",
         }
     };
     const selectedDayStyle: Omit<IButton & BoxProps, "children"> = {
         variant: "solid",
     };
-
-    const adjustToMonday = (daysSinceSunday: number | null) =>
-        daysSinceSunday === null ? null : (daysSinceSunday - 1 + 7) % 7;
-    const selectedDay = adjustToMonday(selectedDaySundayBased);
-    const underlinedDay = adjustToMonday(underlinedDaySundayBased);
-    const today = adjustToMonday(new Date().getDay());
 
     return (
         <ButtonGroup d="flex" variant="outline" color="yellow.600" borderColor="grey.100" padding={1} borderRadius={4} size="md">
@@ -236,7 +230,7 @@ export const DayControls: React.FC<Props> = ({ selectedDay: selectedDaySundayBas
                 const buttonProps = {
                     ...dayButtonProps,
                     ...(selectedDay === i) && selectedDayStyle,
-                    ...(underlinedDay === i) && todayStyle,
+                    ...(todayDay === i) && todayStyle,
                 };
                 return <Button key={i} {...buttonProps}>{dayName}</Button>
             })}
