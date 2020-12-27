@@ -2,8 +2,10 @@ import React from "react";
 import { useToast } from "@chakra-ui/core";
 import { connect, useDispatch } from "react-redux";
 
-import { State, setErrorMessage } from "Store";
+import { State } from "Store";
 import { Message } from "Model";
+
+import { setErrorMessage } from "./ActionCreators";
 
 interface Props {
     message: Message | null;

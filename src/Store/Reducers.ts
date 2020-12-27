@@ -2,16 +2,17 @@ import Immer_produce, { Draft } from 'immer';
 
 import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo, eqRef } from 'Model';
 import { PositionLayer, RefLayer, LayerKind } from 'Onion';
+import { SetMessageAction, setErrorMessage } from 'UI/ShowToasts';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
     ImportDataAction, ChangeIngredientQuantityAction, ReplaceIngredientAction,
-     AppendIngredientAction, RemoveIngredientAction,
-     ChangeFoodNameAction, AddFoodAction, ChangeFoodVersionAction,
+    AppendIngredientAction, RemoveIngredientAction,
+    ChangeFoodNameAction, AddFoodAction, ChangeFoodVersionAction,
 } from './DataActions';
-import { replaceIngredient,  appendIngredient } from './DataActionCreators';
-import { SetCurrentDayAction, SetMessageAction } from './UncategorisedActions';
-import { setCurrentDay, setErrorMessage } from './UncategorisedActionCreators';
+import { replaceIngredient, appendIngredient } from './DataActionCreators';
+import { SetCurrentDayAction } from './UncategorisedActions';
+import { setCurrentDay } from './UncategorisedActionCreators';
 import { Action } from './ActionRegister';
 
 

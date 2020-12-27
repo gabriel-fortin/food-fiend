@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
 
-import { saveToBrowserStorage, loadFromBrowserStorage, clearBrowserStorage } from "Store";
-
+import { saveToBrowserStorage, loadFromBrowserStorage, clearBrowserStorage } from "./ActionsCreators";
 import { AsHorizontalButtons as UI } from "./AsHorizontalButtons";
 
 

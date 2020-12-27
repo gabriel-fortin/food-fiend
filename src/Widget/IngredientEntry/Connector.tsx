@@ -2,8 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { Ingredient, FoodType } from "Model";
-import { changeIngredientQuantity, State, removeIngredient, setWarningMessage } from "Store";
+import { changeIngredientQuantity, State, removeIngredient } from "Store";
 import { useOnion, FoodLayerProvider } from "Onion";
+import { setWarningMessage } from "UI/ShowToasts";
 
 import { StyledDataRow } from "./StyledDataRow";
 

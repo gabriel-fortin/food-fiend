@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { State, setWarningMessage } from "Store";
+import { State } from "Store";
+import { setWarningMessage } from "UI/ShowToasts";
 
 import { InitiallyStyledModal as ModalUI } from "./InitiallyStyledModal";
 
