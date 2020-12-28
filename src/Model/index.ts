@@ -6,6 +6,8 @@ import { FoodType } from "./FoodType";
 import { Ingredient } from "./Ingredient";
 import { Food } from "./Food";
 import { StorageInfo } from "./StorageInfo";
+import { WeekExtra } from "./WeekExtra";
+import { DayExtra } from "./DayExtra";
 
 
 const immeriseModels = () => {
@@ -14,12 +16,15 @@ const immeriseModels = () => {
     (Ingredient.prototype as any)[immerable] = true;
     (Food.prototype as any)[immerable] = true;
     (StorageInfo.prototype as any)[immerable] = true;
+    (WeekExtra.prototype as any)[immerable] = true;
+    (DayExtra.prototype as any)[immerable] = true;
 };
 immeriseModels();
 
 
-export { eqRef } from "./tools";
+export { eqRef, timelessDate } from "./tools";
 export type MacrosUncertainty = import ("./Macros").MacrosUncertainty;
 export type Message = import("./Message").Message;
 
 export { Ref, Macros, FoodType, Ingredient, Food, StorageInfo };
+export { WeekExtra, DayExtra };

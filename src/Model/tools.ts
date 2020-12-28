@@ -14,3 +14,12 @@ export const eqRef: (ref1: Ref, ref2: Ref) => boolean
         return ref1.id === ref2.id
             && ref1.ver === ref2.ver;
     };
+
+/** Creates new Date with the time components removed */
+export const timelessDate: (date: Date) => Date
+    = (date) => new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+    );
+
