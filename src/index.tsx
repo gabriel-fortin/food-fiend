@@ -4,6 +4,8 @@ import './main/index.css';
 import * as serviceWorker from './main/serviceWorker';
 import TestingArea from './main/TestingArea';
 
+export * from './tools';
+
 
 ReactDOM.render(<TestingArea />, document.getElementById('root'));
 

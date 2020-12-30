@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { addDays, DayExtra, eqRef, Food, FoodType, Ref, WeekExtra } from "Model";
+import { FoodType, Ref } from "Model";
 import { setCurrentDay, State } from "Store";
+import { eqRef } from "tools";
 
 import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
 

@@ -22,7 +22,6 @@ const immeriseModels = () => {
 immeriseModels();
 
 
-export { eqRef, timelessDate, addDays } from "./tools";
 export type MacrosUncertainty = import ("./Macros").MacrosUncertainty;
 export type Message = import("./Message").Message;
 

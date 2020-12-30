@@ -1,8 +1,9 @@
 import Immer_produce, { Draft } from 'immer';
 
-import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo, eqRef } from 'Model';
+import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo } from 'Model';
 import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 import { SetMessageAction, setErrorMessage } from 'UI/ShowToasts';
+import { eqRef } from "tools";
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {

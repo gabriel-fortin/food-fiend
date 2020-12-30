@@ -1,4 +1,4 @@
-import { Ref } from "./Ref";
+import { Ref } from "Model";
 
 
 /** Compare two instances of 'Ref' */

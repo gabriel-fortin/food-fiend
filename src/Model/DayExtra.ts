@@ -1,4 +1,4 @@
-import { timelessDate } from "./tools";
+import { timelessDate } from "tools";
 
 export class DayExtra {
     date: Date;
