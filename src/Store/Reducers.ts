@@ -3,7 +3,7 @@ import Immer_produce, { Draft } from 'immer';
 import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo } from 'Model';
 import { PositionLayer, RefLayer, LayerKind } from 'Onion';
 import { SetMessageAction, setErrorMessage } from 'UI/ShowToasts';
-import { eqRef } from "tools";
+import { eqRef, filterOne } from "tools";
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
@@ -28,20 +28,6 @@ function applyFunctionsTo<T>(initialObject: T, functions: ((o: T) => void)[]): T
             functions.forEach(fun => fun(draftObj as T));
         }
     );
-}
-
-/**
- * Works like '.filter' but expects exactly one element to match predicate.
- * 
- * Returns the single element that matches the predicate.
- */
-function filterOne<T>(array: T[], predicate: (x: T) => boolean) {
-    const arrayWithOneElement = array.filter(predicate);
-
-    const len = arrayWithOneElement.length;
-    if (len !== 1) throw new Error(`Expected exactly one element but found ${len}`);
-
-    return arrayWithOneElement[0];
 }
 
 export function rootReducer(state: State | undefined, action: Action): State {

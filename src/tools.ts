@@ -34,3 +34,17 @@ export const addDays: (date: Date, numDays: number) => Date
         resultDate.setDate(resultDate.getDate() + numDays);
         return resultDate;
     };
+
+/**
+ * Works like '.filter' but expects exactly one element to match predicate.
+ * 
+ * Returns the single element that matches the predicate.
+ */
+export function filterOne<T>(array: T[], predicate: (x: T) => boolean) {
+    const arrayWithOneElement = array.filter(predicate);
+
+    const len = arrayWithOneElement.length;
+    if (len !== 1) throw new Error(`Expected exactly one element but found ${len}`);
+
+    return arrayWithOneElement[0];
+}
