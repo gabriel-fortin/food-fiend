@@ -30,7 +30,7 @@ const selectedDayStyle: Omit<IButton & BoxProps, "children"> = {
     variant: "solid",
 };
 
-export const DayControls: React.FC<Props> = ({ selectedDay, todayDay }) => {
+export const DayControls: React.FC<Props> = ({ selectedDay, todayDay, onDaySelected }) => {
     return (
         <ButtonGroup
             display="flex"
@@ -48,7 +48,11 @@ export const DayControls: React.FC<Props> = ({ selectedDay, todayDay }) => {
                     ...(todayDay === i) && todayStyle,
                 };
                 return (
-                    <Button key={i} {...buttonProps}>
+                    <Button
+                        key={i}
+                        {...buttonProps}
+                        onClick={() => onDaySelected(i)}
+                    >
                         {dayName}
                     </Button>
                 );

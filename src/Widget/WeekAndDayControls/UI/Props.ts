@@ -14,4 +14,5 @@ export interface Props {
     
     selectedDay: number | null;
     todayDay: number | null;
+    onDaySelected: (day: number) => void;
 }

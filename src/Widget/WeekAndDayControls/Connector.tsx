@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { FoodType, Ref } from "Model";
-import { setCurrentDay, State } from "Store";
-import { eqRef } from "tools";
+import { FoodType, Ingredient, Ref } from "Model";
+import { setCurrentDay, State, useAppState } from "Store";
+import { eqRef, filterOne } from "tools";
 
 import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
 
@@ -11,6 +11,7 @@ import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
 export const Connector: React.FC = () => {
     const [selectedWeekRef, setSelectedWeekRef] = useState<Ref|null>(null);
     const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number|null>(null);
+    const state = useAppState();
 
     const mapState = (state: State) => {
         const weekData = state.getAllFoodOfType(FoodType.Week)
@@ -24,7 +25,7 @@ export const Connector: React.FC = () => {
         onNextWeekSelected: () => console.warn(`NOT IMPLEMENTED: on next week selected`),
         onWeekAdd: () => console.warn(`NOT IMPLEMENTED: on week add`),
         onWeekEdit: () => console.warn(`NOT IMPLEMENTED: on week edit`),
-            selectedDay: selectedDayOfWeek, // TODO
+            selectedDay: selectedDayOfWeek,
             todayDay: null, // TODO
         };
     };
@@ -36,6 +37,17 @@ export const Connector: React.FC = () => {
             // after selecting a week, the day of the week is not known
             setSelectedDayOfWeek(null);
             return setCurrentDay(null);
+        },
+        onDaySelected: (dayOfWeek: number) => {
+            if (selectedWeekRef === null) return;
+
+            const positionMatchingDayOfWeek =
+                (ingredient: Ingredient) => ingredient.position === dayOfWeek;
+            const week = state.findFood(selectedWeekRef);
+            const dayRef = filterOne(week.ingredientsRefs, positionMatchingDayOfWeek).ref;
+
+            setSelectedDayOfWeek(dayOfWeek);
+            return setCurrentDay(dayRef);
         },
     };
 

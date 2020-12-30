@@ -47,7 +47,8 @@ function DisplayDay() {
         [initialData[39], initialData[227], initialData[597]], "Obiad");
     const tempDay = createDay(666, [lunch, obiad], "test day");
     const tempWeek1 = { ...createDay(111, [tempDay], "Week 61"), type: FoodType.Week as FoodType };
-    const tempWeek2 = { ...createDay(112, [tempDay], "Week 62"), type: FoodType.Week as FoodType };
+    const tempWeek2 = { ...createDay(112, [tempDay], "Week 62"), type: FoodType.Week as FoodType,
+            ingredientsRefs: [new Ingredient(tempDay.ref, 0, 1, null)] };
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
