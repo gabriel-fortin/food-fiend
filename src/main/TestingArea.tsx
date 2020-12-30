@@ -77,10 +77,7 @@ function DisplayDay() {
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
-                    <WeekAndDayControls
-                        weekRef={tempWeek1.ref}
-                        onWeekSelected={() => console.warn(`NOT IMPLEMENTED: on week selected`)}
-                    />
+                    <WeekAndDayControls />
                         {/* <TestingFrame> */}
                             {/* <DoubleConnectedMealListWidget /> */}
                             {/* <AllOfType /> */}
