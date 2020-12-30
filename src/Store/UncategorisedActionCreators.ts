@@ -4,7 +4,7 @@ import { SetCurrentDayAction } from "./UncategorisedActions";
 
 
 /** Action creator */
-export function setCurrentDay(dayRef: Ref): SetCurrentDayAction {
+export function setCurrentDay(dayRef: Ref|null): SetCurrentDayAction {
     return {
         type: "SET CURRENT DAY",
         dayRef,
