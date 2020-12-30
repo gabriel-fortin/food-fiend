@@ -23,3 +23,14 @@ export const timelessDate: (date: Date) => Date
         date.getDate(),
     );
 
+/** Creates new Date with the number of days added */
+export const addDays: (date: Date, numDays: number) => Date
+    = (date, numDays) => {
+        if (!Number.isInteger(numDays)) {
+            throw new Error(`Value '${numDays}' is a non-integer number`);
+        }
+
+        const resultDate = new Date(date);
+        resultDate.setDate(resultDate.getDate() + numDays);
+        return resultDate;
+    };
