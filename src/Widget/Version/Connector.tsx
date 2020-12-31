@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
+import { connect, useDispatch } from "react-redux";
 
 import { Ref, Food } from "Model";
-
-import { BadgeMenu as VersionUI } from "./UI/BadgeMenu";
-import { connect, useDispatch } from "react-redux";
 import { State, changeFoodVersion } from "Store";
 import { useOnion } from "Onion";
+
+import { BadgeMenu as VersionUI } from "./UI/BadgeMenu";
 
 
 interface Props {

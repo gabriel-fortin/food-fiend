@@ -2,7 +2,6 @@ import localforage from "localforage";
 import { ThunkAction } from "redux-thunk";
 
 import { SetMessageAction, setErrorMessage, setInfoMessage, setWarningMessage } from "UI/ShowToasts";
-
 import { importData, ImportDataAction, State } from "Store";
 import { Food, StorageInfo } from "Model";
 
@@ -42,13 +41,12 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, SetMessa
         localforage
             .getItem<Date>(LAST_SAVE)
             .then(lastSaveDate => {
-                console.log(`E||  flag present: ${lastSaveDate}`);
-                if (lastSaveDate === null) throw "no data in store";
+                if (lastSaveDate === null) throw new Error("no data in store");
 
                 localforage
                     .getItem<Food[]>(USER_DATA)
                     .then((data) => {
-                        if (data === null) throw "data is null";
+                        if (data === null) throw new Error("data is null");
                         
                         dispatch(importData(data));
                         const t1 = performance.now();
@@ -56,13 +54,13 @@ export function loadFromBrowserStorage(): ThunkAction<void, State, any, SetMessa
                         return data;
                     })
                     .catch(err => {
-                        const msg = `loading from browser storage - Failed!  ${err}`;
+                        const msg = `loading from browser storage - Failed!  ${err.message}`;
                         console.error(msg);
                         dispatch(setErrorMessage(msg));
                     });
             })
             .catch(err => {
-                dispatch(setWarningMessage(`Nothing to load: ${err}`));
+                dispatch(setWarningMessage(`Nothing to load: ${err.message}`));
             });
     };
 }
