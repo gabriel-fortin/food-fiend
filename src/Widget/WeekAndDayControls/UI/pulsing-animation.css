@@ -1,0 +1,41 @@
+.pulsing-animation {
+    --scaleSize: 1.5;
+
+    animation-name: pulsing2;
+    animation-duration: 2s;
+    animation-delay: 1s;
+    animation-timing-function: ease;
+    animation-iteration-count: infinite;
+    animation-play-state: running;
+}
+
+
+@keyframes pulsing {
+    0% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(var(--scaleSize));
+    }
+    25% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pulsing2 {
+    0% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(var(--scaleSize));
+    }
+    25% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(var(--scaleSize));
+    }
+    50% {
+        transform: scale(1);
+    }
+}

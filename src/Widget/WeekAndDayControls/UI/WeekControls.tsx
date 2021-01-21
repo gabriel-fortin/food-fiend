@@ -4,6 +4,7 @@ import { Box, Button, Heading, PseudoBox, useDisclosure } from "@chakra-ui/core"
 import { Ref } from "Model";
 
 import { Props } from "./Props";
+import "./pulsing-animation.css";
 
 
 export const WeekControls: React.FC<Props> = ({
@@ -122,7 +123,7 @@ export const WeekControls: React.FC<Props> = ({
                         ? <Box>– – –</Box>
                         : noWeekSelected
                             ?
-                            <Box>
+                            <Box className="pulsing-animation">
                                 select week
                             </Box>
                             :
@@ -150,7 +151,7 @@ export const WeekControls: React.FC<Props> = ({
                     // boxShadow="0 0 4px 2px rgba(0, 0, 0, 0.1)"
                     shadow="sm"
                     >
-                <Button variant="ghost" size="sm" aria-label="add week" leftIcon="add" onClick={onWeekGetsAdded}>
+                <Button variant="ghost" size="sm" aria-label="add week" leftIcon="add" onClick={onWeekGetsAdded} className={noDataAtAll ? "pulsing-animation" : ""}>
                     add week
                 </Button>
                 <Button variant="ghost" size="sm" aria-label="edit week" leftIcon="edit" onClick={onWeekGetsEdited} isDisabled={noWeekSelected}>
