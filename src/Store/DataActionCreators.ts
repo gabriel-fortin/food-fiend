@@ -34,6 +34,7 @@ export function addSimpleFood(
     macros: Macros,
     macrosUncertainty: MacrosUncertainty = false,
     extra: any = {},
+    callback: (newItem: Ref | null) => void = () => { },
 ): AddFoodAction {
     // TODO: this sction seems not to be used at all
     return {
@@ -45,6 +46,7 @@ export function addSimpleFood(
         macrosUncertainty,
         extra,
         context: Onion.create(),  // empty context
+        callback,
     };
 }
 
@@ -57,6 +59,7 @@ export function addCompositeFood(
     name: string,
     unit: string,
     extra: any = {},
+    callback: (newItem: Ref | null) => void = () => { },
 ): AddFoodAction {
     return {
         type: "ADD_FOOD",
@@ -67,6 +70,7 @@ export function addCompositeFood(
         macrosUncertainty: false,
         extra,
         context,
+        callback,
     };
 }
 
