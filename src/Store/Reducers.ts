@@ -50,7 +50,7 @@ function routeAction(state: State, action: Action): State {
     // they'll be called "synthetic actions"
 
     return Immer_produce(state, (mutableState: State) => {
-        /// we start with no backlog of actions to handle
+        /// we start with empty queue of actions to handle
         let actionsToProcess: Action[] = [];
         let currentAction: Action | undefined = action;
 
@@ -234,7 +234,7 @@ const reducer_setCurrentDay = ({ dayRef }: SetCurrentDayAction, mutableState: St
 const reducer_appendIngredient =
     ({ ingredientRef, context}: AppendIngredientAction, mutableState: State): Action[] => {
         if (context.layersLeft() === 0) {
-            console.error(`Cannot append ingredient when context is empty`);
+            console.debug(`Cannot append ingredient when context is empty`);
             return [];
         }
 

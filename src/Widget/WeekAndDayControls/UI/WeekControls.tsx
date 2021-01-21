@@ -59,6 +59,7 @@ export const WeekControls: React.FC<Props> = ({
 
     const MainControls = () => (
         <>
+            {/* left arrow - previous week */}
             <Button variant="ghost" leftIcon="arrow-left"
                 isDisabled={!isPrevWeekAvailable}
                 onClick={onPrevWeekSelected}
@@ -66,7 +67,7 @@ export const WeekControls: React.FC<Props> = ({
                 marginLeft={2}>
             </Button>
 
-            {/* week selection popup */}
+            {/* week selection popup, absolutely positioned */}
             <Box // 'relative' container for nested 'absolute' child
                 display={isWeekDropdownOpen ? "inline" : "none"}
                 position="relative"
@@ -110,13 +111,15 @@ export const WeekControls: React.FC<Props> = ({
                 </Box>
             </Box>
 
+            {/* selected week & week selector */}
             <Button
                 variant="ghost"
                 isDisabled={noDataAtAll}
                 onClick={onWeekDropdownOpen}
                 minWidth="7em"
                 zIndex={15} // has to be 'higher' than expanded controls
-                paddingX={4}>
+                paddingX={4}
+            >
 
                 {
                     noDataAtAll
@@ -133,6 +136,7 @@ export const WeekControls: React.FC<Props> = ({
                 }
             </Button>
 
+            {/* left arrow - next week */}
             <Button variant="ghost" rightIcon="arrow-right"
                 isDisabled={!isNextWeekAvailable}
                 onClick={onNextWeekSelected}
