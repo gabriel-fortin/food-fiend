@@ -9,8 +9,8 @@ export interface Props {
     onWeekSelected: (w: Ref | null) => void;
     onPrevWeekSelected: () => void;
     onNextWeekSelected: () => void;
-    onWeekAdd: () => void;
-    onWeekEdit: () => void;
+    onWeekAddRequest: () => void;
+    onWeekEditRequest: () => void;
     
     selectedDay: number | null;
     todayDay: number | null;

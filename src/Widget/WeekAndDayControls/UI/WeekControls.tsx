@@ -15,8 +15,8 @@ export const WeekControls: React.FC<Props> = ({
     onWeekSelected,
     onPrevWeekSelected,
     onNextWeekSelected,
-    onWeekAdd,
-    onWeekEdit,
+    onWeekAddRequest,
+    onWeekEditRequest,
 }) => {
     const [isMouseWithinWeekArea, setIsMouseWithinWeekArea] = useState(false);
     const { isOpen: isWeekDropdownOpen, onOpen: onWeekDropdownOpen, onClose: onWeekDropdownClose } = useDisclosure();
@@ -41,16 +41,6 @@ export const WeekControls: React.FC<Props> = ({
     const onDropdownWeekGetsSelected = (weekRef: Ref) => {
         onWeekSelected(weekRef);
         onWeekDropdownClose();
-    };
-
-    const onWeekGetsAdded = () => {
-        onWeekAdd();
-        // TODO
-    };
-
-    const onWeekGetsEdited = () => {
-        onWeekEdit();
-        // TODO
     };
 
     const noDataAtAll = weekData.length === 0;
@@ -155,10 +145,24 @@ export const WeekControls: React.FC<Props> = ({
                     // boxShadow="0 0 4px 2px rgba(0, 0, 0, 0.1)"
                     shadow="sm"
                     >
-                <Button variant="ghost" size="sm" aria-label="add week" leftIcon="add" onClick={onWeekGetsAdded} className={noDataAtAll ? "pulsing-animation" : ""}>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="add week"
+                    leftIcon="add"
+                    onClick={onWeekAddRequest}
+                    className={noDataAtAll ? "pulsing-animation" : ""}
+                >
                     add week
                 </Button>
-                <Button variant="ghost" size="sm" aria-label="edit week" leftIcon="edit" onClick={onWeekGetsEdited} isDisabled={noWeekSelected}>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="edit week"
+                    leftIcon="edit"
+                    onClick={onWeekEditRequest}
+                    isDisabled={noWeekSelected}
+                >
                     edit week
                 </Button>
             </Box>

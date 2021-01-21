@@ -40,18 +40,12 @@ export const Connector: React.FC = () => {
                 && !eqRef(selectedWeekRef, weekData[weekData.length - 1].ref),
             onPrevWeekSelected: () => console.warn(`NOT IMPLEMENTED: on prev week selected`),
             onNextWeekSelected: () => console.warn(`NOT IMPLEMENTED: on next week selected`),
-            onWeekAdd: () => {
-                // 'selectedWeekRef' is used to indicate which week is edited
-                // when adding a new week, it needs to be null
-                // setSelectedWeekRef(null);
-
+            onWeekAddRequest: () => {
                 setEditedWeekRef(null);
-
                 openWeekEditor();
             },
-            onWeekEdit: () => {
+            onWeekEditRequest: () => {
                 setEditedWeekRef(selectedWeekRef);
-
                 openWeekEditor();
             },
             selectedDay: selectedDayOfWeek,
