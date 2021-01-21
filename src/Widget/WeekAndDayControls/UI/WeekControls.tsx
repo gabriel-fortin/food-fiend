@@ -52,8 +52,9 @@ export const WeekControls: React.FC<Props> = ({
         // TODO
     };
 
+    const noDataAtAll = weekData.length === 0;
     const noWeekSelected = selectedWeek === null;
-    const showAdditionalWeekControls = isMouseWithinWeekArea || noWeekSelected || isWeekDropdownOpen;
+    const showAdditionalWeekControls = noDataAtAll || noWeekSelected || isMouseWithinWeekArea || isWeekDropdownOpen;
 
     const MainControls = () => (
         <>
@@ -110,18 +111,25 @@ export const WeekControls: React.FC<Props> = ({
 
             <Button
                 variant="ghost"
+                isDisabled={noDataAtAll}
                 onClick={onWeekDropdownOpen}
                 minWidth="7em"
                 zIndex={15} // has to be 'higher' than expanded controls
                 paddingX={4}>
 
-                {noWeekSelected
-                    ? <Box color="red.500">please select</Box>
-                    : <Heading marginTop={2} marginX={3}>
-                        {weekData.filter(x => x.ref === selectedWeek)[0].name}
-                    </Heading>
+                {
+                    noDataAtAll
+                        ? <Box>– – –</Box>
+                        : noWeekSelected
+                            ?
+                            <Box>
+                                select week
+                            </Box>
+                            :
+                            <Heading marginTop={2} marginX={3}>
+                                {weekData.filter(x => x.ref === selectedWeek)[0].name}
+                            </Heading>
                 }
-
             </Button>
 
             <Button variant="ghost" rightIcon="arrow-right"
