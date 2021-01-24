@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { useDisclosure } from "@chakra-ui/core";
 
 import { FoodType, Ingredient, Ref } from "Model";
-import { setRootRefDay, State, useAppState } from "Store";
+import { State, useAppState } from "Store";
 import { WeekEditor } from "Widget";
 import { Onion, useOnion } from "Onion";
 import { eqRef, filterOne } from "tools";
@@ -13,6 +13,7 @@ import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
 
 interface Props {
     children: (selectedDayRef: Ref | null, context: Onion) => void;
+    // TODO: accept currently selected week as prop
 }
 
 
@@ -55,39 +56,35 @@ export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
                 setEditedWeekRef(selectedWeekRef);
                 openWeekEditor();
             },
+            onWeekSelected: (weekRef: Ref | null) => {
+                setSelectedWeekRef(weekRef);
+    
+                // after selecting a week, the day of the week is not known
+                // although, maybe we want to keep the day selection unchanged
+                setSelectedDayOfWeek(null);
+            },
+            onDaySelected: (dayOfWeek: number) => {
+                if (selectedWeekRef === null) {
+                    dataChangeNotify(null, onion);
+                    // PERF: use 'useEffect' to notify only on actual changes?
+    
+                    return;
+                }
+    
+                const choosePositionMatchingDayOfWeek =
+                    (ingredient: Ingredient) => ingredient.position === dayOfWeek;
+                const week = state.findFood(selectedWeekRef);
+                const dayRef = filterOne(week.ingredientsRefs, choosePositionMatchingDayOfWeek).ref;
+    
+                setSelectedDayOfWeek(dayOfWeek);
+                dataChangeNotify(dayRef, onion);
+            },
             selectedDay: selectedDayOfWeek,
             todayDay: null, // TODO
         };
     };
 
-    const mapDispatch = {
-        onWeekSelected: (weekRef: Ref | null) => {
-            setSelectedWeekRef(weekRef);
-
-            // after selecting a week, the day of the week is not known
-            setSelectedDayOfWeek(null);
-            return setRootRefDay(null);
-        },
-        onDaySelected: (dayOfWeek: number) => {
-            if (selectedWeekRef === null) {
-                dataChangeNotify(null, onion);
-                // PERF: use 'useEffect' to notify only on actual changes?
-
-                return setRootRefDay(null);
-            }
-
-            const choosePositionMatchingDayOfWeek =
-                (ingredient: Ingredient) => ingredient.position === dayOfWeek;
-            const week = state.findFood(selectedWeekRef);
-            const dayRef = filterOne(week.ingredientsRefs, choosePositionMatchingDayOfWeek).ref;
-
-            setSelectedDayOfWeek(dayOfWeek);
-            dataChangeNotify(dayRef, onion);
-            return setRootRefDay(dayRef);
-        },
-    };
-
-    const ConnectedUI = connect(mapState, mapDispatch)(UI);
+    const ConnectedUI = connect(mapState)(UI);
     return (
         <>
             <ConnectedUI/>
