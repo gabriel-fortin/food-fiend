@@ -1,13 +1,13 @@
 import { Ref } from "Model";
 
-import { SetCurrentDayAction } from "./UncategorisedActions";
+import { SetRootRefAction } from "./UncategorisedActions";
 
 
 /** Action creator */
-export function setCurrentDay(dayRef: Ref|null): SetCurrentDayAction {
+export function setRootRef(rootRef: Ref|null): SetRootRefAction {
     return {
-        type: "SET CURRENT DAY",
-        dayRef,
+        type: "SET ROOT REF",
+        rootRef: rootRef,
     };
 }
 

@@ -4,7 +4,7 @@ import { Food, FoodType, Ref, Message } from 'Model';
 export abstract class State {
     
     foodData: Food[];
-    day: Ref | null;
+    rootRef: Ref | null;  // the root of what should be shown in the UI
     message: Message | null;
 
     history: any = null;
@@ -14,7 +14,7 @@ export abstract class State {
 
     protected constructor() {
         this.foodData = [];
-        this.day = null;
+        this.rootRef = null;
         this.message = null;
     }
 
@@ -31,7 +31,7 @@ export abstract class State {
     /** Finds the food item having the specified ref */
     abstract findFood(ref: Ref): Food;
     
-    abstract getCurrentDay(): Ref | null;
+    abstract getRootRef(): Ref | null;
 
     abstract getAllLatestFoods(): Food[];
 
@@ -89,8 +89,8 @@ export class StateImpl extends State {
         return chosenVersionOfFood[0];
     }
 
-    getCurrentDay(): Ref | null {
-        return this.day;
+    getRootRef(): Ref | null {
+        return this.rootRef;
     }
 
     getAllLatestFoods(): Food[] {

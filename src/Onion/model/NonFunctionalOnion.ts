@@ -21,7 +21,7 @@ export class NonFunctionalOnion extends Onion {
         throw new Error(errorMessage());
     }
 
-    withCurrentDayLayer(): Onion {
+    withRootRefLayer(): Onion {
         throw new Error(errorMessage());
     }
 

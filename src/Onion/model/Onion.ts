@@ -1,6 +1,6 @@
 import { Ref } from "Model";
 
-import { Layer, LayerKind, RefLayer, PositionLayer, CurrentDayLayer } from "./Layer";
+import { Layer, LayerKind, RefLayer, PositionLayer, RootRefLayer } from "./Layer";
 
 
 /**
@@ -22,7 +22,7 @@ export class Onion {
     }
 
     withFoodLayer(ref: Ref): Onion {
-        const allowedPreviousLayers = [LayerKind.POS, LayerKind.CDAY];
+        const allowedPreviousLayers = [LayerKind.POS, LayerKind.ROOT_REF];
         this.checkPreviousLayer(allowedPreviousLayers, this.withFoodLayer.name);
 
         const newLayer: RefLayer = {
@@ -44,12 +44,12 @@ export class Onion {
         return new Onion([newLayer, ...this.layers]);
     }
 
-    withCurrentDayLayer(): Onion {
+    withRootRefLayer(): Onion {
         const allowedPreviousLayers = [] as LayerKind[];
-        this.checkPreviousLayer(allowedPreviousLayers, this.withPositionLayer.name);
+        this.checkPreviousLayer(allowedPreviousLayers, this.withRootRefLayer.name);
 
-        const newLayer: CurrentDayLayer = {
-            kind: LayerKind.CDAY,
+        const newLayer: RootRefLayer = {
+            kind: LayerKind.ROOT_REF,
         };
 
         return new Onion([newLayer, ...this.layers]);
@@ -90,8 +90,8 @@ export class Onion {
                     return `${acc}> REF(${layer.ref.id},${layer.ref.ver}) `;
                 case LayerKind.POS:
                     return `${acc}> POS(${layer.pos}) `;
-                case LayerKind.CDAY:
-                    return `${acc}> CDAY `;
+                case LayerKind.ROOT_REF:
+                    return `${acc}> ROOT_REF `;
             }
         }, "");
         /* eslint-enable array-callback-return */

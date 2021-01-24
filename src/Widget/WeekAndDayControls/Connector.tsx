@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { useDisclosure } from "@chakra-ui/core";
 
 import { FoodType, Ingredient, Ref } from "Model";
-import { setCurrentDay, State, useAppState } from "Store";
+import { setRootRefDay, State, useAppState } from "Store";
 import { WeekEditor } from "Widget";
 import { Onion, useOnion } from "Onion";
 import { eqRef, filterOne } from "tools";
@@ -66,14 +66,14 @@ export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
 
             // after selecting a week, the day of the week is not known
             setSelectedDayOfWeek(null);
-            return setCurrentDay(null);
+            return setRootRefDay(null);
         },
         onDaySelected: (dayOfWeek: number) => {
             if (selectedWeekRef === null) {
                 dataChangeNotify(null, onion);
                 // PERF: use 'useEffect' to notify only on actual changes?
 
-                return setCurrentDay(null);
+                return setRootRefDay(null);
             }
 
             const choosePositionMatchingDayOfWeek =
@@ -83,7 +83,7 @@ export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
 
             setSelectedDayOfWeek(dayOfWeek);
             dataChangeNotify(dayRef, onion);
-            return setCurrentDay(dayRef);
+            return setRootRefDay(dayRef);
         },
     };
 

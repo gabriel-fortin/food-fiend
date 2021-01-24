@@ -5,7 +5,7 @@ import { Provider, connect } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, changeIngredientQuantity, setCurrentDay, AppStateProvider, changeFoodName } from 'Store'
+import { State, storeReducer, importData, changeIngredientQuantity, setRootRef, AppStateProvider, changeFoodName } from 'Store'
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -14,7 +14,7 @@ import { MacrosBar, MacrosInfo, WeekAndDayControls } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
 import { Day } from 'Widget';
-import { Onion, PlantOnionGarden, CurrentDayLayerProvider } from 'Onion';
+import { Onion, PlantOnionGarden, RootRefLayerProvider } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
@@ -61,11 +61,11 @@ function DisplayDay() {
     store.dispatch(importData([tempDay]));
     store.dispatch(importData([tempWeek1]));
     store.dispatch(importData([tempWeek2]));
-    // store.dispatch(setCurrentDay(new Ref(666, -14)));
+    // store.dispatch(setRootRefDay(new Ref(666, -14)));
     // store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
 
     const mapState = (state: State) => ({
-        dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
+        dayRef: state.getRootRef() as Ref,  // TODO: this will fail when day is null
     });
     const DoubleConnectedDayWidget = connect(mapState)(Day);
     const [currentDayRef, setCurrentDayRef] = useState<Ref | null>();
@@ -79,7 +79,7 @@ function DisplayDay() {
                 <BrowserStorage loadOnMount />
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
-                    {/* <CurrentDayLayerProvider> */}
+                    {/* <RootRefLayerProvider> */}
                     <WeekAndDayControls>
                         {(selectedDayRef, onion) => {
                             setCurrentDayRef(selectedDayRef);
@@ -93,7 +93,7 @@ function DisplayDay() {
                             {/* <DoubleConnectedMealListWidget /> */}
                             {/* <AllOfType /> */}
                         {/* </TestingFrame> */}
-                    {/* </CurrentDayLayerProvider> */}
+                    {/* </RootRefLayerProvider> */}
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>

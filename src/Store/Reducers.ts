@@ -12,8 +12,8 @@ import {
     ChangeFoodNameAction, AddFoodAction, ChangeFoodVersionAction,
 } from './DataActions';
 import { replaceIngredient, appendIngredient } from './DataActionCreators';
-import { SetCurrentDayAction } from './UncategorisedActions';
-import { setCurrentDay } from './UncategorisedActionCreators';
+import { SetRootRefAction } from './UncategorisedActions';
+import { setRootRef } from './UncategorisedActionCreators';
 import { Action } from './ActionRegister';
 
 
@@ -66,8 +66,8 @@ function routeAction(state: State, action: Action): State {
                 case "REPLACE INGREDIENT":
                     newSyntheticActions = reducer_replaceIngredient(currentAction, mutableState);
                     break;
-                case "SET CURRENT DAY":
-                    newSyntheticActions = reducer_setCurrentDay(currentAction, mutableState);
+                case "SET ROOT REF":
+                    newSyntheticActions = reducer_setRootRef(currentAction, mutableState);
                     break;
                 case "APPEND INGREDIENT":
                     newSyntheticActions = reducer_appendIngredient(currentAction, mutableState);
@@ -198,8 +198,8 @@ const reducer_replaceIngredient = (
     if (context.layersLeft() === 1) {
         const [onlyLayer] = context.peelOneLayer();
         switch (onlyLayer.kind) {
-            case LayerKind.CDAY:
-                return [setCurrentDay(replacement)];
+            case LayerKind.ROOT_REF:
+                return [setRootRef(replacement)];
             default:
                 throw new Error(`Didn't know what to do with a single layer` +
                     ` of kind '${onlyLayer.kind}' left in Onion`)
@@ -226,8 +226,8 @@ const reducer_replaceIngredient = (
         // TODO: update each ingredients' 'usedBy'
 };
 
-const reducer_setCurrentDay = ({ dayRef }: SetCurrentDayAction, mutableState: State): Action[] => {
-    mutableState.day = dayRef;
+const reducer_setRootRef = ({ rootRef }: SetRootRefAction, mutableState: State): Action[] => {
+    mutableState.rootRef = rootRef;
     return [];
 };
 
