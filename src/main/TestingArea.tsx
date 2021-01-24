@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { /* useState */ } from 'react';
+import React, { useState } from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
@@ -68,6 +68,8 @@ function DisplayDay() {
         dayRef: state.getCurrentDay() as Ref,  // TODO: this will fail when day is null
     });
     const DoubleConnectedDayWidget = connect(mapState)(Day);
+    const [currentDayRef, setCurrentDayRef] = useState<Ref | null>();
+    const [weekContext, setWeekContext] = useState<Onion>();
 
     return (
         <ThemeProvider>
@@ -78,7 +80,15 @@ function DisplayDay() {
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
                     {/* <CurrentDayLayerProvider> */}
-                    <WeekAndDayControls />
+                    <WeekAndDayControls>
+                        {(selectedDayRef, onion) => {
+                            setCurrentDayRef(selectedDayRef);
+                            setWeekContext(onion);
+                        }}
+                    </WeekAndDayControls>
+                    <PlantOnionGarden onion={weekContext}>
+                        {currentDayRef && <Day dayRef={currentDayRef} />}
+                    </PlantOnionGarden>
                         {/* <TestingFrame> */}
                             {/* <DoubleConnectedMealListWidget /> */}
                             {/* <AllOfType /> */}

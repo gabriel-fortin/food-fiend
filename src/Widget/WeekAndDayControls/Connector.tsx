@@ -4,13 +4,19 @@ import { useDisclosure } from "@chakra-ui/core";
 
 import { FoodType, Ingredient, Ref } from "Model";
 import { setCurrentDay, State, useAppState } from "Store";
+import { WeekEditor } from "Widget";
+import { Onion, useOnion } from "Onion";
 import { eqRef, filterOne } from "tools";
 
 import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
-import { WeekEditor } from "Widget";
 
 
-export const Connector: React.FC = () => {
+interface Props {
+    children: (selectedDayRef: Ref | null, context: Onion) => void;
+}
+
+
+export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
     const [selectedWeekRef, setSelectedWeekRef] = useState<Ref|null>(null);
     const [editedWeekRef, setEditedWeekRef] = useState<Ref|null>(null);
     const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number|null>(null);
@@ -19,6 +25,7 @@ export const Connector: React.FC = () => {
         onOpen: openWeekEditor,
         onClose: closeWeekEditor } = useDisclosure();
     const state = useAppState();
+    const onion = useOnion();
 
     const onWeekEditorClose = (updatedWeekRef: Ref | null) => {
         console.log(`Week And Day:: on Close: updatedWeekRef: `, updatedWeekRef);
@@ -30,7 +37,7 @@ export const Connector: React.FC = () => {
 
     const mapState = (state: State) => {
         const weekData = state.getAllFoodOfType(FoodType.Week);
-
+        
         return {
             weekData,
             selectedWeek: selectedWeekRef,
@@ -62,14 +69,20 @@ export const Connector: React.FC = () => {
             return setCurrentDay(null);
         },
         onDaySelected: (dayOfWeek: number) => {
-            if (selectedWeekRef === null) return setCurrentDay(null);
+            if (selectedWeekRef === null) {
+                dataChangeNotify(null, onion);
+                // PERF: use 'useEffect' to notify only on actual changes?
 
-            const positionMatchingDayOfWeek =
+                return setCurrentDay(null);
+            }
+
+            const choosePositionMatchingDayOfWeek =
                 (ingredient: Ingredient) => ingredient.position === dayOfWeek;
             const week = state.findFood(selectedWeekRef);
-            const dayRef = filterOne(week.ingredientsRefs, positionMatchingDayOfWeek).ref;
+            const dayRef = filterOne(week.ingredientsRefs, choosePositionMatchingDayOfWeek).ref;
 
             setSelectedDayOfWeek(dayOfWeek);
+            dataChangeNotify(dayRef, onion);
             return setCurrentDay(dayRef);
         },
     };
