@@ -22,18 +22,13 @@ export const WeekControls: React.FC<Props> = ({
     const { isOpen: isWeekDropdownOpen, onOpen: onWeekDropdownOpen, onClose: onWeekDropdownClose } = useDisclosure();
 
     const mouseEntersWeekArea = () => {
-        console.log(`mouse ENTERS week area`);
-        console.log(`   set is mouse within week area -> true`);
         setIsMouseWithinWeekArea(true);
     };
     const mouseLeavesWeekArea = () => {
-        console.log(`mouse LEAVES week area`);
-        console.log(`   set is mouse within week area -> false`);
         setIsMouseWithinWeekArea(false);
     };
 
     const onDropdownGetsCancelled = () => {
-        console.log(`back-drop: onclick`);
         onWeekDropdownClose();
         setIsMouseWithinWeekArea(false);
     };
