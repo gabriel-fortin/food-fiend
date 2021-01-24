@@ -5,6 +5,7 @@ import { Ref } from "Model";
 
 import { Props } from "./Props";
 import "./pulsing-animation.css";
+import { eqRef } from "tools";
 
 
 export const WeekControls: React.FC<Props> = ({
@@ -116,7 +117,7 @@ export const WeekControls: React.FC<Props> = ({
                             </Box>
                             :
                             <Heading marginTop={2} marginX={3}>
-                                {weekData.filter(x => x.ref === selectedWeek)[0].name}
+                                {weekData.filter(x => eqRef(x.ref, selectedWeek))[0].name}
                             </Heading>
                 }
             </Button>

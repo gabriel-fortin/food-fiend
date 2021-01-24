@@ -2,7 +2,7 @@ import { Ref } from "Model";
 
 
 /** Compare two instances of 'Ref' */
-export const eqRef: (ref1: Ref, ref2: Ref) => boolean
+export const eqRef: (ref1: Ref | null, ref2: Ref | null) => boolean
     = (ref1, ref2) => {
         // both same object or both null
         if (ref1 === ref2) return true;

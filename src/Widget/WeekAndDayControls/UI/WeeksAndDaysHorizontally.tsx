@@ -6,6 +6,7 @@ import { FoodType } from "Model";
 import { Props } from "./Props";
 import { DayControls } from "./DayControls";
 import { WeekControls } from "./WeekControls";
+import { eqRef } from "tools";
 
 
 export const WeeksAndDaysHorizontally: React.FC<Props> = (props) => {
@@ -18,7 +19,7 @@ export const WeeksAndDaysHorizontally: React.FC<Props> = (props) => {
         }
     });
 
-    if (selected !== null && weekData.every(f => f.ref !== selected)) {
+    if (selected !== null && weekData.every(f => !eqRef(f.ref, selected))) {
         console.warn(`All available weeks (${weekData.length}): ` +
             weekData.map(w => `[${selected.id}/${selected.ver}]`));
 
