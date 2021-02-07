@@ -21,7 +21,7 @@ export class NonFunctionalOnion extends Onion {
         throw new Error(errorMessage());
     }
 
-    withRootRefLayer(): Onion {
+    withRootRefLayer(ref: Ref): Onion {
         throw new Error(errorMessage());
     }
 

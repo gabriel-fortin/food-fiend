@@ -1,4 +1,5 @@
 import { Ref } from "Model";
+import { eqRef } from "tools";
 
 import { Layer, LayerKind, RefLayer, PositionLayer, RootRefLayer } from "./Layer";
 
@@ -44,12 +45,13 @@ export class Onion {
         return new Onion([newLayer, ...this.layers]);
     }
 
-    withRootRefLayer(): Onion {
+    withRootRefLayer(ref: Ref): Onion {
         const allowedPreviousLayers = [] as LayerKind[];
         this.checkPreviousLayer(allowedPreviousLayers, this.withRootRefLayer.name);
 
         const newLayer: RootRefLayer = {
             kind: LayerKind.ROOT_REF,
+            ref,
         };
 
         return new Onion([newLayer, ...this.layers]);

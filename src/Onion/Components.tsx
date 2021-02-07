@@ -35,10 +35,11 @@ export const FoodLayerProvider: React.FC<{ food: Ref }> =
         );
     };
 
-export const RootRefLayerProvider: React.FC =
-    ({ children }) => {
+export const RootRefLayerProvider: React.FC<{ food: Ref }> =
+    ({ children, food }) => {
+        const onion = useOnion();
         // add one more layer to the onion
-        const biggerOnion = useOnion().withRootRefLayer();
+        const biggerOnion = onion.withRootRefLayer(food);
         
         return (
             <OnionReactContext.Provider value={biggerOnion}>
