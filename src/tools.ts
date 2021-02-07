@@ -48,3 +48,9 @@ export function filterOne<T>(array: T[], predicate: (x: T) => boolean) {
 
     return arrayWithOneElement[0];
 }
+
+export const formatRef
+    = (ref: Ref | null) =>
+        ref === null
+            ? "[null]"
+            : `[${ref.id} / ${ref.ver}]`;

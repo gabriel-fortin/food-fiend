@@ -6,7 +6,7 @@ import { FoodType } from "Model";
 import { Props } from "./Props";
 import { DayControls } from "./DayControls";
 import { WeekControls } from "./WeekControls";
-import { eqRef } from "tools";
+import { eqRef, formatRef } from "tools";
 
 
 export const WeeksAndDaysHorizontally: React.FC<Props> = (props) => {
@@ -21,8 +21,9 @@ export const WeeksAndDaysHorizontally: React.FC<Props> = (props) => {
 
     if (selected !== null && weekData.every(f => !eqRef(f.ref, selected))) {
         console.warn(`All available weeks (${weekData.length}): ` +
-            weekData.map(w => `[${selected.id}/${selected.ver}]`));
-
+            weekData.map(w => formatRef(w.ref)));
+        console.warn(`Received week ${selected} is not on that list`);
+        
         throw new Error(`The "selected week" ref [${selected.id}/${selected.ver}] ` +
             `does not exist on the "week data" list`);
     }

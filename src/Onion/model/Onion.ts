@@ -114,3 +114,39 @@ export class Onion {
     }
 
 }
+
+
+export const eqOnion: (o1: Onion | null, o2: Onion | null) => boolean
+    = (o1, o2) => {
+        // both same object or both null
+        if (o1 === o2) return true;
+
+        // if one is null then the other one isn't
+        if (o1 === null || o2 === null) return false;
+
+        const layers1 = (o1 as any).layers as Layer[];
+        const layers2 = (o2 as any).layers as Layer[];
+        if (layers1.length != layers2.length) return false;
+
+        for (let i = 0; i < layers1.length; i++) {
+            if (layers1[i].kind !== layers2[i].kind) return false;
+
+            switch (layers1[i].kind) {
+                case LayerKind.POS:
+                    const pos1 = (layers1[i] as PositionLayer).pos;
+                    const pos2 = (layers2[i] as PositionLayer).pos;
+                    if (pos1 !== pos2) return false;
+                    break;
+                case LayerKind.REF:
+                case LayerKind.ROOT_REF:
+                    const ref1 = (layers1[i] as RefLayer | RootRefLayer).ref;
+                    const ref2 = (layers2[i] as RefLayer | RootRefLayer).ref;
+                    if (!eqRef(ref1, ref2)) return false;
+                    break;
+                default:
+                    throw new Error(`Onion: equals: .layers[${i}]: unrecognised kind : ${layers1[i].kind}`);
+            }
+        }
+
+        return true;
+    };
