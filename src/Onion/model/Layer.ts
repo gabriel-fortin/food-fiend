@@ -19,7 +19,7 @@ export interface PositionLayer {
 
 export interface RootRefLayer {
     kind: LayerKind.ROOT_REF;
-    ref: Ref;
+    ref: Ref | null;
 }
 
 export type Layer =

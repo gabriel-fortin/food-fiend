@@ -45,7 +45,7 @@ export class Onion {
         return new Onion([newLayer, ...this.layers]);
     }
 
-    withRootRefLayer(ref: Ref): Onion {
+    withRootRefLayer(ref: Ref | null): Onion {
         const allowedPreviousLayers = [] as LayerKind[];
         this.checkPreviousLayer(allowedPreviousLayers, this.withRootRefLayer.name);
 
