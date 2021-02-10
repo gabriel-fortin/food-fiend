@@ -1,11 +1,11 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider, connect } from 'react-redux';
+import { Provider, connect, useDispatch } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { ThemeProvider, CSSReset } from '@chakra-ui/core';
+import { ThemeProvider, CSSReset, Box, Grid, Button } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, changeIngredientQuantity, setRootRef, AppStateProvider, changeFoodName } from 'Store'
+import { State, storeReducer, importData, AppStateProvider, changeFoodName, useAppState } from 'Store'
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -14,11 +14,13 @@ import { MacrosBar, MacrosInfo, WeekAndDayControls } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Meal } from 'Widget';
 import { Day } from 'Widget';
-import { Onion, PlantOnionGarden, RootRefLayerProvider } from 'Onion';
+import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Widget/BrowserStorage';
+import { eqRef, formatRef } from 'tools';
+import { eqOnion } from 'Onion/model/Onion';
 
 
 function createEmptyStore() {
@@ -45,10 +47,12 @@ function DisplayDay() {
         [initialData[9], initialData[774], initialData[85]], "Lunch");
     const obiad = createMeal(6789, 1,
         [initialData[39], initialData[227], initialData[597]], "Obiad");
-    const tempDay = createDay(666, [lunch, obiad], "test day");
-    const tempWeek1 = { ...createDay(111, [tempDay], "Week 61"), type: FoodType.Week as FoodType };
-    const tempWeek2 = { ...createDay(112, [tempDay], "Week 62"), type: FoodType.Week as FoodType,
-            ingredientsRefs: [new Ingredient(tempDay.ref, 0, 1, null)] };
+    const tempDay1 = createDay(666, [lunch, obiad], "test day 1");
+    const tempDay2 = createDay(667, [obiad], "test day 2");
+    const tempWeek1 = { ...createDay(111, [tempDay1], "Week 61"), type: FoodType.Week as FoodType,
+            ingredientsRefs: [new Ingredient(tempDay2.ref, 0, 1, null)] };
+    const tempWeek2 = { ...createDay(112, [tempDay1], "Week 62"), type: FoodType.Week as FoodType,
+            ingredientsRefs: [new Ingredient(tempDay1.ref, 0, 1, null)] };
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
@@ -58,18 +62,12 @@ function DisplayDay() {
     store.dispatch(importData(initialData));
     store.dispatch(importData([lunch]));
     store.dispatch(importData([obiad]));
-    store.dispatch(importData([tempDay]));
+    store.dispatch(importData([tempDay1]));
+    store.dispatch(importData([tempDay2]));
     store.dispatch(importData([tempWeek1]));
     store.dispatch(importData([tempWeek2]));
     // store.dispatch(setRootRefDay(new Ref(666, -14)));
     // store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
-
-    const mapState = (state: State) => ({
-        dayRef: state.getRootRef() as Ref,  // TODO: this will fail when day is null
-    });
-    const DoubleConnectedDayWidget = connect(mapState)(Day);
-    const [currentDayRef, setCurrentDayRef] = useState<Ref | null>();
-    const [weekContext, setWeekContext] = useState<Onion>();
 
     return (
         <ThemeProvider>
@@ -79,26 +77,187 @@ function DisplayDay() {
                 <BrowserStorage loadOnMount />
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
-                    {/* <RootRefLayerProvider> */}
-                    <WeekAndDayControls>
-                        {(selectedDayRef, onion) => {
-                            setCurrentDayRef(selectedDayRef);
-                            setWeekContext(onion);
-                        }}
-                    </WeekAndDayControls>
-                    <PlantOnionGarden onion={weekContext}>
-                        {currentDayRef && <Day dayRef={currentDayRef} />}
-                    </PlantOnionGarden>
-                        {/* <TestingFrame> */}
-                            {/* <DoubleConnectedMealListWidget /> */}
-                            {/* <AllOfType /> */}
-                        {/* </TestingFrame> */}
-                    {/* </RootRefLayerProvider> */}
+                    <RootRefFeeder_connected>
+                        {(ref) =>
+                            // <TopControlsAndTransferContext weekRef={ref} />
+                            <ContextTransfer
+                                contextProvider={(cr) =>
+                                    <WeekAndDayControls weekRef={ref} contextReceiver={cr} />
+                                }
+                                contextConsumer={(ref) =>
+                                    <DebugDay dayRef={ref} />
+                                }
+                            />
+                        }
+                    </RootRefFeeder_connected>
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
     );
 }
+
+interface ContextReceiver {
+    (o: Onion, r: Ref | null): void;
+}
+interface ContextProvider {
+    (cr: ContextReceiver): React.ReactElement
+}
+interface ContextTransfererProps {
+    contextProvider: ContextProvider
+    contextConsumer: (r: Ref) => ReactElement
+}
+const ContextTransfer: React.FC<ContextTransfererProps> = ({ contextProvider, contextConsumer }) => {
+    const [transferredOnion, setTransferredOnion] = useState<Onion>(Onion.create());
+    const [transferredRef, setTransferredRef] = useState<Ref | null>(null);
+    
+
+    const receiver: ContextReceiver = (onion, ref) => {
+        if (!eqOnion(transferredOnion, onion)) {
+            setTransferredOnion(onion);
+        }
+        if (!eqRef(transferredRef, ref)){
+            setTransferredRef(ref);
+        }
+    };
+
+    return (
+        <>
+            {contextProvider(receiver)}
+            <PlantOnionGarden onion={transferredOnion}>
+                {transferredRef && contextConsumer(transferredRef)}
+            </PlantOnionGarden>
+        </>
+    );
+
+};
+
+// const TopControlsAndTransferContext: React.FC<{ weekRef: Ref | null }> = ({ weekRef: weekRefFromRoot }) => {
+//     // const [lastTransferredDayRef, setLastTransferredDayRef] = useState<Ref | null>(null);
+//     const [lastTransferredOnion, setLastTransferredOnion] = useState<Onion>(Onion.create());
+//     console.log(`Testing Area: top controls and transfer: incoming root week ref:`, weekRefFromRoot);
+//     console.log(`Testing Area: top controls and transfer: last transferred onion:`, lastTransferredOnion);
+//     console.log(`Testing Area: top controls and transfer: current useOnion():`, useOnion());
+
+//     const computeCurrentDayRef: (o: Onion | null) => Ref | null = (onion) => {
+//         if (onion == null) return null;
+//         if (onion.layersLeft() < 2) return null;
+//         const [posLayer, refLayer] = onion.peelTwoLayers();
+//         if (posLayer.kind != LayerKind.POS) return null;
+//         if (refLayer.kind != LayerKind.REF) return null;
+        
+//         const state = useAppState();
+//         const weekData = state.findFood(refLayer.ref);
+//         const dayRef = weekData.ingredientsRefs[posLayer.pos].ref;
+//         return dayRef;
+//     };
+//     const currentDayRef = computeCurrentDayRef(lastTransferredOnion);
+    
+//     return (
+//         <>
+//             <WeekAndDayControls
+//                 weekRef={weekRefFromRoot}
+//                 onionReceiver={(newlyTransferredOnion) => {
+//                     console.log(`Testing Area: top controls and transfer: UPDATE from Week And Day Controls:`,
+//                         newlyTransferredOnion);
+
+//                     if (!eqOnion(lastTransferredOnion, newlyTransferredOnion)) {
+//                         console.log(`Testing Area: top controls and transfer: setting onion, new one has arrived; [old, new]:`,
+//                             [lastTransferredOnion, newlyTransferredOnion]);
+//                         setLastTransferredOnion(newlyTransferredOnion);
+//                     }
+//                 }}
+//             />
+            
+//             <PlantOnionGarden onion={lastTransferredOnion}>
+//                 <DebugDay dayRef={currentDayRef} />
+//                 {currentDayRef && <Day dayRef={currentDayRef} />}
+//             </PlantOnionGarden>
+//         </>
+//     );
+// };
+
+const DebugDay: React.FC<{ dayRef: Ref | null }> = ({ dayRef }) => {
+    const onion = useOnion();
+    const dispatch = useDispatch();
+
+    const style = {
+        width: "12em",
+        display: "inline",
+    };
+
+    return (
+        <Box margin="3em">
+            Debug Day
+            <Box>{`day ref: ${dayRef ? formatRef(dayRef) : dayRef}`}</Box>
+            <PrintOnion onion={onion} />
+            {dayRef !== null &&
+                <Button
+                    onClick={() => {
+                        console.log(`DebugDay: dispatching food name change action; with onion:`, onion);
+                        dispatch(changeFoodName("abc", onion.withFoodLayer(dayRef)));
+                    }}
+                >
+                    Fire action
+                </Button>
+            }
+        </Box>
+    );
+};
+
+const PrintOnion: React.FC<{ onion: Onion }> = ({ onion }) => {
+    const onionInBits = ((onion as any).layers as Layer[])
+        .map(layer => {
+            switch (layer.kind) {
+                case LayerKind.ROOT_REF: return { type: layer.kind, text: formatRef(layer.ref) };
+                case LayerKind.REF: return { type: layer.kind, text: formatRef(layer.ref) };
+                case LayerKind.POS: return { type: layer.kind, text: layer.pos };
+            }
+        });
+
+    const style = {
+        width: "12em",
+        display: "inline",
+    };
+    
+    return (
+        <>
+            <Box>Onion (size={onion.layersLeft()}):</Box>
+            <Grid templateColumns="12em 3em 8em">
+                {onionInBits.map(x =>
+                    <React.Fragment key={x.type + x.text}>
+                        <Box style={style}>{x.type}</Box>
+                        <Box> =&gt; </Box>
+                        <Box>{x.text}</Box>
+                    </React.Fragment>
+                )}
+            </Grid>
+        </>
+    );
+};
+
+// this component is re-rendered on every state change
+// would be nice if it re-rendered its children only when root ref changes
+        // maybe just change the param from 'state' to 'rootRef'? will 'connect' do the trick?
+const RootRefFeeder: React.FC<{state: State, children: ((ref: Ref | null) => ReactElement)}> = ({ state, children }) => {
+    // const state = useAppState();
+
+    // probably I need to connect instead of using useAppState
+
+
+    console.log(`Root Ref Feeder: state:`, state);
+    const rootRef = state.getRootRef();
+
+    return (
+        <RootRefLayerProvider food={rootRef}>
+            {children(rootRef)}
+        </RootRefLayerProvider>
+    );
+};
+
+const RootRefFeeder_connected = connect((state: State) => ({
+    state: state,
+}))(RootRefFeeder);
+
 
 function createDay(id: number, meals: Food[], title: string) {
     let day = createMeal(id, -14, meals, title);

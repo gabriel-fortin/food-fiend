@@ -1,37 +1,39 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useDisclosure } from "@chakra-ui/core";
 
 import { FoodType, Ingredient, Ref } from "Model";
-import { State, useAppState } from "Store";
+import { replaceIngredient, State, useAppState } from "Store";
 import { WeekEditor } from "Widget";
-import { Onion, useOnion } from "Onion";
+import { FoodLayerProvider, Onion, PositionLayerProvider, useOnion } from "Onion";
 import { eqRef, filterOne } from "tools";
 
 import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
 
 
 interface Props {
-    children: (selectedDayRef: Ref | null, context: Onion) => void;
-    // TODO: accept currently selected week as prop
+    weekRef: Ref | null;
+    contextReceiver: (o: Onion, r: Ref | null) => void; // TODO: use ContextReceiver type, once it's extracted from TestingArea
 }
 
 
-export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
-    const [selectedWeekRef, setSelectedWeekRef] = useState<Ref|null>(null);
+export const Connector: React.FC<Props> = ({ weekRef: selectedWeekRef, contextReceiver }) => {
     const [editedWeekRef, setEditedWeekRef] = useState<Ref|null>(null);
-    const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number|null>(null);
+    const [selectedDayOfWeek_internal, setSelectedDayOfWeek] = useState<number|null>(null);
+    const selectedDayOfWeek = 0;
+
     const {
         isOpen: isWeekEditorOpen,
         onOpen: openWeekEditor,
         onClose: closeWeekEditor } = useDisclosure();
     const state = useAppState();
-    const onion = useOnion();
+    const parentOnion = useOnion();
+    const dispatch = useDispatch();
 
     const onWeekEditorClose = (updatedWeekRef: Ref | null) => {
         console.log(`Week And Day:: on Close: updatedWeekRef: `, updatedWeekRef);
         if (updatedWeekRef !== null) {
-            setSelectedWeekRef(updatedWeekRef);
+            dispatch(replaceIngredient(updatedWeekRef, parentOnion));
         }
         closeWeekEditor();
     };
@@ -56,37 +58,70 @@ export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
                 setEditedWeekRef(selectedWeekRef);
                 openWeekEditor();
             },
-            onWeekSelected: (weekRef: Ref | null) => {
-                setSelectedWeekRef(weekRef);
-    
-                // after selecting a week, the day of the week is not known
-                // although, maybe we want to keep the day selection unchanged
-                setSelectedDayOfWeek(null);
-            },
             onDaySelected: (dayOfWeek: number) => {
+                console.log(`Week And Day Controls - on Day selected`);
+                
                 if (selectedWeekRef === null) {
-                    dataChangeNotify(null, onion);
-                    // PERF: use 'useEffect' to notify only on actual changes?
-    
-                    return;
+                    // notifyOnionReceiver(parentOnion);
+                    contextReceiver(parentOnion, null);
+                    
+                    return null;
                 }
-    
+                
                 const choosePositionMatchingDayOfWeek =
                     (ingredient: Ingredient) => ingredient.position === dayOfWeek;
                 const week = state.findFood(selectedWeekRef);
                 const dayRef = filterOne(week.ingredientsRefs, choosePositionMatchingDayOfWeek).ref;
-    
+                
                 setSelectedDayOfWeek(dayOfWeek);
-                dataChangeNotify(dayRef, onion);
+    
+                contextReceiver(parentOnion.withFoodLayer(selectedWeekRef).withPositionLayer(dayOfWeek), dayRef);
+
+                // notifyOnionReceiver(parentOnion.withFoodLayer(selectedWeekRef).withPositionLayer(dayOfWeek));
+                // TODO: I hope the line above can be removed in favour of the following happening:
+                //      - on day selection, day number is saved to state
+                //      - on the next render, day number is passed to Position Layer Provider
+                // Yeah, that should work
             },
             selectedDay: selectedDayOfWeek,
             todayDay: null, // TODO
         };
     };
+    
+    const mapDispatch = ({
+        onWeekSelected: (userSelectedWeekRef: Ref | null) => {
+            console.log(`Week And Day Controls - on Week selected`);
+            
+            // setSelectedWeekRef(userSelectedWeekRef);
+            
+            // after selecting a week, the day of the week is not known
+            // although, maybe we want to keep the day selection unchanged
+            // setSelectedDayOfWeek(null);
+            
+            if (userSelectedWeekRef === null) {
+                // dataChangeNotify(null, parentOnion);
+                return null;
+            }
 
-    const ConnectedUI = connect(mapState)(UI);
+            const weekData = state.findFood(userSelectedWeekRef);
+            const dayRef = weekData.ingredientsRefs[selectedDayOfWeek].ref;
+            // contextReceiver(parentOnion.withFoodLayer(userSelectedWeekRef).withPositionLayer(selectedDayOfWeek), dayRef);
+            return replaceIngredient(userSelectedWeekRef, parentOnion);
+        },
+    });
+
+    const dayRef = selectedWeekRef ? state.findFood(selectedWeekRef).ingredientsRefs[0].ref : null;
+
+    const ConnectedUI = connect(mapState, mapDispatch)(UI);
     return (
         <>
+            {selectedWeekRef &&
+                <FoodLayerProvider food={selectedWeekRef}>
+                    <PositionLayerProvider position={selectedDayOfWeek}>
+                        <OnionForwarder receiver={contextReceiver} dayRef={dayRef}/>
+                    </PositionLayerProvider>
+                </FoodLayerProvider>
+            }
             <ConnectedUI/>
             <WeekEditor
                 weekRef={editedWeekRef}
@@ -95,5 +130,11 @@ export const Connector: React.FC<Props> = ({children: dataChangeNotify}) => {
             />
         </>
     );
+};
+
+const OnionForwarder: React.FC<{ receiver: (o: Onion, r: Ref | null) => void, dayRef: Ref | null }> = ({ receiver, dayRef }) => {
+    const onion = useOnion();
+    receiver(onion, dayRef);
+    return null;
 };
 
