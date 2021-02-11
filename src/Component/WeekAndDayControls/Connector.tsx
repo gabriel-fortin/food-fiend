@@ -4,7 +4,7 @@ import { useDisclosure } from "@chakra-ui/core";
 
 import { FoodType, Ingredient, Ref } from "Model";
 import { replaceIngredient, State, useAppState } from "Store";
-import { WeekEditor } from "Widget";
+import { WeekEditor } from "Component";
 import { FoodLayerProvider, Onion, PositionLayerProvider, useOnion } from "Onion";
 import { eqRef, filterOne } from "tools";
 

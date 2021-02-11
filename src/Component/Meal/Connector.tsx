@@ -5,7 +5,7 @@ import { Stack } from "@chakra-ui/core";
 import { State, changeFoodName, removeIngredient } from "Store";
 import { Ref } from "Model";
 import { FoodLayerProvider, HasOnion, withOnion } from "Onion";
-import { IngredientsList, AppendIngredient } from "Widget";
+import { IngredientsList, AppendIngredient } from "Component";
 
 import { InitiallyStyledMeal as MealUI, DispatchProps } from "./InitiallyStyledMeal";
 

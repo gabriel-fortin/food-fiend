@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Flex, PseudoBox, Link, Editable, EditablePreview, EditableInput } from "@chakra-ui/core";
 
 import { Macros, Ref } from "Model";
-import { MacrosInfo, Version } from "Widget";
+import { MacrosInfo, Version } from "Component";
 
 import "./styled-data-row.css";
 

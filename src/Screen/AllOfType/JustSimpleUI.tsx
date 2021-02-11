@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Select, Divider, Text, Flex, Input, InputGroup, InputLeftAddon } from "@chakra-ui/core";
 
 import { FoodType, Ref } from "Model";
-import { Day, Meal } from "Widget";
+import { Day, Meal } from "Component";
 
 
 interface Props {

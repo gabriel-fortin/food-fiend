@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { EditableInput, EditablePreview, Editable, Flex, Box, Link } from "@chakra-ui/core";
 
-import { MacrosInfo } from "Widget";
+import { MacrosInfo } from "Component";
 import { Macros } from "Model";
 
 import "./meal-widget.css";

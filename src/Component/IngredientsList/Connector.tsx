@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Ref } from "Model";
 import { PositionLayerProvider } from "Onion";
 import { useAppState } from "Store";
-import { IngredientEntry } from "Widget";
+import { IngredientEntry } from "Component";
 
 import { InitiallyStyledIngredientsList as IngredientsListUI } from "./InitiallyStyledIngredientsList";
 

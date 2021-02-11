@@ -9,16 +9,16 @@ import { State, storeReducer, importData, AppStateProvider, changeFoodName, useA
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { MacrosBar, MacrosInfo, WeekAndDayControls } from 'Widget';
+import { MacrosBar, MacrosInfo, WeekAndDayControls } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
-import { Meal } from 'Widget';
-import { Day } from 'Widget';
+import { Meal } from 'Component';
+import { Day } from 'Component';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
-import { BrowserStorage } from 'Widget/BrowserStorage';
+import { BrowserStorage } from 'Component/BrowserStorage';
 import { eqRef, formatRef } from 'tools';
 import { eqOnion } from 'Onion/model/Onion';
 

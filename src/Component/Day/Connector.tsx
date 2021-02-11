@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { Ref, FoodType } from "Model";
 import { useAppState, State, addCompositeFood } from "Store";
-import { Meal } from "Widget";
+import { Meal } from "Component";
 import { FoodLayerProvider, PositionLayerProvider, useOnion } from "Onion";
 
 import { UnstyledMealList as MealListUI } from "./UnstyledMealList";
