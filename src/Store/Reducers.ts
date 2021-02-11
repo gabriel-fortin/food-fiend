@@ -41,8 +41,6 @@ export function rootReducer(state: State | undefined, action: Action): State {
 }
 
 function validateStateAfterReducing(state: State): State {
-    console.log(`Reducer: state after reducing`, state);
-    
     // TODO: Reducers: validate correctness of state after reducing
     return state;
 }
@@ -193,8 +191,6 @@ const reducer_replaceIngredient = (
     { replacement, context }: ReplaceIngredientAction,
     mutableState: State
 ): Action[] => {
-    console.log(`Reducer: replace ingredient: context:`, context);
-    
     if (context.layersLeft() === 0) {
         return [];  // nothing more to process
     }
@@ -203,8 +199,6 @@ const reducer_replaceIngredient = (
         const [onlyLayer] = context.peelOneLayer();
         switch (onlyLayer.kind) {
             case LayerKind.ROOT_REF:
-                console.log(`Reducer: replacement for root layer: `, replacement);
-                
                 return [setRootRef(replacement)];
             default:
                 throw new Error(`Didn't know what to do with a single layer` +
