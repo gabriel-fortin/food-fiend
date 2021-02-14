@@ -9,18 +9,15 @@ import { State, storeReducer, importData, AppStateProvider, changeFoodName, useA
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { MacrosBar, MacrosInfo, WeekAndDayControls } from 'Component';
+import { ContextTransfer, MacrosBar, MacrosInfo, WeekAndDayControls, Meal } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
-import { Meal } from 'Component';
-import { Day } from 'Component';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
 import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Component/BrowserStorage';
 import { eqRef, formatRef } from 'tools';
-import { eqOnion } from 'Onion/model/Onion';
 
 
 function createEmptyStore() {
@@ -66,8 +63,6 @@ function DisplayDay() {
     store.dispatch(importData([tempDay2]));
     store.dispatch(importData([tempWeek1]));
     store.dispatch(importData([tempWeek2]));
-    // store.dispatch(setRootRefDay(new Ref(666, -14)));
-    // store.dispatch(changeFoodName("I am changed", Onion.create().withFoodLayer(tempDay.ref).withPositionLayer(1).withFoodLayer(obiad.ref)));
 
     return (
         <ThemeProvider>
@@ -96,40 +91,6 @@ function DisplayDay() {
     );
 }
 
-interface ContextReceiver {
-    (o: Onion, r: Ref | null): void;
-}
-interface ContextProvider {
-    (cr: ContextReceiver): React.ReactElement
-}
-interface ContextTransfererProps {
-    contextProvider: ContextProvider
-    contextConsumer: (r: Ref) => ReactElement
-}
-const ContextTransfer: React.FC<ContextTransfererProps> = ({ contextProvider, contextConsumer }) => {
-    const [transferredOnion, setTransferredOnion] = useState<Onion>(Onion.create());
-    const [transferredRef, setTransferredRef] = useState<Ref | null>(null);
-    
-
-    const receiver: ContextReceiver = (onion, ref) => {
-        if (!eqOnion(transferredOnion, onion)) {
-            setTransferredOnion(onion);
-        }
-        if (!eqRef(transferredRef, ref)){
-            setTransferredRef(ref);
-        }
-    };
-
-    return (
-        <>
-            {contextProvider(receiver)}
-            <PlantOnionGarden onion={transferredOnion}>
-                {transferredRef && contextConsumer(transferredRef)}
-            </PlantOnionGarden>
-        </>
-    );
-
-};
 
 // const TopControlsAndTransferContext: React.FC<{ weekRef: Ref | null }> = ({ weekRef: weekRefFromRoot }) => {
 //     // const [lastTransferredDayRef, setLastTransferredDayRef] = useState<Ref | null>(null);

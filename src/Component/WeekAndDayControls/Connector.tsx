@@ -9,11 +9,12 @@ import { FoodLayerProvider, Onion, PositionLayerProvider, useOnion } from "Onion
 import { eqRef, filterOne } from "tools";
 
 import { WeeksAndDaysHorizontally as UI } from "./UI/WeeksAndDaysHorizontally";
+import { ContextReceiver } from "Component/ContextTransfer";
 
 
 interface Props {
     weekRef: Ref | null;
-    contextReceiver: (o: Onion, r: Ref | null) => void; // TODO: use ContextReceiver type, once it's extracted from TestingArea
+    contextReceiver: ContextReceiver;
 }
 
 
