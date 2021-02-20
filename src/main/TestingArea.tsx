@@ -5,7 +5,7 @@ import { Provider, connect, useDispatch } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { ThemeProvider, CSSReset, Box, Grid, Button } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, AppStateProvider, changeFoodName, useAppState } from 'Store'
+import { State, storeReducer, importData, AppStateProvider, changeFoodName, replaceIngredient, useTypedSelector } from 'Store'
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
@@ -17,7 +17,8 @@ import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Component/BrowserStorage';
-import { eqRef, formatRef } from 'tools';
+import { formatRef } from 'tools';
+import ReactDOM from 'react-dom';
 
 
 function createEmptyStore() {
@@ -72,17 +73,44 @@ function DisplayDay() {
                 <BrowserStorage loadOnMount />
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
+                    <ControlWeekFromState>
+                        {(weekRef, onWeekChange) =>
+                            <>
+                                <WeekAndDayControls weekRef={weekRef} onWeekChanged={onWeekChange}>
+                                    {(dayRef) =>
+                                        <PortalIn portalOutId="portalOut2">
+                                            <DebugDay dayRef={dayRef} />
+                                        </PortalIn>
+                                    }
+                                </WeekAndDayControls>
+
+                                <div id="portalOut2">
+                                </div>
+                            </>
+                        }
+                    </ControlWeekFromState>
                     <RootRefFeeder_connected>
-                        {(ref) =>
-                            // <TopControlsAndTransferContext weekRef={ref} />
-                            <ContextTransfer
-                                contextProvider={(cr) =>
-                                    <WeekAndDayControls weekRef={ref} contextReceiver={cr} />
-                                }
-                                contextConsumer={(ref) =>
-                                    <DebugDay dayRef={ref} />
-                                }
-                            />
+                        {(rootRef) =>
+                            // <ContextTransfer
+                            //     contextProvider={(cr) =>
+                            //         <WeekAndDayControls weekRef={rootRef} contextReceiver={cr} />
+                            //     }
+                            //     contextConsumer={(ref) =>
+                            //         <DebugDay dayRef={ref} />
+                            //     }
+                            // />
+                            <>
+                                <WrappedWeekAndDayControls weekRef={rootRef}>
+                                    {(dayRef) =>
+                                        <PortalIn portalOutId="portalOut">
+                                            <DebugDay dayRef={dayRef} />
+                                        </PortalIn>
+                                    }
+                                </WrappedWeekAndDayControls>
+
+                                <div id="portalOut">
+                                </div>
+                            </>
                         }
                     </RootRefFeeder_connected>
                 </PlantOnionGarden>
@@ -91,51 +119,60 @@ function DisplayDay() {
     );
 }
 
-
-// const TopControlsAndTransferContext: React.FC<{ weekRef: Ref | null }> = ({ weekRef: weekRefFromRoot }) => {
-//     // const [lastTransferredDayRef, setLastTransferredDayRef] = useState<Ref | null>(null);
-//     const [lastTransferredOnion, setLastTransferredOnion] = useState<Onion>(Onion.create());
-//     console.log(`Testing Area: top controls and transfer: incoming root week ref:`, weekRefFromRoot);
-//     console.log(`Testing Area: top controls and transfer: last transferred onion:`, lastTransferredOnion);
-//     console.log(`Testing Area: top controls and transfer: current useOnion():`, useOnion());
-
-//     const computeCurrentDayRef: (o: Onion | null) => Ref | null = (onion) => {
-//         if (onion == null) return null;
-//         if (onion.layersLeft() < 2) return null;
-//         const [posLayer, refLayer] = onion.peelTwoLayers();
-//         if (posLayer.kind != LayerKind.POS) return null;
-//         if (refLayer.kind != LayerKind.REF) return null;
-        
-//         const state = useAppState();
-//         const weekData = state.findFood(refLayer.ref);
-//         const dayRef = weekData.ingredientsRefs[posLayer.pos].ref;
-//         return dayRef;
-//     };
-//     const currentDayRef = computeCurrentDayRef(lastTransferredOnion);
+interface WeekControllable {
+    children: (
+        weekRef: Ref | null,
+        onWeekChange: (w: Ref) => void,
+    ) => ReactElement;
+}
+const ControlWeekFromState: React.FC<WeekControllable> = ({ children }) => {
+    const onion = useOnion();
+    const rootRef = useTypedSelector(s => s.getRootRef());
+    const dispatch = useDispatch();
     
-//     return (
-//         <>
-//             <WeekAndDayControls
-//                 weekRef={weekRefFromRoot}
-//                 onionReceiver={(newlyTransferredOnion) => {
-//                     console.log(`Testing Area: top controls and transfer: UPDATE from Week And Day Controls:`,
-//                         newlyTransferredOnion);
+    const onWeekChange = (newWeekRef: Ref) => {
+        dispatch(replaceIngredient(newWeekRef, onion.withRootRefLayer(newWeekRef)));
+    };
 
-//                     if (!eqOnion(lastTransferredOnion, newlyTransferredOnion)) {
-//                         console.log(`Testing Area: top controls and transfer: setting onion, new one has arrived; [old, new]:`,
-//                             [lastTransferredOnion, newlyTransferredOnion]);
-//                         setLastTransferredOnion(newlyTransferredOnion);
-//                     }
-//                 }}
-//             />
-            
-//             <PlantOnionGarden onion={lastTransferredOnion}>
-//                 <DebugDay dayRef={currentDayRef} />
-//                 {currentDayRef && <Day dayRef={currentDayRef} />}
-//             </PlantOnionGarden>
-//         </>
-//     );
-// };
+    return (
+        <RootRefLayerProvider food={rootRef}>
+            {children(rootRef, onWeekChange)}
+        </RootRefLayerProvider>
+    );
+};
+
+const WrappedWeekAndDayControls: React.FC<{
+    weekRef: Ref | null,
+    // onWeekChanged: (w: Ref) => void,
+    children: (dayRef: Ref) => ReactElement,
+}> = ({ weekRef, children }) => {
+    const dispatch = useDispatch();
+    const onion = useOnion();
+
+                // Now, that I have the 'onWeekChanged' callback
+                // I could save it in local state and ditch:
+                // - Root Ref Feeder
+                // - root ref in state
+
+    return (
+        <WeekAndDayControls
+            weekRef={weekRef}
+            onWeekChanged={(newWeekRef) => {
+                dispatch(replaceIngredient(newWeekRef, onion));
+            }}
+        >
+            {children}
+        </WeekAndDayControls>
+    );
+};
+
+const PortalIn: React.FC<{ portalOutId: string, children?: React.ReactNode }> = ({ portalOutId, children}) => {
+    const portalOutElement = document.getElementById(portalOutId);
+    if (portalOutElement === null) {
+        throw new Error(`Could not find the out portal's node; the id was '${portalOutId}'`);
+    }
+    return ReactDOM.createPortal(children, portalOutElement);
+};
 
 const DebugDay: React.FC<{ dayRef: Ref | null }> = ({ dayRef }) => {
     const onion = useOnion();

@@ -6,7 +6,7 @@ export interface Props {
     selectedWeek: Ref | null;
     isPrevWeekAvailable: boolean;
     isNextWeekAvailable: boolean;
-    onWeekSelected: (w: Ref | null) => void;
+    onWeekSelected: (w: Ref) => void;
     onPrevWeekSelected: () => void;
     onNextWeekSelected: () => void;
     onWeekAddRequest: () => void;
