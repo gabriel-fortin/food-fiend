@@ -14,4 +14,3 @@ export { AppendIngredient } from "./AppendIngredient";
 export { Version } from "./Version";
 export { WeekAndDayControls } from "./WeekAndDayControls";
 export { WeekEditor } from "./WeekEditor";
-export { ContextTransfer } from "./ContextTransfer";

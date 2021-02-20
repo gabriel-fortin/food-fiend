@@ -9,7 +9,7 @@ import { State, storeReducer, importData, AppStateProvider, changeFoodName, repl
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { ContextTransfer, MacrosBar, MacrosInfo, WeekAndDayControls, Meal } from 'Component';
+import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
@@ -91,14 +91,6 @@ function DisplayDay() {
                     </ControlWeekFromState>
                     <RootRefFeeder_connected>
                         {(rootRef) =>
-                            // <ContextTransfer
-                            //     contextProvider={(cr) =>
-                            //         <WeekAndDayControls weekRef={rootRef} contextReceiver={cr} />
-                            //     }
-                            //     contextConsumer={(ref) =>
-                            //         <DebugDay dayRef={ref} />
-                            //     }
-                            // />
                             <>
                                 <WrappedWeekAndDayControls weekRef={rootRef}>
                                     {(dayRef) =>
