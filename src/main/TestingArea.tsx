@@ -87,22 +87,6 @@ function DisplayDay() {
                             </StarGate.Provider>
                         }
                     </ControlWeekFromState>
-                    <RootRefFeeder_connected>
-                        {(rootRef) =>
-                            <>
-                                <WrappedWeekAndDayControls weekRef={rootRef}>
-                                    {(dayRef) =>
-                                        <PortalIn portalOutId="portalOut">
-                                            <DebugDay dayRef={dayRef} />
-                                        </PortalIn>
-                                    }
-                                </WrappedWeekAndDayControls>
-
-                                <div id="portalOut">
-                                </div>
-                            </>
-                        }
-                    </RootRefFeeder_connected>
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
@@ -129,39 +113,6 @@ const ControlWeekFromState: React.FC<WeekControllable> = ({ children }) => {
             {children(rootRef, onWeekChange)}
         </RootRefLayerProvider>
     );
-};
-
-const WrappedWeekAndDayControls: React.FC<{
-    weekRef: Ref | null,
-    // onWeekChanged: (w: Ref) => void,
-    children: (dayRef: Ref) => ReactElement,
-}> = ({ weekRef, children }) => {
-    const dispatch = useDispatch();
-    const onion = useOnion();
-
-                // Now, that I have the 'onWeekChanged' callback
-                // I could save it in local state and ditch:
-                // - Root Ref Feeder
-                // - root ref in state
-
-    return (
-        <WeekAndDayControls
-            weekRef={weekRef}
-            onWeekChanged={(newWeekRef) => {
-                dispatch(replaceIngredient(newWeekRef, onion));
-            }}
-        >
-            {children}
-        </WeekAndDayControls>
-    );
-};
-
-const PortalIn: React.FC<{ portalOutId: string, children?: React.ReactNode }> = ({ portalOutId, children}) => {
-    const portalOutElement = document.getElementById(portalOutId);
-    if (portalOutElement === null) {
-        throw new Error(`Could not find the out portal's node; the id was '${portalOutId}'`);
-    }
-    return ReactDOM.createPortal(children, portalOutElement);
 };
 
 const DebugDay: React.FC<{ dayRef: Ref | null }> = ({ dayRef }) => {
@@ -222,29 +173,6 @@ const PrintOnion: React.FC<{ onion: Onion }> = ({ onion }) => {
         </>
     );
 };
-
-// this component is re-rendered on every state change
-// would be nice if it re-rendered its children only when root ref changes
-        // maybe just change the param from 'state' to 'rootRef'? will 'connect' do the trick?
-const RootRefFeeder: React.FC<{state: State, children: ((ref: Ref | null) => ReactElement)}> = ({ state, children }) => {
-    // const state = useAppState();
-
-    // probably I need to connect instead of using useAppState
-
-
-    console.log(`Root Ref Feeder: state:`, state);
-    const rootRef = state.getRootRef();
-
-    return (
-        <RootRefLayerProvider food={rootRef}>
-            {children(rootRef)}
-        </RootRefLayerProvider>
-    );
-};
-
-const RootRefFeeder_connected = connect((state: State) => ({
-    state: state,
-}))(RootRefFeeder);
 
 
 function createDay(id: number, meals: Food[], title: string) {
