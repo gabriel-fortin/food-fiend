@@ -14,3 +14,4 @@ export { Version } from "./Version";
 export { WeekAndDayControls } from "./WeekAndDayControls";
 export { WeekEditor } from "./WeekEditor";
 export { default as StarGate } from "./StarGate";
+export { WeekFromStore } from "./WeekFromStore";

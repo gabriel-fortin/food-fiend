@@ -9,7 +9,7 @@ import { State, storeReducer, importData, AppStateProvider, changeFoodName, repl
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal, StarGate } from 'Component';
+import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal, StarGate, WeekFromStore } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
@@ -74,7 +74,7 @@ function DisplayDay() {
                 <BrowserStorage loadOnMount />
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
-                    <ControlWeekFromState>
+                    <WeekFromStore>
                         {(weekRef, onWeekChange) =>
                             <StarGate.Provider>
                                 <WeekAndDayControls weekRef={weekRef} onWeekChanged={onWeekChange}>
@@ -87,34 +87,12 @@ function DisplayDay() {
                                 </StarGate.Out>
                             </StarGate.Provider>
                         }
-                    </ControlWeekFromState>
+                    </WeekFromStore>
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
     );
 }
-
-interface WeekControllable {
-    children: (
-        weekRef: Ref | null,
-        onWeekChange: (w: Ref) => void,
-    ) => ReactElement;
-}
-const ControlWeekFromState: React.FC<WeekControllable> = ({ children }) => {
-    const onion = useOnion();
-    const rootRef = useTypedSelector(s => s.getRootRef());
-    const dispatch = useDispatch();
-    
-    const onWeekChange = (newWeekRef: Ref) => {
-        dispatch(replaceIngredient(newWeekRef, onion.withRootRefLayer(newWeekRef)));
-    };
-
-    return (
-        <RootRefLayerProvider food={rootRef}>
-            {children(rootRef, onWeekChange)}
-        </RootRefLayerProvider>
-    );
-};
 
 
 function createDay(id: number, meals: Food[], title: string) {
