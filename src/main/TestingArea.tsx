@@ -9,7 +9,7 @@ import { State, storeReducer, importData, AppStateProvider, changeFoodName, repl
 // import OldFoodType from '../data/FoodType';
 import initialData from '../data/initialData';
 
-import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal } from 'Component';
+import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal, StarGate } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
@@ -75,18 +75,16 @@ function DisplayDay() {
                 <PlantOnionGarden>
                     <ControlWeekFromState>
                         {(weekRef, onWeekChange) =>
-                            <>
+                            <StarGate.Provider>
                                 <WeekAndDayControls weekRef={weekRef} onWeekChanged={onWeekChange}>
-                                    {(dayRef) =>
-                                        <PortalIn portalOutId="portalOut2">
-                                            <DebugDay dayRef={dayRef} />
-                                        </PortalIn>
-                                    }
+                                    {dayRef => <StarGate.In transport={dayRef} />}
                                 </WeekAndDayControls>
-
-                                <div id="portalOut2">
-                                </div>
-                            </>
+                                <StarGate.Out>
+                                    {ref =>
+                                        <DebugDay dayRef={ref} />
+                                    }
+                                </StarGate.Out>
+                            </StarGate.Provider>
                         }
                     </ControlWeekFromState>
                     <RootRefFeeder_connected>
