@@ -1,4 +1,4 @@
-/** Meal List **/
+/** Day **/
 
-import { Connector } from "./Connector";
-export default Connector;
+export { Connector as Day } from "./Connector";
+export { DiagnosticDayDisplay } from "./Debug/DiagnosticDayDisplay";

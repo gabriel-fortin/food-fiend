@@ -19,6 +19,7 @@ import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Component/BrowserStorage';
 import { formatRef } from 'tools';
 import ReactDOM from 'react-dom';
+import { DiagnosticDayDisplay as DebugDay } from 'Component/Day';
 
 
 function createEmptyStore() {
@@ -112,65 +113,6 @@ const ControlWeekFromState: React.FC<WeekControllable> = ({ children }) => {
         <RootRefLayerProvider food={rootRef}>
             {children(rootRef, onWeekChange)}
         </RootRefLayerProvider>
-    );
-};
-
-const DebugDay: React.FC<{ dayRef: Ref | null }> = ({ dayRef }) => {
-    const onion = useOnion();
-    const dispatch = useDispatch();
-
-    const style = {
-        width: "12em",
-        display: "inline",
-    };
-
-    return (
-        <Box margin="3em">
-            Debug Day
-            <Box>{`day ref: ${dayRef ? formatRef(dayRef) : dayRef}`}</Box>
-            <PrintOnion onion={onion} />
-            {dayRef !== null &&
-                <Button
-                    onClick={() => {
-                        console.log(`DebugDay: dispatching food name change action; with onion:`, onion);
-                        dispatch(changeFoodName("abc", onion.withFoodLayer(dayRef)));
-                    }}
-                >
-                    Fire action
-                </Button>
-            }
-        </Box>
-    );
-};
-
-const PrintOnion: React.FC<{ onion: Onion }> = ({ onion }) => {
-    const onionInBits = ((onion as any).layers as Layer[])
-        .map(layer => {
-            switch (layer.kind) {
-                case LayerKind.ROOT_REF: return { type: layer.kind, text: formatRef(layer.ref) };
-                case LayerKind.REF: return { type: layer.kind, text: formatRef(layer.ref) };
-                case LayerKind.POS: return { type: layer.kind, text: layer.pos };
-            }
-        });
-
-    const style = {
-        width: "12em",
-        display: "inline",
-    };
-    
-    return (
-        <>
-            <Box>Onion (size={onion.layersLeft()}):</Box>
-            <Grid templateColumns="12em 3em 8em">
-                {onionInBits.map(x =>
-                    <React.Fragment key={x.type + x.text}>
-                        <Box style={style}>{x.type}</Box>
-                        <Box> =&gt; </Box>
-                        <Box>{x.text}</Box>
-                    </React.Fragment>
-                )}
-            </Grid>
-        </>
     );
 };
 

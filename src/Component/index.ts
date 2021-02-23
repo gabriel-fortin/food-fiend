@@ -2,12 +2,11 @@
 
 import IngredientsList from "./IngredientsList";
 import Meal from "./Meal";
-import Day from "./Day";
 
 export { IngredientsList };
 export { Meal };
-export { Day };
 
+export { Day } from "./Day";
 export { IngredientEntry } from "./IngredientEntry";
 export { MacrosBar, MacrosInfo } from "./MacrosDisplay";
 export { AppendIngredient } from "./AppendIngredient";
