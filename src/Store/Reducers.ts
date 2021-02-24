@@ -98,9 +98,6 @@ function routeAction(state: State, action: Action): State {
                     throw new Error(`Unhandled action: ${actionType}`);
             }
 
-            console.debug(`@Reducers: additional actions from reducer for ${currentAction.type}: \n`,
-                    JSON.stringify(newSyntheticActions));
-
             actionsToProcess.push(...newSyntheticActions);
             currentAction = actionsToProcess.shift();
         } while(currentAction !== undefined)
