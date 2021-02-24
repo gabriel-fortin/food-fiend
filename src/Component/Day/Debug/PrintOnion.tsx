@@ -11,6 +11,7 @@ export const PrintOnion: React.FC<{ onion: Onion }> = ({ onion }) => {
                 case LayerKind.ROOT_REF: return { type: layer.kind, text: formatRef(layer.ref) };
                 case LayerKind.REF: return { type: layer.kind, text: formatRef(layer.ref) };
                 case LayerKind.POS: return { type: layer.kind, text: layer.pos };
+                default: throw new Error(`The layer kind '${(layer as Layer).kind}' is not handled`);
             }
         });
 

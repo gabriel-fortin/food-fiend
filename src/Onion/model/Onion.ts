@@ -126,7 +126,7 @@ export const eqOnion: (o1: Onion | null, o2: Onion | null) => boolean
 
         const layers1 = (o1 as any).layers as Layer[];
         const layers2 = (o2 as any).layers as Layer[];
-        if (layers1.length != layers2.length) return false;
+        if (layers1.length !== layers2.length) return false;
 
         for (let i = 0; i < layers1.length; i++) {
             if (layers1[i].kind !== layers2[i].kind) return false;
