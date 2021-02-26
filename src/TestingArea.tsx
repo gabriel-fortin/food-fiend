@@ -7,7 +7,7 @@ import { ThemeProvider, CSSReset, Box, Grid, Button } from '@chakra-ui/core';
 
 import { State, storeReducer, importData, AppStateProvider, changeFoodName, replaceIngredient, useTypedSelector } from 'Store'
 // import OldFoodType from '../data/FoodType';
-import initialData from '../data/initialData';
+import initialData from './data/initialData';
 
 import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal, StarGate, WeekFromStore } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';

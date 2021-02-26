@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './main/index.css';
 import * as serviceWorker from './main/serviceWorker';
-import TestingArea from './main/TestingArea';
+import TestingArea from './TestingArea';
 
 export * from './tools';
 
