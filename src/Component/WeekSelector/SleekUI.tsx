@@ -1,16 +1,28 @@
 import React, { useState } from "react";
 import { Box, Button, Heading, PseudoBox, useDisclosure } from "@chakra-ui/core";
 
-import { Ref } from "Model";
+import { Food, Ref } from "Model";
+import { eqRef, formatRef } from "tools";
 
-import { Props } from "./Props";
 import "./pulsing-animation.css";
-import { eqRef } from "tools";
 
 
-export const WeekControls: React.FC<Props> = ({
+interface Props {
+    weekData: Food[];
+    selectedWeekRef: Ref | null;
+    isPrevWeekAvailable: boolean;
+    isNextWeekAvailable: boolean;
+    onWeekSelected: (w: Ref) => void;
+    onPrevWeekSelected: () => void;
+    onNextWeekSelected: () => void;
+    onWeekAddRequest: () => void;
+    onWeekEditRequest: () => void;
+}
+
+
+export const SleekUI: React.FC<Props> = ({
     weekData,
-    selectedWeek,
+    selectedWeekRef,
     isPrevWeekAvailable,
     isNextWeekAvailable,
     onWeekSelected,
@@ -40,8 +52,23 @@ export const WeekControls: React.FC<Props> = ({
     };
 
     const noDataAtAll = weekData.length === 0;
-    const noWeekSelected = selectedWeek === null;
+    const noWeekSelected = selectedWeekRef === null;
     const showAdditionalWeekControls = noDataAtAll || noWeekSelected || isMouseWithinWeekArea || isWeekDropdownOpen;
+
+    const getNameOfSelectedWeek: () => string
+        = () => {
+            const selectedWeekData = weekData.filter(w => eqRef(w.ref, selectedWeekRef));
+            if (selectedWeekData.length === 1) {
+                return selectedWeekData[0].name;
+            }
+
+            console.warn(`All the available weeks are (count: ${weekData.length}): ` +
+                weekData.map(w => formatRef(w.ref)));
+            console.warn(`The received week ${formatRef(selectedWeekRef)} could not be chosen from that list`);
+
+            throw new Error(`The "selected week" ref ${formatRef(selectedWeekRef)} ` +
+                `could not be chosen from the "week data" list`);
+        };
 
     const MainControls = () => (
         <>
@@ -117,7 +144,7 @@ export const WeekControls: React.FC<Props> = ({
                             </Box>
                             :
                             <Heading marginTop={2} marginX={3}>
-                                {weekData.filter(x => eqRef(x.ref, selectedWeek))[0].name}
+                                {getNameOfSelectedWeek()}
                             </Heading>
                 }
             </Button>

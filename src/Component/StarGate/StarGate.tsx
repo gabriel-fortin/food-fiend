@@ -1,7 +1,8 @@
-import React, { createContext, ReactElement, useContext } from "react";
+import React, { createContext, ReactElement, useContext, useState } from "react";
 
 import { Ref } from "Model";
-import { Onion, PlantOnionGarden, useOnion } from "Onion";
+import { eqOnion, Onion, PlantOnionGarden, useOnion } from "Onion";
+import { eqRef } from "tools";
 
 
 interface InPortalProps {
@@ -12,44 +13,68 @@ interface OutPortalProps {
     children: (ref: Ref | null) => ReactElement;
 }
 
+
 interface RefAndOnion {
     ref: Ref | null;
     onion: Onion;
 }
 
+interface Update {
+    update: (rao: RefAndOnion) => void;
+}
 
-const emptyRefAndOnion: RefAndOnion = {
+
+const emptyRAO: RefAndOnion = {
     ref: null,
     onion: Onion.create(),
 };
+const dummyUpdater: Update = {
+    update: (rao: RefAndOnion) => {
+        throw new Error(`Erhm... this should not be used`);
+    }
+};
 
-const RefAndOnionContext = createContext<RefAndOnion>(emptyRefAndOnion);
+const RefAndOnionContext = createContext<RefAndOnion>(emptyRAO);
+const UpdaterContext = createContext<Update>(dummyUpdater);
 
 
 export const Provider: React.FC = ({ children }) => {
+    const [refAndOnion, setRefAndOnion] = useState(emptyRAO);
+
     return (
-        <RefAndOnionContext.Provider value={emptyRefAndOnion}>
-            {children}
+        <RefAndOnionContext.Provider value={refAndOnion}>
+            <UpdaterContext.Provider value={{update: setRefAndOnion}}>
+                {children}
+            </UpdaterContext.Provider>
         </RefAndOnionContext.Provider>
     );
 };
 
 export const InPortal: React.FC<InPortalProps> = ({ transport: transportedRef }) => {
     const onion = useOnion();
-    const ctx = useContext(RefAndOnionContext);
+    const refAndOnion = useContext(RefAndOnionContext);
+    const updater = useContext(UpdaterContext);
 
-    ctx.ref = transportedRef;
-    ctx.onion = onion;
+    if (hasChanged(refAndOnion, onion, transportedRef)) {
+        updater.update({
+            ref: transportedRef,
+            onion: onion,
+        });
+    }
 
-    return (null);
+    return null;
+};
+
+const hasChanged = (rao: RefAndOnion, onion: Onion, ref: Ref | null) => {
+    return !eqOnion(rao.onion, onion) || !eqRef(rao.ref, ref);
 };
 
 export const OutPortal: React.FC<OutPortalProps> = ({ children }) => {
-    const ctx = useContext(RefAndOnionContext);
+    const refAndOnion = useContext(RefAndOnionContext);
 
     return (
-        <PlantOnionGarden onion={ctx.onion}>
-            {children(ctx.ref)}
+        <PlantOnionGarden onion={refAndOnion.onion}>
+            {children(refAndOnion.ref)}
         </PlantOnionGarden>
     );
 };

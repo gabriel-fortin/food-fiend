@@ -5,11 +5,11 @@ import { Provider, connect, useDispatch } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { ThemeProvider, CSSReset, Box, Grid, Button } from '@chakra-ui/core';
 
-import { State, storeReducer, importData, AppStateProvider, changeFoodName, replaceIngredient, useTypedSelector } from 'Store'
+import { State, storeReducer, importData, AppStateProvider } from 'Store'
 // import OldFoodType from '../data/FoodType';
 import initialData from './data/initialData';
 
-import { MacrosBar, MacrosInfo, WeekAndDayControls, Meal, StarGate, WeekFromStore } from 'Component';
+import { MacrosBar, MacrosInfo, MainLayout, Meal } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
@@ -17,9 +17,6 @@ import { Ingredient, Food, FoodType, Ref } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Component/BrowserStorage';
-import { formatRef } from 'tools';
-import ReactDOM from 'react-dom';
-import { DiagnosticDayDisplay as DebugDay } from 'Component/Day';
 
 
 function createEmptyStore() {
@@ -74,20 +71,7 @@ function DisplayDay() {
                 <BrowserStorage loadOnMount />
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>
-                    <WeekFromStore>
-                        {(weekRef, onWeekChange) =>
-                            <StarGate.Provider>
-                                <WeekAndDayControls weekRef={weekRef} onWeekChanged={onWeekChange}>
-                                    {dayRef => <StarGate.In transport={dayRef} />}
-                                </WeekAndDayControls>
-                                <StarGate.Out>
-                                    {ref =>
-                                        <DebugDay dayRef={ref} />
-                                    }
-                                </StarGate.Out>
-                            </StarGate.Provider>
-                        }
-                    </WeekFromStore>
+                    <MainLayout/>
                 </PlantOnionGarden>
             </AppStateProvider>
         </ThemeProvider>
