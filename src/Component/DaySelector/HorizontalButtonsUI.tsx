@@ -5,11 +5,25 @@ import { BoxProps, Button, ButtonGroup, IButton, PseudoBoxProps } from "@chakra-
 interface Props {
     selectedDay: number | null;
     todayDay: number | null;
+    startDay?: string;
+    weekLength?: number;
     onDaySelected: (day: number) => void;
 }
 
 
-export const HorizontalButtonsUI: React.FC<Props> = ({ selectedDay, todayDay, onDaySelected }) => {
+export const HorizontalButtonsUI: React.FC<Props> = ({
+    selectedDay,
+    todayDay,
+    startDay = "Mon",
+    weekLength = 7,
+    onDaySelected,
+}) => {
+    const dayShift = daysOfTheWeek.indexOf(startDay);
+    if (dayShift < 0) throw new Error(`Start day '${startDay}' not found`);
+    const shiftedDays = [...daysOfTheWeek.slice(dayShift), ...daysOfTheWeek.slice(0, dayShift)];
+    // by doubling the days, up to 14 days can be handled in a 'week'
+    const adjustedDaysOfTheWeek = [...shiftedDays, ...shiftedDays].slice(0, weekLength);
+
     return (
         <ButtonGroup
             display="flex"
@@ -20,7 +34,7 @@ export const HorizontalButtonsUI: React.FC<Props> = ({ selectedDay, todayDay, on
             color="yellow.600"
             borderColor="grey.100"
         >
-            {daysOfTheWeek.map((dayName, i) => {
+            {adjustedDaysOfTheWeek.map((dayName, i) => {
                 const buttonProps = {
                     ...dayButtonProps,
                     ...(selectedDay === i) && selectedDayStyle,
