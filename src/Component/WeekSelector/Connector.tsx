@@ -18,6 +18,11 @@ interface Props {
 }
 
 
+/**
+ * @param weekRef mandatory; week to be currently selected
+ * @param onWeekChanged mandatory; called when user chooses a different week
+ * @param children optional; they'll have the weekRef ref in their onion
+ */
 export const Connector: React.FC<Props> = ({
     weekRef: selectedWeekRef,
     onWeekChanged: notifyWeekChanged,

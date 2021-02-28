@@ -14,21 +14,24 @@ interface Props {
 }
 
 
-export const Connector: React.FC<Props> = ({ weekRef, children }) => {
+export const Connector: React.FC<Props> = ({
+    weekRef,
+    children = () => null,
+}) => {
     const appState = useAppState();
     const someHalfRandomDayRef = (weekRef!==null && appState.findFood(weekRef).ingredientsRefs[0].ref) as Ref;
 
     console.log(`DAY SELECTOR:  constructed day ref: ${formatRef(someHalfRandomDayRef)}`);
     console.log(`DAY SELECTOR:  week ref: ${formatRef(weekRef)}  children present: ${children!==undefined}`);
 
-    const seelctedDay = 0;
+    const seelctedDay: number | null = 0;
 
     return (
         <>
-            {weekRef !== null &&
+            {weekRef !== null && seelctedDay !== null &&
                 <FoodLayerProvider food={weekRef}>
                     <PositionLayerProvider position={seelctedDay}>
-                        {weekRef !== null && children && children(someHalfRandomDayRef)}
+                        {children(someHalfRandomDayRef)}
                     </PositionLayerProvider>
                 </FoodLayerProvider>
             }
@@ -36,8 +39,7 @@ export const Connector: React.FC<Props> = ({ weekRef, children }) => {
                 selectedDay={seelctedDay}
                 todayDay={null}
                 onDaySelected={() => console.log(`NOT IMPLEMENTED: on day selected`)}
-            >
-            </HorizontalButtonsUI>
+            />
         </>
     );
 };
