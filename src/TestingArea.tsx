@@ -1,9 +1,9 @@
 /* eslint-disable */
-import React, { ReactElement, useState } from 'react';
+import React from 'react';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider, connect, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { ThemeProvider, CSSReset, Box, Grid, Button } from '@chakra-ui/core';
+import { ThemeProvider, CSSReset } from '@chakra-ui/core';
 
 import { State, storeReducer, importData, AppStateProvider } from 'Store'
 // import OldFoodType from '../data/FoodType';
@@ -13,7 +13,7 @@ import { MacrosBar, MacrosInfo, MainLayout, Meal } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
-import { Ingredient, Food, FoodType, Ref } from 'Model';
+import { Ingredient, Food, FoodType, Ref, WeekExtra } from 'Model';
 import { AllOfType } from "Screen";
 import { ShowToasts, ShowModals } from 'UI';
 import { BrowserStorage } from 'Component/BrowserStorage';
@@ -46,9 +46,11 @@ function DisplayDay() {
     const tempDay1 = createDay(666, [lunch, obiad], "test day 1");
     const tempDay2 = createDay(667, [obiad], "test day 2");
     const tempWeek1 = { ...createDay(111, [tempDay1], "Week 61"), type: FoodType.Week as FoodType,
-            ingredientsRefs: [new Ingredient(tempDay2.ref, 0, 1, null)] };
+            ingredientsRefs: [new Ingredient(tempDay2.ref, 0, 1, null)],
+            extra: new WeekExtra(new Date("2020-02-26"), 1) };
     const tempWeek2 = { ...createDay(112, [tempDay1], "Week 62"), type: FoodType.Week as FoodType,
-            ingredientsRefs: [new Ingredient(tempDay1.ref, 0, 1, null)] };
+            ingredientsRefs: [new Ingredient(tempDay1.ref, 0, 1, null), new Ingredient(tempDay2.ref, 1, 1, null)],
+            extra: new WeekExtra(new Date("2020-03-05"), 2) };
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 
