@@ -65,10 +65,7 @@ export const Connector: React.FC<Props> = ({
                 openWeekEditor();
             },
             onWeekSelected: (userSelectedWeekRef: Ref) => {
-                console.log(`Week And Day Controls - on Week selected`);
-                
                 notifyWeekChanged(userSelectedWeekRef);
-                return;
             },
         };
     };
