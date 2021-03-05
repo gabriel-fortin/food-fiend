@@ -47,10 +47,10 @@ function DisplayDay() {
     const tempDay2 = createDay(667, [obiad], "test day 2");
     const tempWeek1 = { ...createDay(111, [tempDay1], "Week 61"), type: FoodType.Week as FoodType,
             ingredientsRefs: [new Ingredient(tempDay2.ref, 0, 1, null)],
-            extra: new WeekExtra(new Date("2020-02-26"), 1) };
+            extra: new WeekExtra(new Date("2021-02-26"), 1) };
     const tempWeek2 = { ...createDay(112, [tempDay1], "Week 62"), type: FoodType.Week as FoodType,
             ingredientsRefs: [new Ingredient(tempDay1.ref, 0, 1, null), new Ingredient(tempDay2.ref, 1, 1, null)],
-            extra: new WeekExtra(new Date("2020-03-05"), 2) };
+            extra: new WeekExtra(new Date("2021-03-04"), 2) };
     // IMPORTANT
     // normally we should update the 'usedBy' field of each used ingredient
 

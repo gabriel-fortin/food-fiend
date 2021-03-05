@@ -43,12 +43,19 @@ export const Connector: React.FC<Props> = ({
     function refFor(day: number) {
         return weekData.ingredientsRefs[day].ref;
     };
+    
+    function todayDay() {
+        const todayAsEpoch = new Date().setHours(0, 0, 0, 0); // remove time bits
+        const weekStartAsEpoch = weekExtra.startDate.getTime();
+        const millisecondsInDay = 24*60*60*1000;
+        return Math.round((todayAsEpoch - weekStartAsEpoch) / millisecondsInDay);
+    }
 
     return (
         <>
             <HorizontalButtonsUI
                 selectedDay={selectedDay}
-                todayDay={null}
+                todayDay={todayDay()}
                 startDay={weekExtra.startDate.toString().slice(0, 3)}
                 weekLength={weekExtra.weekLength}
                 onDaySelected={setSelectedDay}
