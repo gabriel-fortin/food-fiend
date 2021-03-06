@@ -243,7 +243,7 @@ const reducer_appendIngredient =
             doUpdateVersion(mutableState),
             doUpdateStorageInfo(),
             doAddIngredient(ingredientRef),
-            // maybe someday: update macros if the quantity is non-zero
+            doCalculateMacros(mutableState),
         ]);
 
         putFoodIntoMutableState(mutableState, updatedParentFood);
