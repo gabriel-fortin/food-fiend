@@ -30,14 +30,12 @@ export const Connector: React.FC<Props> = ({
     const weekExtra = (weekData.extra as WeekExtra);
     sanityChecks(weekData);
 
-    // if we received a different week ref in props
-    if (!eqRef(lastSelectedWeek, weekRef)) {
+    // if provided week was switched (not just merely updated)
+    if (haveDifferentIds(lastSelectedWeek, weekRef)) {
         setLastSelectedWeek(weekRef);
-        // make sure the selected day is still valid within the week
-        if (selectedDay !== null && selectedDay >= weekExtra.weekLength) {
-            setSelectedDay(null);
-            selectedDay = null;
-        }
+        // clear day selection
+        setSelectedDay(null);
+        selectedDay = null;
     }
 
     function refFor(day: number) {
@@ -92,4 +90,15 @@ const sanityChecks = (weekData: Food) => {
         throw new Error(`Mismatch in number of ingredients and length of week: `
             + `'${ingredientCount}', '${weekLength}'`);
     }
+};
+
+const haveDifferentIds = (ref1: Ref | null, ref2: Ref | null) => {
+    // when both are null
+    if (ref1 === null && ref2 === null) return false;
+
+    // when one is null and one has value
+    if (ref1 === null || ref2 === null) return true;
+
+    // when both have value
+    return ref1.id !== ref2.id;
 };
