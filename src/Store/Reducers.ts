@@ -231,13 +231,14 @@ const reducer_setRootRef = ({ rootRef }: SetRootRefAction, mutableState: State):
 const reducer_appendIngredient =
     ({ ingredientRef, context}: AppendIngredientAction, mutableState: State): Action[] => {
         if (context.layersLeft() === 0) {
-            console.debug(`Cannot append ingredient when context is empty`);
+            console.error(`Cannot append ingredient when context is empty`);
             return [];
         }
 
         const [layer1, remainingContext] = context.peelOneLayer();
-        const parentFoodRef = (layer1 as RefLayer).ref;
+        if (layer1.kind === "ROOT REF LAYER") return [setRootRef(ingredientRef)];
 
+        const parentFoodRef = assertRefLayer(layer1).ref;
         const parentFood = mutableState.findFood(parentFoodRef);
         const updatedParentFood = applyFunctionsTo(parentFood, [
             doUpdateVersion(mutableState),
