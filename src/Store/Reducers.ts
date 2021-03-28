@@ -92,7 +92,7 @@ function routeAction(state: State, action: Action): State {
                     const actionType = (currentAction as any).type;
 
                     // make an exception for initialisation done by Redux itself
-                    if (actionType.startsWith("@@redux/INIT")) break;
+                    if (actionType.match(/^@@.*INIT$/)) break;
 
                     console.error(`@Reducer: unhandled action: ${actionType}`);
                     throw new Error(`Unhandled action: ${actionType}`);
