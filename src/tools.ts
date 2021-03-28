@@ -54,3 +54,9 @@ export const formatRef
         ref === null
             ? "[null]"
             : `[${ref.id} / ${ref.ver}]`;
+
+export const withStrippedTime: (d: Date) => Date
+    = (date: Date) => {
+        date.setHours(0, 0, 0, 0);
+        return date;
+    }
