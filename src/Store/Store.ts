@@ -1,4 +1,5 @@
 import { Food, FoodType, Ref, Message } from 'Model';
+import { WeekEditStoreData } from 'Component/WeekEditor';
 
 
 export abstract class State {
@@ -6,6 +7,10 @@ export abstract class State {
     foodData: Food[];
     rootRef: Ref | null;  // the root of what should be shown in the UI
     message: Message | null;
+    editWeek: {
+        isOpen: boolean;
+        data?: WeekEditStoreData;
+    };
 
     history: any = null;
 
@@ -15,6 +20,7 @@ export abstract class State {
     protected constructor() {
         this.foodData = [];
         this.rootRef = null;
+        this.editWeek = { isOpen: false };
         this.message = null;
     }
 
