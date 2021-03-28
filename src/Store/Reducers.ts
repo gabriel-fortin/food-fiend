@@ -322,7 +322,7 @@ const reducer_changeFoodVersion = (
 };
 
 const reducer_addFood = (
-    { context, foodType, name, unit, extra, callback }: AddFoodAction,
+    { context, foodType, name, unit, extra }: AddFoodAction,
     mutableState: State
 ): Action[] => {
     const food = new Food(
@@ -337,7 +337,6 @@ const reducer_addFood = (
     );
 
     putFoodIntoMutableState(mutableState, food);
-    callback(food.ref);
 
     return [appendIngredient(food.ref, context)];
 };

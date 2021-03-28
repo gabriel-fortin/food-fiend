@@ -22,7 +22,6 @@ export interface AddFoodAction {
     macrosUncertainty: MacrosUncertainty,
     extra: object,
     context: Onion,
-    callback: (newItem: Ref | null) => void,
 }
 
 export interface ReplaceIngredientAction {
