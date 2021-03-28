@@ -55,7 +55,7 @@ export const Connector: React.FC<Props> = ({
                 selectedDay={selectedDay}
                 todayDay={todayDay()}
                 startDay={weekExtra.startDate.toString().slice(0, 3)}
-                weekLength={weekExtra.weekLength}
+                weekLength={weekData.ingredientsRefs.length}
                 onDaySelected={setSelectedDay}
             />
 
@@ -78,17 +78,9 @@ const sanityChecks = (weekData: Food) => {
     }
 
     const extra = weekData.extra as WeekExtra;
-    if (extra.startDate === undefined || extra.weekLength === undefined) {
-        console.error(`What we thought is Week Extra:`, weekData.extra);
+    if (extra.startDate === undefined) {
+        console.error(`What we expected to be Week Extra:`, weekData.extra);
         throw new Error(`Week Extra is missing; ref '${formatRef(weekData.ref)}'`);
-    }
-
-    const ingredientCount = weekData.ingredientsRefs.length;
-    const weekLength = (weekData.extra as WeekExtra).weekLength;
-
-    if (ingredientCount !== weekLength) {
-        throw new Error(`Mismatch in number of ingredients and length of week: `
-            + `'${ingredientCount}', '${weekLength}'`);
     }
 };
 
