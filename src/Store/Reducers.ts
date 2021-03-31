@@ -18,11 +18,11 @@ import { Action } from './ActionRegister';
 
 
 /**
- * Helper function prettier chaining
+ * Helper to keep the original object unchanged
  * @param {*} initialObject object to be transformed by the functions
- * @param {*} functions functions tha will transform the object
+ * @param {*} functions functions that will transform a copy of the object
  */
-function applyFunctionsTo<T>(initialObject: T, functions: ((o: T) => void)[]): T {
+function copyAndModify<T>(initialObject: T, functions: ((o: T) => void)[]): T {
     return Immer_produce(initialObject,
         (draftObj: Draft<T>) => {
             functions.forEach(fun => fun(draftObj as T));
@@ -168,9 +168,9 @@ const reducer_changeIngredientQuantity =
         const mealRef = (layer2 as RefLayer).ref;
 
         const meal = mutableState.findFood(mealRef);
-        const updatedMeal = applyFunctionsTo(meal, [
+        const updatedMeal = copyAndModify(meal, [
             doUpdateVersion(mutableState),
-            doUpdateStorageInfo(),
+            doUpdateStorageInfo,
             doModifyIngredientQuantityAtPos(ingredientPosInMeal, newQuantity),
             doCalculateMacros(mutableState),
         ]);
@@ -208,9 +208,9 @@ const reducer_replaceIngredient = (
     const parentRef = (layer2 as RefLayer).ref;
 
     const parentFood = mutableState.findFood(parentRef);
-    const updatedParentFood = applyFunctionsTo(parentFood, [
+    const updatedParentFood = copyAndModify(parentFood, [
         doUpdateVersion(mutableState),
-        doUpdateStorageInfo(),
+        doUpdateStorageInfo,
         doUpdateIngredientAtPos(ingredientPosition, replacement),
         doCalculateMacros(mutableState),
     ]);
@@ -240,9 +240,9 @@ const reducer_appendIngredient =
 
         const parentFoodRef = assertRefLayer(layer1).ref;
         const parentFood = mutableState.findFood(parentFoodRef);
-        const updatedParentFood = applyFunctionsTo(parentFood, [
+        const updatedParentFood = copyAndModify(parentFood, [
             doUpdateVersion(mutableState),
-            doUpdateStorageInfo(),
+            doUpdateStorageInfo,
             doAddIngredient(ingredientRef),
             doCalculateMacros(mutableState),
         ]);
@@ -274,9 +274,9 @@ const reducer_removeIngredient = (
     const parentFoodRef = (layer2 as RefLayer).ref;
     const parentFood = mutableState.findFood(parentFoodRef);
 
-    const updateParentFood = applyFunctionsTo(parentFood, [
+    const updateParentFood = copyAndModify(parentFood, [
         doUpdateVersion(mutableState),
-        doUpdateStorageInfo(),
+        doUpdateStorageInfo,
         doRemoveIngredient(ingredientPosition),
         doCalculateMacros(mutableState),
     ]);
@@ -296,9 +296,9 @@ const reducer_changeFoodName = (
     const foodRef = (layer1 as RefLayer).ref;
 
     const food = mutableState.findFood(foodRef);
-    const updatedFood = applyFunctionsTo(food, [
+    const updatedFood = copyAndModify(food, [
         doUpdateVersion(mutableState),
-        doUpdateStorageInfo(),
+        doUpdateStorageInfo,
         doChangeName(newName),
     ]);
 
@@ -326,16 +326,7 @@ const reducer_addFood = (
     { context, foodType, name, unit, extra }: AddFoodAction,
     mutableState: State
 ): Action[] => {
-    const food = new Food(
-        mutableState.getNewRef(),
-        name,
-        foodType,
-        new Macros(0, 0, 0),
-        unit,
-        /* portion size: */ 1,
-        /* portions: */ 1,
-        extra,
-    );
+    const food = createFood(mutableState, name, foodType, unit, extra);
 
     putFoodIntoMutableState(mutableState, food);
 
@@ -351,7 +342,21 @@ const reducer_setMessage = (
 };
 
 
-// helper to be used with 'applyFunctionsTo'
+// helper
+const createFood = (mutableState: State, name: string, foodType: FoodType, unit: string, extra: object = {}): Food => {
+    return new Food(
+        mutableState.getNewRef(),
+        name,
+        foodType,
+        new Macros(0, 0, 0),
+        unit,
+        /* portion size: */ 1,
+        /* portions: */ 1,
+        extra,
+    );
+};
+
+// mutating helper
 const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: number) => (meal: Food): void => {
     // PERF: do not update version if it was not used by anything
     //       (requires the 'usedBy' field changes to be implemented)
@@ -366,14 +371,14 @@ const doModifyIngredientQuantityAtPos = (posToUpdate: number, newQuantity: numbe
     ingredient.quantity = newQuantity;
 };
 
-// helper to be used with 'applyFunctionsTo'
+// mutating helper
 const doUpdateIngredientAtPos = (ingredientPosition: number, replacement: Ref) => (meal: Food): void => {
     const ingredient = filterOne(meal.ingredientsRefs, x => x.position === ingredientPosition);
     ingredient.ref = replacement;
 };
 
 
-// helper to be used with 'applyFunctionsTo'
+// mutating helper
 const doCalculateMacros = (state: State) => (meal: Food): void => {
     const handledTypes = [FoodType.Meal, FoodType.Day, FoodType.Week];
 
@@ -408,7 +413,7 @@ const doCalculateMacros = (state: State) => (meal: Food): void => {
     // TODO: calculate also uncertainty
 };
 
-// helper to be used with 'applyFunctionsTo'
+// mutating helper
 const doUpdateVersion = (state: State) => (food: Food): void => {
     const latestVersionOfFood = state.findFoodLatest(food.ref.id);
     const newVersion = latestVersionOfFood.ref.ver + 1;
@@ -416,7 +421,7 @@ const doUpdateVersion = (state: State) => (food: Food): void => {
     food.ref.ver = newVersion;
 };
 
-// helper to be used with 'applyFunctionsTo'
+// mutating helper
 const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): void => {
     const maxPos = parentFood.ingredientsRefs
         .reduce((acc, r2) => Math.max(acc, r2.position), 0);
@@ -425,18 +430,18 @@ const doAddIngredient = (ingredientRef: Ref) => (parentFood: Food): void => {
     parentFood.ingredientsRefs.push(newIngredient);
 };
 
-// helper to be used with 'applyFunctionsTo'
+// mutating helper
 const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): void => {
     parentFood.ingredientsRefs = parentFood.ingredientsRefs.filter(x => x.position !== positionToRemove);
 };
 
-// helper to be used with 'applyFunctionsTo'
+// mutating helper
 const doChangeName = (newName: string) => (food: Food): void => {
     food.name = newName;
 };
 
-// helper to be used with 'applyFunctionsTo'
-const doUpdateStorageInfo = () => (food: Food): void => {
+// mutating helper
+const doUpdateStorageInfo = (food: Food): void => {
     food.extra = {
         ...food.extra,
         ...new StorageInfo(new Date(), /*isInitialItem:*/ false),
