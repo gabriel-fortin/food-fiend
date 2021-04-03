@@ -1,9 +1,11 @@
 import Immer_produce, { Draft } from 'immer';
 
-import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo } from 'Model';
-import { PositionLayer, RefLayer, LayerKind } from 'Onion';
+import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo, WeekExtra } from 'Model';
+import { PositionLayer, RefLayer, LayerKind, assertRefLayer } from 'Onion';
 import { SetMessageAction, setErrorMessage } from 'UI/ShowToasts';
-import { eqRef, filterOne } from "tools";
+import { eqRef, filterOne, withStrippedTime } from "tools";
+import { WeekEditStoreData } from 'Component/WeekEditor';
+import { OpenWeekEditorAction, SaveWeekEditorAction, CancelWeekEditorAction } from 'Component/WeekEditor/Actions';
 
 import { State, mutatePutFood as putFoodIntoMutableState } from './Store';
 import {
@@ -86,6 +88,15 @@ function routeAction(state: State, action: Action): State {
                     break;
                 case "SET MESSAGE":
                     newSyntheticActions = reducer_setMessage(currentAction, mutableState);
+                    break;
+                case "WEEK EDITOR - OPEN":
+                    newSyntheticActions = reducer_weekEditor_open(currentAction, mutableState);
+                    break;
+                case "WEEK EDITOR - SAVE":
+                    newSyntheticActions = reducer_weekEditor_save(currentAction, mutableState);
+                    break;
+                case "WEEK EDITOR - CANCEL":
+                    newSyntheticActions = reducer_weekEditor_cancel(currentAction, mutableState);
                     break;
                 default:
                     // needs casting because, for TypeScript, all values of 'type' were already handled above
@@ -331,6 +342,99 @@ const reducer_addFood = (
     putFoodIntoMutableState(mutableState, food);
 
     return [appendIngredient(food.ref, context)];
+};
+
+const reducer_weekEditor_open = (
+    { context, weekRef }: OpenWeekEditorAction,
+    mutableState: State,
+    ): Action[] => {
+        let weekDetails: Omit<WeekEditStoreData, "weekRef" | "callerContext">;
+        
+        if (weekRef === null) {
+            weekDetails = {
+                weekName: "",
+                weekStartDate: withStrippedTime(new Date()),
+            };
+        } else {
+            const weekData = mutableState.findFood(weekRef);
+            if (weekData.type !== FoodType.Week) {
+                console.error(`Ignoring attempt to open week editor.`
+                    + ` Food is not of type 'Week'. The actual type is '${weekData.type}'`);
+                return [];
+            }
+
+            weekDetails = {
+                weekName: weekData.name,
+                weekStartDate: withStrippedTime((weekData.extra as WeekExtra).startDate),
+            };
+        }
+
+        // keep invariant:  isOpen == true  <=> data != null
+        mutableState.editWeek.isOpen = true;
+        mutableState.editWeek.data = {
+            weekRef,
+            callerContext: context,
+            ...weekDetails,
+        };
+        
+        return [];
+    };
+    
+const reducer_weekEditor_save = (
+    { weekName, weekStartDate }: SaveWeekEditorAction,
+    mutableState: State,
+): Action[] => {
+    if (isNaN(Date.parse(weekStartDate))) {
+        console.error(`When saving week editor: incorrect date '${weekStartDate}'`);
+        return [];
+    }
+
+    const startDate = withStrippedTime(new Date(weekStartDate));
+
+    const editorData = mutableState.editWeek.data;
+    if (editorData === null) {
+        // invariant:  isOpen == true  <=>  data != null
+        // additionally: the Save action should be called only when isOpen == true
+        const msg = `unexpected situation: "mutableState.editWeek.data" is null`;
+        console.error(`${msg};  mutableState.editWeek.isOpen: ${mutableState.editWeek.isOpen}`);
+        throw new Error(msg);
+    }
+
+    let weekFood: Food;
+    if (editorData.weekRef === null) {
+        weekFood = createFood(mutableState, weekName, FoodType.Week, "week", new WeekExtra(startDate));
+    } else {
+        weekFood = mutableState.findFood(editorData.weekRef);
+        weekFood = copyAndModify(weekFood, [
+            doUpdateVersion(mutableState),
+        ]);
+    }
+
+    weekFood = copyAndModify(weekFood, [
+        doUpdateStorageInfo,
+        doChangeName(weekName),
+        doChangeStartDate(startDate),
+    ]);
+    
+
+    putFoodIntoMutableState(mutableState, weekFood);
+
+    // keep invariant:  isOpen == true  <=> data != null
+    mutableState.editWeek.isOpen = false;
+    mutableState.editWeek.data = null;
+
+    return [replaceIngredient(weekFood.ref, editorData.callerContext)];
+};
+
+const reducer_weekEditor_cancel = (
+    {}: CancelWeekEditorAction,
+    mutableState: State,
+): Action[] => {
+    // keep invariant:  isOpen == true  <=> data != null
+    mutableState.editWeek.isOpen = false;
+    mutableState.editWeek.data = null;
+
+    return [];
 };
 
 const reducer_setMessage = (

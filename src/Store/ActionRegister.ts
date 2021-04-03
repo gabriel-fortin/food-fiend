@@ -2,6 +2,7 @@ import { AddFoodAction, AppendIngredientAction, ChangeFoodNameAction, ChangeFood
     from "./DataActions";
 import { SetRootRefAction } from "./UncategorisedActions";
 import { SetMessageAction } from "UI/ShowToasts";
+import { OpenWeekEditorAction, SaveWeekEditorAction, CancelWeekEditorAction } from "Component/WeekEditor/Actions";
 
 
 export type Action =
@@ -15,4 +16,7 @@ export type Action =
 | ChangeFoodNameAction
 | ChangeFoodVersionAction
 | SetMessageAction
+| OpenWeekEditorAction
+| SaveWeekEditorAction
+| CancelWeekEditorAction
 ;

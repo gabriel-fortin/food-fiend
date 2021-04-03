@@ -9,7 +9,7 @@ export abstract class State {
     message: Message | null;
     editWeek: {
         isOpen: boolean;
-        data?: WeekEditStoreData;
+        data: WeekEditStoreData | null;
     };
 
     history: any = null;
@@ -20,7 +20,7 @@ export abstract class State {
     protected constructor() {
         this.foodData = [];
         this.rootRef = null;
-        this.editWeek = { isOpen: false };
+        this.editWeek = { isOpen: false, data: null };
         this.message = null;
     }
 
