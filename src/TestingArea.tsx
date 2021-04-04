@@ -9,7 +9,7 @@ import { State, storeReducer, importData, AppStateProvider } from 'Store'
 // import OldFoodType from '../data/FoodType';
 import initialData from './data/initialData';
 
-import { MacrosBar, MacrosInfo, MainLayout, Meal } from 'Component';
+import { MacrosBar, MacrosInfo, MainLayout, Meal, WeekEditor } from 'Component';
 // import { IngredientsListWidget as IngredientsDisplay } from 'Widget';
 // import { FoodSelector } from 'Widget';
 import { Layer, LayerKind, Onion, PlantOnionGarden, RootRefLayerProvider, useOnion } from 'Onion';
@@ -71,6 +71,7 @@ function DisplayDay() {
             <CSSReset />
             <AppStateProvider _debug__injectStore={store}>
                 <ShowToasts />
+                <WeekEditor />
                 <BrowserStorage loadOnMount />
                 {/* <ShowModals /> */}
                 <PlantOnionGarden>

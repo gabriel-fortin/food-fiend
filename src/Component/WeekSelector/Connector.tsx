@@ -1,11 +1,10 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 import { connect, useDispatch } from "react-redux";
-import { useDisclosure } from "@chakra-ui/core";
 
 import { FoodType, Ref } from "Model";
-import { replaceIngredient, State } from "Store";
-import { WeekEditor } from "Component";
+import { State } from "Store";
 import { FoodLayerProvider, useOnion } from "Onion";
+import { addWeek, editWeek } from "Component/WeekEditor";
 import { eqRef } from "tools";
 
 import { SleekUI as UI } from "./SleekUI";
@@ -21,28 +20,15 @@ interface Props {
 /**
  * @param weekRef mandatory; week to be currently selected
  * @param onWeekChanged mandatory; called when user chooses a different week
- * @param children optional; they'll have the weekRef ref in their onion
+ * @param children optional; can be used to inherit the weekRef ref and the rest of the onion
  */
 export const Connector: React.FC<Props> = ({
     weekRef: selectedWeekRef,
     onWeekChanged: notifyWeekChanged,
     children,
 }) => {
-    const [editedWeekRef, setEditedWeekRef] = useState<Ref|null>(null);
-
-    const {
-        isOpen: isWeekEditorOpen,
-        onOpen: openWeekEditor,
-        onClose: closeWeekEditor } = useDisclosure();
     const parentOnion = useOnion();
     const dispatch = useDispatch();
-
-    const onWeekEditorClose = (updatedWeekRef: Ref | null) => {
-        if (updatedWeekRef !== null) {
-            dispatch(replaceIngredient(updatedWeekRef, parentOnion));
-        }
-        closeWeekEditor();
-    };
 
     const mapState = (state: State) => {
         const weekData = state.getAllFoodOfType(FoodType.Week);
@@ -57,12 +43,10 @@ export const Connector: React.FC<Props> = ({
             onPrevWeekSelected: () => console.warn(`NOT IMPLEMENTED: on prev week selected`),
             onNextWeekSelected: () => console.warn(`NOT IMPLEMENTED: on next week selected`),
             onWeekAddRequest: () => {
-                setEditedWeekRef(null);
-                openWeekEditor();
+                dispatch(addWeek(parentOnion));
             },
             onWeekEditRequest: () => {
-                setEditedWeekRef(selectedWeekRef);
-                openWeekEditor();
+                dispatch(editWeek(parentOnion, selectedWeekRef!));
             },
             onWeekSelected: (userSelectedWeekRef: Ref) => {
                 notifyWeekChanged(userSelectedWeekRef);
@@ -73,17 +57,12 @@ export const Connector: React.FC<Props> = ({
     const ConnectedUI = connect(mapState)(UI);
     return (
         <>
-            {selectedWeekRef &&
+            {(selectedWeekRef !== null) &&
                 <FoodLayerProvider food={selectedWeekRef}>
                     {children}
                 </FoodLayerProvider>
             }
             <ConnectedUI/>
-            <WeekEditor
-                weekRef={editedWeekRef}
-                isOpen={isWeekEditorOpen}
-                onClose={onWeekEditorClose}
-            />
         </>
     );
 };

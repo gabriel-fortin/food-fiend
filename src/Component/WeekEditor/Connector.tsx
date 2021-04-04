@@ -1,69 +1,110 @@
-import React, { useRef, useState } from "react";
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, Input }
-    from "@chakra-ui/core";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, FormControl, FormHelperText, FormLabel, Input, Stack }
+    from "@chakra-ui/core";
 
-import { FoodType, WeekExtra, Ref } from "Model";
-import { Onion } from "Onion";
-import { addCompositeFood } from "Store";
+import { useOnion } from "Onion";
+import { useTypedSelector } from "Store";
+
+import { saveWeekEditor, cancelWeekEditor } from "./ActionCreators";
 
 
-interface Props {
-    weekRef: Ref | null;
-    isOpen: boolean;
-    onClose: (updatedWeek: Ref | null) => void;
-}
-
-export const Connector: React.FC<Props> = ({ weekRef, isOpen, onClose: onCloseNotify }) => {
+export const Connector: React.FC = () => {
     const leastDestructiveUiActionRef = useRef(null); // needed for AlertDialog
-    const [weekName, setWeekName] = useState("");
+
+    const [weekName, setWeekName] = useState<string>("?");
+    const [weekStart, setWeekStart] = useState<string>("?");
+
     const dispatch = useDispatch(); // TODO: spilt this into UI part and connector; then use react-redux to connect to store, instead of manually dispatching
+    const onion = useOnion();
 
-    const saveWeek = () => {
-        console.log(`Week Edit Dialog:: weekRef: `, weekRef);
+    const isOpen = useTypedSelector(x => x.editWeek.isOpen);
+    const data = useTypedSelector(x => x.editWeek.data);
 
-        if (weekRef === null) {
-            // TODO: get start date from a field on the form
-            const startDate = new Date();
-            const onFoodAddedCallback = (foodRef: Ref | null) => {
-                onCloseNotify(foodRef);
-            };
-            dispatch(addCompositeFood(Onion.create(), FoodType.Week, weekName, "week", new WeekExtra(startDate, 7), onFoodAddedCallback));
-            // TODO: add new week to store, add days for the week
-            // an empty context wil be needed?
-        } else {
-            alert('todo');
-            // TODO: update existing week in store
-            // do I need anything in context? probably not, an empty one will do
-        }
-        // onClose();
+    // on editor open, read data from store
+    useEffect(() => {
+        if (!isOpen) return;
+        if (data === null) throw new Error(`'data' for week editor is null, somehow`);
+
+        setWeekName(data.weekName);
+        setWeekStart(data.weekStartDate.toISOString().substring(0, 10));
+    }, [isOpen]);
+
+    if (!isOpen) {
+        return null;
+    }
+
+    const handleWeekNameChange = (e: React.FormEvent<HTMLInputElement>) => {
+        setWeekName(e.currentTarget.value);
+    };
+
+    const handleWeekStartChange = (e: React.FormEvent<HTMLInputElement>) => {
+        setWeekStart(e.currentTarget.value);
+    };
+
+    const handleSaving = () => {
+        dispatch(saveWeekEditor(onion, weekName, weekStart));
+    };
+
+    const handleCancelling = () => {
+        dispatch(cancelWeekEditor());
+    };
+
+    const handleDialogWantingToClose = () => {
+        // nothing
     };
 
     return (
         <AlertDialog
-            isOpen={isOpen}
-            onClose={() => onCloseNotify(null)}
+            isOpen={true} /* there's another return for when isOpen=false */
+            onClose={handleDialogWantingToClose}
             leastDestructiveRef={leastDestructiveUiActionRef}
         >
             <AlertDialogOverlay />
             <AlertDialogContent>
-                <AlertDialogHeader>Edit week</AlertDialogHeader>
+                <AlertDialogHeader>Week Editor</AlertDialogHeader>
                 <AlertDialogBody>
-                    Hellloo
-                    <Input
-                        // value={weekName}
-                        onChange={(e: React.FormEvent<any> & React.ChangeEvent<HTMLInputElement>) => {
-                            setWeekName(e.currentTarget.value);
-                        }}
-                    />
+                    <Stack spacing={4}>
+                        <FormControl>
+                            <FormLabel>Week name</FormLabel>
+                            <Input
+                                value={weekName}
+                                onChange={handleWeekNameChange}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Week start</FormLabel>
+                            <Input
+                                type="date"
+                                value={weekStart}
+                                onChange={handleWeekStartChange}
+                            />
+                            <FormHelperText marginLeft={3}>
+                                {new Date(weekStart).toLocaleDateString(["pl"], {weekday: "long"})}
+                            </FormHelperText>
+                        </FormControl>
+                    </Stack>
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                    <Button
-                        variantColor="teal"
-                        onClick={saveWeek}
+                    <Stack
+                        isInline
+                        spacing={5}
+                        width="100%"
                     >
-                        Save
-                    </Button>
+                        <Button
+                            variantColor="teal"
+                            onClick={handleSaving}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variantColor="teal"
+                            variant="link"
+                            onClick={handleCancelling}
+                        >
+                            Cancel
+                        </Button>
+                    </Stack>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
