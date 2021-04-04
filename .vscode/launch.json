@@ -5,10 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-chrome",
+            // doesn't work with redux dev tools enabled
+            "type": "firefox",
+            "profile": "dev",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:3000",
+            // "reAttach": true,
+            "name": "Use firefox with app running on 3000",
+            "url": "http://localhost:3000/",
             "webRoot": "${workspaceFolder}"
         }
     ]

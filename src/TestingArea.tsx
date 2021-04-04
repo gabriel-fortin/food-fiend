@@ -21,7 +21,7 @@ import { BrowserStorage } from 'Component/BrowserStorage';
 
 function createEmptyStore() {
     const reduxDevTools = (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
-    // return createStore<State, Action, any, any>(storeReducer, new State());
+    // return createStore(storeReducer, State.create(), applyMiddleware(thunkMiddleware));
     return createStore(storeReducer, State.create(), compose(applyMiddleware(thunkMiddleware), reduxDevTools));
 }
 
