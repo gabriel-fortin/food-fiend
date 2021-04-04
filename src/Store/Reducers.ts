@@ -103,7 +103,7 @@ function routeAction(state: State, action: Action): State {
                     const actionType = (currentAction as any).type;
 
                     // make an exception for initialisation done by Redux itself
-                    if (actionType.match(/^@@.*INIT$/)) break;
+                    if (actionType.match(/^@@.*INIT/)) break;
 
                     console.error(`@Reducer: unhandled action: ${actionType}`);
                     throw new Error(`Unhandled action: ${actionType}`);
@@ -344,6 +344,8 @@ const reducer_addFood = (
     return [appendIngredient(food.ref, context)];
 };
 
+// TODO: check whether copies of food are created in store or the existing one updated (that would be sad)
+
 const reducer_weekEditor_open = (
     { context, weekRef }: OpenWeekEditorAction,
     mutableState: State,
@@ -542,6 +544,11 @@ const doRemoveIngredient = (positionToRemove: number) => (parentFood: Food): voi
 // mutating helper
 const doChangeName = (newName: string) => (food: Food): void => {
     food.name = newName;
+};
+
+// mutating helper
+const doChangeStartDate = (startDate: Date) => (food: Food): void => {
+    (food.extra as WeekExtra).startDate = startDate;
 };
 
 // mutating helper
