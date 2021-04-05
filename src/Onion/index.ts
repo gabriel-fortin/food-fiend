@@ -1,7 +1,7 @@
 /** Onion **/
 
 export { useOnion } from "./Context";
-export { Onion } from "./model/Onion";
+export { Onion , eqOnion } from "./model/Onion";
 export { LayerKind } from "./model/Layer";
 export {
     FoodLayerProvider,
@@ -10,6 +10,7 @@ export {
     PlantOnionGarden,
     withOnion,
 } from "./Components";
+export { assertPositionLayer, assertRefLayer, assertRootRefLayer } from "./helpers";
 
 export type Layer = import("./model/Layer").Layer;
 export type RefLayer = import("./model/Layer").RefLayer;
