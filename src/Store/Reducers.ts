@@ -355,7 +355,7 @@ const reducer_weekEditor_open = (
         if (weekRef === null) {
             weekDetails = {
                 weekName: "",
-                weekStartDate: withStrippedTime(new Date()),
+                weekStartDate: new Date(),
             };
         } else {
             const weekData = mutableState.findFood(weekRef);
@@ -367,7 +367,7 @@ const reducer_weekEditor_open = (
 
             weekDetails = {
                 weekName: weekData.name,
-                weekStartDate: withStrippedTime((weekData.extra as WeekExtra).startDate),
+                weekStartDate: new Date((weekData.extra as WeekExtra).startDate),
             };
         }
 
@@ -386,17 +386,10 @@ const reducer_weekEditor_save = (
     { weekName, weekStartDate }: SaveWeekEditorAction,
     mutableState: State,
 ): Action[] => {
-    if (isNaN(Date.parse(weekStartDate))) {
-        console.error(`When saving week editor: incorrect date '${weekStartDate}'`);
-        return [];
-    }
-
-    const startDate = withStrippedTime(new Date(weekStartDate));
-
+    // the Save action is expected to be called only when  isOpen == true
+    // invariant:  isOpen == true  <=>  mutableState.editWeek.data != null
     const editorData = mutableState.editWeek.data;
     if (editorData === null) {
-        // invariant:  isOpen == true  <=>  data != null
-        // additionally: the Save action should be called only when isOpen == true
         const msg = `unexpected situation: "mutableState.editWeek.data" is null`;
         console.error(`${msg};  mutableState.editWeek.isOpen: ${mutableState.editWeek.isOpen}`);
         throw new Error(msg);
@@ -404,7 +397,7 @@ const reducer_weekEditor_save = (
 
     let weekFood: Food;
     if (editorData.weekRef === null) {
-        weekFood = createFood(mutableState, weekName, FoodType.Week, "week", new WeekExtra(startDate));
+        weekFood = createFood(mutableState, weekName, FoodType.Week, "week");
     } else {
         weekFood = mutableState.findFood(editorData.weekRef);
         weekFood = copyAndModify(weekFood, [
@@ -415,13 +408,13 @@ const reducer_weekEditor_save = (
     weekFood = copyAndModify(weekFood, [
         doUpdateStorageInfo,
         doChangeName(weekName),
-        doChangeStartDate(startDate),
+        doChangeStartDate(weekStartDate),
     ]);
     
 
     putFoodIntoMutableState(mutableState, weekFood);
 
-    // keep invariant:  isOpen == true  <=> data != null
+    // keep invariant:  isOpen == true  <=>  mutableState.editWeek.data != null
     mutableState.editWeek.isOpen = false;
     mutableState.editWeek.data = null;
 
@@ -547,7 +540,14 @@ const doChangeName = (newName: string) => (food: Food): void => {
 };
 
 // mutating helper
-const doChangeStartDate = (startDate: Date) => (food: Food): void => {
+const doChangeStartDate = (startDate: string) => (food: Food): void => {
+    const isoDateRegexp = /^\d{4}-\d{2}-\d{2}$/;
+    const userFriendlyFormat = "yyyy-mm-dd";
+    if (!startDate.match(isoDateRegexp)) {
+        throw new Error(`When changing week start date: value '${startDate}' is incorrect; `
+            + `expected format: ${userFriendlyFormat}`);
+    }
+
     (food.extra as WeekExtra).startDate = startDate;
 };
 

@@ -1,9 +1,7 @@
-import { timelessDate } from "tools";
-
 export class WeekExtra {
-    startDate: Date;
+    startDate: string;
 
-    constructor(startDate: Date) {
-        this.startDate = timelessDate(startDate);
+    constructor(startDate: string) {
+        this.startDate = startDate;
     }
 }
