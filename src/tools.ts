@@ -15,14 +15,6 @@ export const eqRef: (ref1: Ref | null, ref2: Ref | null) => boolean
             && ref1.ver === ref2.ver;
     };
 
-/** Creates new Date with the time components removed */
-export const timelessDate: (date: Date) => Date
-    = (date) => new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-    );
-
 /** Creates new Date with the number of days added */
 export const addDays: (date: Date, numDays: number) => Date
     = (date, numDays) => {
@@ -54,9 +46,3 @@ export const formatRef
         ref === null
             ? "[null]"
             : `[${ref.id} / ${ref.ver}]`;
-
-export const withStrippedTime: (d: Date) => Date
-    = (date: Date) => {
-        date.setHours(0, 0, 0, 0);
-        return date;
-    }

@@ -7,7 +7,6 @@ import { Ingredient } from "./Ingredient";
 import { Food } from "./Food";
 import { StorageInfo } from "./StorageInfo";
 import { WeekExtra } from "./WeekExtra";
-import { DayExtra } from "./DayExtra";
 
 
 const immeriseModels = () => {
@@ -17,7 +16,6 @@ const immeriseModels = () => {
     (Food.prototype as any)[immerable] = true;
     (StorageInfo.prototype as any)[immerable] = true;
     (WeekExtra.prototype as any)[immerable] = true;
-    (DayExtra.prototype as any)[immerable] = true;
 };
 immeriseModels();
 
@@ -26,4 +24,4 @@ export type MacrosUncertainty = import ("./Macros").MacrosUncertainty;
 export type Message = import("./Message").Message;
 
 export { Ref, Macros, FoodType, Ingredient, Food, StorageInfo };
-export { WeekExtra, DayExtra };
+export { WeekExtra };

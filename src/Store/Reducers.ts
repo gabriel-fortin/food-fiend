@@ -3,7 +3,7 @@ import Immer_produce, { Draft } from 'immer';
 import { Food, Ref, Ingredient, FoodType, Macros, StorageInfo, WeekExtra } from 'Model';
 import { PositionLayer, RefLayer, LayerKind, assertRefLayer } from 'Onion';
 import { SetMessageAction, setErrorMessage } from 'UI/ShowToasts';
-import { eqRef, filterOne, withStrippedTime } from "tools";
+import { eqRef, filterOne } from "tools";
 import { WeekEditStoreData } from 'Component/WeekEditor';
 import { OpenWeekEditorAction, SaveWeekEditorAction, CancelWeekEditorAction } from 'Component/WeekEditor/Actions';
 
